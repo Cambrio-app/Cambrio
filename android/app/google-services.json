@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1033037067762",
+    "project_id": "cambio-46fdc",
+    "storage_bucket": "cambio-46fdc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1033037067762:android:a20c7e56d547bf0799676b",
+        "android_client_info": {
+          "package_name": "app.cambrio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1033037067762-i26f4m78au0cef0d7dd1f5bbd7mln1ih.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.cambrio",
+            "certificate_hash": "2ee5c8fcab80bee64a5506b361dfd5e51b39e65c"
+          }
+        },
+        {
+          "client_id": "1033037067762-1g58qokrdbg5n29l9fqjgtsm3s6nsfn5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRT0nKiYwuk_PWL6gwMQM3D5uGY1_jWv8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1033037067762-1g58qokrdbg5n29l9fqjgtsm3s6nsfn5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
