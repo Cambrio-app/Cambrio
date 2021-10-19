@@ -57,7 +57,7 @@ class MyHomePage extends StatelessWidget {
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                       maxCrossAxisExtent: 150),
                   itemBuilder: (BuildContext context, int index) {
-                    return Book(title: "${snapshot.data!.docs[index].data()['title']}");
+                    return Book(title: "${(snapshot.data!.docs[index].data() as Map)['title']}");
                   },
                 );
               }
@@ -100,11 +100,11 @@ class GetThing extends StatelessWidget {
           (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
 
         if (snapshot.hasError) {
-          return Text("Something went wrong");
+          return const Text("Something went wrong");
         }
 
         if (snapshot.hasData && !snapshot.data!.exists) {
-          return Text("Document does not exist");
+          return const Text("Document does not exist");
         }
 
         if (snapshot.connectionState == ConnectionState.done) {
@@ -112,7 +112,7 @@ class GetThing extends StatelessWidget {
           return Text("Full Name: ${data['title']} ${data['last_name']}");
         }
 
-        return Text("loading");
+        return const Text("loading");
       },
     );
   }
