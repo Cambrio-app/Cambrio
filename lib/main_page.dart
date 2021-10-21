@@ -1,5 +1,6 @@
+import 'package:cambrio/widgets/book_grid_view.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -33,7 +34,6 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CollectionReference books = FirebaseFirestore.instance.collection('books');
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -47,23 +47,7 @@ class MyHomePage extends StatelessWidget {
         title: Text(title),
       ),
       // body: GetThing(),
-      body: FutureBuilder<QuerySnapshot>(
-        future: books.get(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return GridView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  padding: const EdgeInsets.all(5),
-                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 150),
-                  itemBuilder: (BuildContext context, int index) {
-                    return Book(title: "${(snapshot.data!.docs[index].data() as Map)['title']}");
-                  },
-                );
-              }
-              else return Text('sad');
-        },
-      ),
+      body: const BookGridView(collectionToPull: "books"),
       // floatingActionButton: FloatingActionButton(
       //   // onPressed: _incrementCounter,
       //   tooltip: 'Increment',
@@ -73,47 +57,3 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
-class Book extends StatelessWidget {
-  const Book({Key? key, required this.title}) : super(key: key);
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      // margin: EdgeInsets.all(8),
-      child: Text(title),
-      color: Theme.of(context).colorScheme.secondaryVariant,
-    );
-  }
-}
-
-class GetThing extends StatelessWidget {
-
-
-  @override
-  Widget build(BuildContext context) {
-    CollectionReference users = FirebaseFirestore.instance.collection('books');
-
-    return FutureBuilder<DocumentSnapshot>(
-      future: users.doc("bEorHS6Wtfr3NKNnhwiz").get(),
-      builder:
-          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-
-        if (snapshot.hasError) {
-          return const Text("Something went wrong");
-        }
-
-        if (snapshot.hasData && !snapshot.data!.exists) {
-          return const Text("Document does not exist");
-        }
-
-        if (snapshot.connectionState == ConnectionState.done) {
-          Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
-          return Text("Full Name: ${data['title']} ${data['last_name']}");
-        }
-
-        return const Text("loading");
-      },
-    );
-  }
-}
