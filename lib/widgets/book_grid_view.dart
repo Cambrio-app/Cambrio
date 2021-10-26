@@ -63,7 +63,7 @@ class _BookGridViewState extends State<BookGridView> {
           pagingController: _pagingController,
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: 150,
-            mainAxisExtent: 175,
+            mainAxisExtent: 250,
           ),
           builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot>(
             // noItemsFoundIndicatorBuilder: (context) => const Text('No more items!'),
