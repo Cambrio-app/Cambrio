@@ -1,6 +1,6 @@
 import 'package:cambrio/widgets/book_grid_view.dart';
 import 'package:flutter/material.dart';
-
+import 'package:adaptive_navigation/adaptive_navigation.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -43,22 +43,33 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
-  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Explore',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: Profile',
-      style: optionStyle,
-    ),
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static const _allDestinations = [
+    AdaptiveScaffoldDestination(title: 'Alarm', icon: Icons.alarm),
+    AdaptiveScaffoldDestination(title: 'Book', icon: Icons.book),
+    AdaptiveScaffoldDestination(title: 'Cake', icon: Icons.cake),
+    AdaptiveScaffoldDestination(title: 'Directions', icon: Icons.directions),
+    AdaptiveScaffoldDestination(title: 'Email', icon: Icons.email),
+    AdaptiveScaffoldDestination(title: 'Favorite', icon: Icons.favorite),
+    AdaptiveScaffoldDestination(title: 'Group', icon: Icons.group),
+    AdaptiveScaffoldDestination(title: 'Headset', icon: Icons.headset),
+    AdaptiveScaffoldDestination(title: 'Info', icon: Icons.info),
   ];
+
+  // static const List<Widget> _widgetOptions = <Widget>[
+  //   Text(
+  //     'Index 0: Home',
+  //     style: optionStyle,
+  //   ),
+  //   Text(
+  //     'Index 1: Explore',
+  //     style: optionStyle,
+  //   ),
+  //   Text(
+  //     'Index 2: Profile',
+  //     style: optionStyle,
+  //   ),
+  // ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -94,11 +105,11 @@ class _MyHomePageState extends State<MyHomePage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business),
+            icon: Icon(Icons.search),
             label: 'Explore',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.school),
+            icon: Icon(Icons.portrait),
             label: 'Profile',
           ),
         ],
@@ -108,6 +119,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
 }
-
