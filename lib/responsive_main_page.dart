@@ -1,5 +1,6 @@
 import 'package:adaptive_navigation/adaptive_navigation.dart';
 import 'package:cambrio/widgets/book_grid_view.dart';
+import 'package:cambrio/write.dart';
 import 'package:flutter/material.dart';
 
 class ResponsivePage extends StatefulWidget {
@@ -27,10 +28,11 @@ class _ResponsivePageState extends State<ResponsivePage> {
         return const BookGridView(collectionToPull: "books");
         break;
       default:
-        return const Center(child:Text("other cool stuff"));
+        return const Center(child: Text("other cool stuff"));
         break;
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return AdaptiveNavigationScaffold(
@@ -39,7 +41,24 @@ class _ResponsivePageState extends State<ResponsivePage> {
       destinations: _allDestinations,
       appBar: AdaptiveAppBar(
         title: Text(widget.title),
-
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Write()),
+                );
+              },
+              icon: const Icon(Icons.edit)),
+          IconButton(
+              onPressed: () {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => const Write()),
+                // );
+              },
+              icon: const Icon(Icons.notifications_none_rounded)),
+        ],
       ),
       body: bodyFunction(),
       navigationTypeResolver: (context) {
