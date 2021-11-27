@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
-import 'dart:ui';
+import 'dart:ui' as ui;
 
 class Write extends StatelessWidget {
   // const Write({Key? key}) : super(key: key);
@@ -24,18 +24,19 @@ class Write extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const Text("write or copy/paste your beautiful creation",
+          Text("write or copy/paste your beautiful creation",
               style: TextStyle(
                   height: 5,
-                  // foreground: Paint()
-                  //   ..shader = ui.Gradient.linear(
-                  //     const Offset(0, 20),
-                  //     const Offset(150, 20),
-                  //     <Color>[
-                  //       Colors.red,
-                  //       Colors.yellow,
-                  //     ],
-                  //   ),
+                  backgroundColor: Colors.green,
+                  foreground: Paint()
+                    ..shader = ui.Gradient.linear(
+                      const Offset(0, 20),
+                      const Offset(150, 20),
+                      <Color>[
+                        Colors.red,
+                        Colors.yellow,
+                      ],
+                    ),
                   fontWeight: FontWeight.bold,
               )),
           const SizedBox(height: 40),
