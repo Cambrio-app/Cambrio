@@ -24,28 +24,13 @@ class Write extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Text("write or copy/paste your beautiful creation",
-              style: TextStyle(
-                  height: 5,
-                  backgroundColor: Colors.green,
-                  foreground: Paint()
-                    ..shader = ui.Gradient.linear(
-                      const Offset(0, 20),
-                      const Offset(150, 20),
-                      <Color>[
-                        Colors.red,
-                        Colors.yellow,
-                      ],
-                    ),
-                  fontWeight: FontWeight.bold,
-              )),
           const SizedBox(height: 40),
           HtmlEditor(
             controller: controller, //required
             htmlEditorOptions: const HtmlEditorOptions(
               autoAdjustHeight: true,
               adjustHeightForKeyboard: true,
-              hint: "Your text here...",
+              hint: "Copy/Paste or type here...",
               // initialText: "and it came to pass...",
             ),
             otherOptions: const OtherOptions(
