@@ -2,6 +2,7 @@ import 'package:adaptive_navigation/adaptive_navigation.dart';
 import 'package:cambrio/widgets/book_grid_view.dart';
 import 'package:cambrio/write.dart';
 import 'package:flutter/material.dart';
+import 'package:cambrio/widgets/book_list_view.dart';
 
 class ResponsivePage extends StatefulWidget {
   const ResponsivePage({Key? key, required this.title}) : super(key: key);
@@ -25,7 +26,7 @@ class _ResponsivePageState extends State<ResponsivePage> {
   Widget bodyFunction() {
     switch (_selectedIndex) {
       case 0:
-        return const BookGridView(collectionToPull: "books");
+        return const BookListView(collectionToPull: "books");
         break;
       default:
         return const Center(child: Text("other cool stuff"));

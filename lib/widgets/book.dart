@@ -14,8 +14,8 @@ class Book extends StatelessWidget {
           // margin: EdgeInsets.all(8),
           // mainAxisAlignment: MainAxisAlignment.end,
           Container(
-              width: 125.0,
-              height: 175.0,
+              width: 100.0, //was 125
+              height: 140.0, //was 170
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.secondaryVariant,
                 boxShadow: const [
@@ -30,15 +30,17 @@ class Book extends StatelessWidget {
               ),
               padding: const EdgeInsets.all(0),
               alignment: Alignment.topCenter),
-          SizedBox(height: 5), //Spacing between book tile and text
+          SizedBox(height: 2), // Spacing between book tile and text
           Container(
-              padding: new EdgeInsets.only(left: 5.0, right: 5.0),
+            padding: new EdgeInsets.only(left: 10, right: 10),
+            child: SizedBox(
+            width: 100,
               //align text better with book margins
               child: Text(title,
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontWeight: FontWeight.w500),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis)),
-        ]);
+          )]);
   }
 }

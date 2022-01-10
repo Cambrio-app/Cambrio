@@ -1,7 +1,7 @@
 import 'package:cambrio/widgets/book_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:adaptive_navigation/adaptive_navigation.dart';
-
+import 'package:cambrio/widgets/book_list_view.dart';
 // not in use
 
 class MyApp extends StatefulWidget {
@@ -94,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       // body: GetThing(),
-      body: const BookGridView(collectionToPull: "books"),
+      body: const BookListView(collectionToPull: "books"),
       // floatingActionButton: FloatingActionButton(
       //   // onPressed: _incrementCounter,
       //   tooltip: 'Increment',
