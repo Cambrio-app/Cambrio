@@ -1,6 +1,5 @@
 import 'package:cambrio/responsive_main_page.dart';
 import 'package:flutter/material.dart';
-
 // Import the firebase_core plugin
 import 'package:firebase_core/firebase_core.dart';
 
@@ -12,7 +11,6 @@ void main() {
       home:App(),
       theme: ThemeData(
         // This is the theme of your application.
-        //
         // Try running your application with "flutter run". You'll see the
         // application has a blue toolbar. Then, without quitting the app, try
         // changing the primarySwatch below to Colors.green and then invoke
