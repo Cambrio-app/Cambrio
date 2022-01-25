@@ -41,6 +41,9 @@ dependencies:
   html_editor_enhanced: ^2.4.0+1
   path_provider: ^2.0.8
   html: ^0.15.0
+  share_plus: ^3.0.4
+  xml: ^5.3.1
+  archive: ^3.1.9
 
 dev_dependencies:
   flutter_test:
@@ -69,7 +72,10 @@ flutter:
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
-
+  assets:
+    - assets/ex_epub/
+    - assets/ex_epub/EPUB/
+    - assets/ex_epub/META-INF/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
