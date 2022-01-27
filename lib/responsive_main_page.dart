@@ -4,6 +4,7 @@ import 'package:cambrio/write.dart';
 import 'package:flutter/material.dart';
 import 'package:cambrio/widgets/book_list_view.dart';
 import 'package:cambrio/homeTabView.dart';
+import 'package:cambrio/widgets/profile_view.dart';
 
 class ResponsivePage extends StatefulWidget {
   const ResponsivePage({Key? key, required this.title}) : super(key: key);
@@ -29,6 +30,10 @@ class _ResponsivePageState extends State<ResponsivePage> {
       case 0:
         return const MyTabbedPage(); //BookListView(collectionToPull: "books");
         break;
+      case 1:
+        return const Center(child: Text("search cool stuff"));
+      case 2:
+        return ProfileApp();
       default:
         return const Center(child: Text("other cool stuff"));
         break;
@@ -43,6 +48,7 @@ class _ResponsivePageState extends State<ResponsivePage> {
       destinations: _allDestinations,
       appBar: AdaptiveAppBar(
         title: Text(widget.title),
+        elevation: 0,
         actions: [
           IconButton(
               onPressed: () {

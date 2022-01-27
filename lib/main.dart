@@ -1,9 +1,26 @@
 import 'package:cambrio/responsive_main_page.dart';
 import 'package:flutter/material.dart';
-// Import the firebase_core plugin
 import 'package:firebase_core/firebase_core.dart';
 
 import 'unused_rn/main_page.dart';
+
+class White {
+  static const MaterialColor kToLight = MaterialColor(
+    0xFFFFFFFF, // 0% comes in here, this will be color picked if no shade is selected when defining a Color property which doesn’t require a swatch.
+    <int, Color>{
+      50:   Color(0xFFFFFFFF ),//10%
+      100:  Color(0xFFFFFFFF),//20%
+      200:  Color(0xFFFFFFFF),//30%
+      300:  Color(0xFFFFFFFF),//40%
+      400:  Color(0xFFFFFFFF),//50%
+      500:  Color(0xFFFFFFFF),//60%
+      600:  Color(0xFFFFFFFF),//70%
+      700:  Color(0xFFFFFFFF),//80%
+      800:  Color(0xFFFFFFFF),//90%
+      900:  Color(0xFFFFFFFF),//100%
+    },
+  );
+}
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +35,8 @@ void main() {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.teal,
+        primarySwatch: White.kToLight,
+        scaffoldBackgroundColor: const Color(0xFFFFFFFF),
       ),
   ));
 }
@@ -66,7 +84,7 @@ class _AppState extends State<App> {
       return const Loading();
     }
 
-    return const ResponsivePage(title: "Cambrio");
+    return const ResponsivePage(title: "");
   }
 }
 

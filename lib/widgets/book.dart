@@ -30,15 +30,15 @@ class Book extends StatelessWidget {
               ),
               padding: const EdgeInsets.all(0),
               alignment: Alignment.topCenter),
-          SizedBox(height: 2), // Spacing between book tile and text
+          const SizedBox(height: 2), // Spacing between book tile and text
           Container(
-            padding: new EdgeInsets.only(left: 10, right: 10),
+            padding: const EdgeInsets.only(left: 10, right: 10),
             child: SizedBox(
             width: 100,
               //align text better with book margins
               child: Text(title,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontWeight: FontWeight.w500),
+                  style: const TextStyle(fontWeight: FontWeight.w300),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis)),
           )]);

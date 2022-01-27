@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cambrio/main.dart';
 
 class Chapter extends StatelessWidget {
   const Chapter({Key? key, required this.title}) : super(key: key);
@@ -21,13 +22,14 @@ class Chapter extends StatelessWidget {
                   padding: EdgeInsets.all(16.0),
                   child: Text(title,
                     textAlign: TextAlign.left,
-                    style: const TextStyle(fontWeight: FontWeight.w500),
+                    style: TextStyle(fontSize: 18, fontFamily: "Unna"),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis),
                 )),
-              decoration: const BoxDecoration(
-                color: Colors.white70,
-                boxShadow: [
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
+                color: Colors.white,
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.black,
                     offset: Offset(
