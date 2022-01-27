@@ -1,9 +1,15 @@
+import 'package:cambrio/models/book.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../make_zip.dart';
+import '../make_epub.dart';
 
-class Book extends StatelessWidget {
-  const Book({Key? key, required this.title}) : super(key: key);
-  final String title;
+class BookCard extends StatelessWidget {
+  // final String title;
+  // final Map<String,dynamic> chapters;
+  // final String bookId;
+
+  final DocumentSnapshot<Book> bookSnap;
+  const BookCard({Key? key, required this.bookSnap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,17 +44,20 @@ class Book extends StatelessWidget {
               child: SizedBox(
               width: 100,
                 //align text better with book margins
-                child: Text(title,
+                child: Text(bookSnap.data()!.title,
                     textAlign: TextAlign.center,
                     style: const TextStyle(fontWeight: FontWeight.w500),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis)),
             )]),
       onTap: () {
-        final MakeZip epubber = MakeZip(title: 'mmmmm', authorName:'mmmm', authorId:'mm', bookId:'mmmmm');
-        epubber.addChapter('chapter 1', '<p>whatevs</p>');
-        epubber.addChapter('chapter 2', '<p>lots of goood stuff</p>');
-        epubber.addChapter('chapter tree', '<p>the end</p>');
+        // TODO: bookID right now the title but cleaned, but it needs to be the actual id.
+        // final MakeEpub epubber = MakeEpub(title: bookSnap.data()!.title, authorName:'mmmm', authorId:'mm', bookId:bookSnap.data()!.title.replaceAll(RegExp(r"[^a-zA-Z0-9]"), ''));
+        final MakeEpub epubber = MakeEpub(title: bookSnap.data()!.title, authorName:'mmmm', authorId:'mm', bookId:bookSnap.id);
+
+        // epubber.addChapter('chapter 1', '<p>whatevs</p>');
+        // epubber.addChapter('chapter 2', '<p>lots of goood stuff</p>');
+        // epubber.addChapter('chapter tree', '<p>the end</p>');
         epubber.makeEpub();
       },
     );

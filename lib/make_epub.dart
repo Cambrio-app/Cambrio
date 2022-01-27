@@ -1,3 +1,4 @@
+import 'package:cambrio/services/firebase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:async';
@@ -8,15 +9,17 @@ import 'package:xml/xml.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:archive/archive_io.dart';
 
-class MakeZip {
+import 'models/chapter.dart';
+
+class MakeEpub {
   String title = 'wat';
-  late final List<Chapter> chapters;
+  late List<Chapter> chapters;
   String language;
   String authorName;
   String bookId;
   String authorId;
 
-  MakeZip({this.title='default title', required this.authorName, required this.authorId, required this.bookId, this.language = 'en', List<Chapter>? chapters}) :
+  MakeEpub({this.title='default title', required this.authorName, required this.authorId, required this.bookId, this.language = 'en', List<Chapter>? chapters}) :
         chapters = chapters ?? <Chapter>[];
   //this code should go here but I can't make an async constructor, so I'll have to refactor with a factory function later.
   // directory = (await Directory('${(await _filePath)}/$bookId').create())
@@ -97,7 +100,7 @@ class MakeZip {
         builder.attribute('id', 'ch${i+1}'); // i+1 so that we start on 1
         builder.element('a', nest: () {
           builder.attribute('href', 'chapter${i+1}.xhtml');
-          builder.text(chapters[i].title);
+          builder.text(chapters[i].chapter_name);
         });
       });
       document.findAllElements('ol').first.children.add(builder.buildFragment());
@@ -141,20 +144,26 @@ class MakeZip {
       var document = XmlDocument.parse(await _loadAsset('assets/ex_epub/$template'));
       document.findAllElements('body').first.innerXml = chapters[i].text;
       debugPrint(document.toXmlString());
+      debugPrint(specificFile);
       // (get the file), construct a real directory if it's not made already, Write to file
       returnfile = await _writeToFile(specificFile, document.toXmlString());
     }
     return returnfile;
   }
 
-  void addChapter(String title, String text){
-    chapters.add(Chapter(title,text));
+  void addChapter(String id, String name, String text, int order){
+    chapters.add(Chapter(chapter_id:id,chapter_name:name,text:text,order:order));
   }
 
   Future<File> makeEpub() async{
     // pull up the path to where the temporary epub will go
     // final path = await _extFile;
 
+    chapters = await FirebaseService().getChapters(bookId);
+    // debugPrint(chapters.length.toString());
+    // chapters.forEach((ch) {
+    //   addChapter(ch.chapter_id, ch.chapter_name, );
+    // });
     // for web, it may be possible to simply pass the files directly from each of these functions, and we can avoid needing dart:io.
     _generateOpf();
     _generateNav();
@@ -219,11 +228,4 @@ class MakeZip {
   //   return modifiedFile;
   //   // return 'placeholder for file location';
   // }
-}
-
-class Chapter {
-  String title;
-  String text;
-
-  Chapter(this.title, this.text);
 }
