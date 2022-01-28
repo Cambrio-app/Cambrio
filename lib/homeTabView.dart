@@ -36,18 +36,20 @@ class _MyTabbedPageState extends State<MyTabbedPage> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(50.0),
+        preferredSize: const Size.fromHeight(50.0),
         child: AppBar(
+          elevation: 0,
           bottom: TabBar(
+            indicatorColor: const Color(0xff000000),
+            labelStyle: const TextStyle(fontSize: 16, fontWeight:FontWeight.bold, fontFamily: 'Montserrat'),
             controller: _tabController,
             tabs: myTabs,
-            //Color: Colors.white,
           ),
         ),
       ),
       body: TabBarView( //IT TOLD ME TO MAKE IT CONST, I DON'T KNOW WHY OR IF THAT WAS A GOOD THING TO DO
         controller: _tabController,
-        children: <Widget>[
+        children: const <Widget> [
           ChapterInfScroll(collectionToPull: "books"),
           BookListView(collectionToPull: "books"),
         ]
