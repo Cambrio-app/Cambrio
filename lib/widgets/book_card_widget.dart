@@ -1,7 +1,7 @@
 import 'package:cambrio/models/book.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../make_epub.dart';
+import '../services/make_epub.dart';
 
 class BookCard extends StatelessWidget {
   // final String title;

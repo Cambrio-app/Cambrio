@@ -9,7 +9,7 @@ import 'package:xml/xml.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:archive/archive_io.dart';
 
-import 'models/chapter.dart';
+import '../models/chapter.dart';
 
 class MakeEpub {
   String title = 'wat';

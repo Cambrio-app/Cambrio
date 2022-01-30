@@ -1,9 +1,9 @@
 import 'package:adaptive_navigation/adaptive_navigation.dart';
 import 'package:cambrio/widgets/book_grid_view.dart';
-import 'package:cambrio/write.dart';
+import 'package:cambrio/pages/write.dart';
 import 'package:flutter/material.dart';
 import 'package:cambrio/widgets/book_list_view.dart';
-import 'package:cambrio/homeTabView.dart';
+import 'package:cambrio/widgets/homeTabView.dart';
 import 'package:cambrio/widgets/profile_view.dart';
 
 class ResponsivePage extends StatefulWidget {
