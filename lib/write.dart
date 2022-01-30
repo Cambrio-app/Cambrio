@@ -30,7 +30,7 @@ class Write extends StatelessWidget {
             htmlEditorOptions: const HtmlEditorOptions(
               autoAdjustHeight: true,
               adjustHeightForKeyboard: true,
-              hint: "Copy/Paste or type here...",
+              hint: "Copy/Paste or type under this line...",
               // initialText: "and it came to pass...",
             ),
             otherOptions: const OtherOptions(
