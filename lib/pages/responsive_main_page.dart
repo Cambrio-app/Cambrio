@@ -1,6 +1,7 @@
 import 'package:adaptive_navigation/adaptive_navigation.dart';
 import 'package:cambrio/widgets/book_grid_view.dart';
 import 'package:cambrio/pages/write.dart';
+import 'package:cambrio/pages/add_book.dart';
 import 'package:flutter/material.dart';
 import 'package:cambrio/widgets/book_list_view.dart';
 import 'package:cambrio/widgets/homeTabView.dart';
@@ -54,7 +55,8 @@ class _ResponsivePageState extends State<ResponsivePage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Write()),
+                  MaterialPageRoute(builder: (context) => AddBook()), // When the upper right Pencil Icon is tapped, pull up the AddBook page from "add_book.dart"
+                  // MaterialPageRoute(builder: (context) => Write()), // Jaden's Original Code for above line
                 );
               },
               icon: const Icon(Icons.edit)),
