@@ -48,6 +48,8 @@ dependencies:
   xml: ^5.3.1
   archive: ^3.1.9
   epub_viewer: ^0.2.4
+  flutter_login: ^3.1.0
+  firebase_auth: ^3.3.6
 
 dev_dependencies:
   flutter_test:
@@ -92,6 +94,7 @@ flutter:
     - assets/ex_epub/
     - assets/ex_epub/EPUB/
     - assets/ex_epub/META-INF/
+    - assets/images/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
