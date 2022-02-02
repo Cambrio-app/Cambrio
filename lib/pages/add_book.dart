@@ -2,10 +2,15 @@
 // Knighten's page to create a new book and add it to the firebase database
 // -- WORK IN PROGRESS --
 
+import 'package:cambrio/pages/responsive_main_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'dart:ui' as ui;
+import 'package:cambrio/pages/write.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';  // import firestore to access database
+
 
 class AddBook extends StatelessWidget {
   const AddBook({Key? key}) : super(key: key);
@@ -33,6 +38,7 @@ class MyStatefulWidget extends StatefulWidget {
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +48,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextFormField(
+            controller: _controller,
             decoration: const InputDecoration(
               hintText: 'Enter Title',
             ),
@@ -55,13 +62,15 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: ElevatedButton(
-              onPressed: () {
-
-                // Validate will return true if the form is valid, or false if
-                // the form is invalid.
+              onPressed: () async {
                 if (_formKey.currentState!.validate()) {
 
-                  // Process data.
+                  // Adds user inputted title to the Firestore database
+                  FirebaseFirestore.instance
+                      .collection('books') // collection we are adding to
+                      .add({'title': _controller.text }); // what we are adding
+
+                  _controller.clear();
                 }
               },
               child: const Text('Submit'),
@@ -72,47 +81,3 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     );
   }
 }
-
-
-
-// ORIGINAL PAGE BASED ON Write() Class from write.dart file
-// class AddBook extends StatelessWidget {
-//   // const Write({Key? key}) : super(key: key);
-//
-//   HtmlEditorController controller = HtmlEditorController();
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       resizeToAvoidBottomInset: false,
-//       appBar: AppBar(
-//         title: const Text('Create New Book'),
-//         actions: [
-//           IconButton(
-//             onPressed: () {
-//               Navigator.pop(context); // returns user to home page after tapping save icon
-//               // put code here to get text and send it to the database
-//             },
-//             icon: const Icon(Icons.save)),
-//         ],
-//       ),
-//       body: Column(
-//         children: [
-//           const SizedBox(height: 40),
-//           HtmlEditor(
-//             controller: controller, //required
-//             htmlEditorOptions: const HtmlEditorOptions(
-//               autoAdjustHeight: true,
-//               adjustHeightForKeyboard: true,
-//               hint: "Write Title of Book: ",
-//               // initialText: "and it came to pass...",
-//             ),
-//             otherOptions: const OtherOptions(
-//               height: 400,
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
