@@ -38,7 +38,8 @@ class MyStatefulWidget extends StatefulWidget {
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final _controller = TextEditingController();
+  final _title_controller = TextEditingController();
+  final _author_controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -48,13 +49,25 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextFormField(
-            controller: _controller,
+            controller: _title_controller,
             decoration: const InputDecoration(
               hintText: 'Enter Title',
             ),
             validator: (String? value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter title here';
+              }
+              return null;
+            },
+          ),
+          TextFormField(
+            controller: _author_controller,
+            decoration: const InputDecoration(
+              hintText: 'Enter Author',
+            ),
+            validator: (String? value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter author here';
               }
               return null;
             },
@@ -68,9 +81,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   // Adds user inputted title to the Firestore database
                   FirebaseFirestore.instance
                       .collection('books') // collection we are adding to
-                      .add({'title': _controller.text }); // what we are adding
+                      .add({'title': _title_controller.text, // what we are adding
+                      'author': _author_controller.text }); // what we are adding
 
-                  _controller.clear();
+                _title_controller.clear();
+                _author_controller.clear();
                 }
               },
               child: const Text('Submit'),
