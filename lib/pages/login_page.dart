@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 // import 'dashboard_screen.dart';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 const users = {
   'dribbble@gmail.com': '12345',
   'hunter@gmail.com': 'hunter',
@@ -14,7 +16,7 @@ class LoginScreen extends StatelessWidget {
 
   Duration get loginTime => Duration(milliseconds: 2250);
   Future<String?> _authUser(LoginData data) async {
-    debugPrint('Name: ${data.name}, Password: ${data.password}');
+    // debugPrint('Name: ${data.name}, Password: ${data.password}');
     // return Future.delayed(loginTime).then((_) {
     //   if (!users.containsKey(data.name)) {
     //     return 'User not exists';
@@ -73,9 +75,12 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // debugPrint(Theme.of(context).colorScheme.onBackground.toString());
     return FlutterLogin(
+
       title: 'Cambrio',
       logo: const AssetImage('assets/images/Group43.png'),
+      // theme: ,
       onLogin: _authUser,
       onSignup: _signupUser,
       onSubmitAnimationCompleted: () {
@@ -84,6 +89,30 @@ class LoginScreen extends StatelessWidget {
         ));
       },
       onRecoverPassword: _recoverPassword,
+      loginProviders: [
+        LoginProvider(
+          icon: FontAwesomeIcons.google,
+          label: 'Google',
+          callback: () async {
+            return null;
+          },
+        ),
+      ],
+
+
+      theme: LoginTheme(
+        titleStyle: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+        // switchAuthTextColor: Theme.of(context).colorScheme.onSurface,
+        pageColorLight: Theme.of(context).colorScheme.secondary,
+        pageColorDark: Theme.of(context).colorScheme.secondary,
+        cardTheme: Theme.of(context).cardTheme,
+        buttonStyle: TextStyle(
+          color: Theme.of(context).colorScheme.onPrimary,
+        ),
+
+        // Theme.of(context).colorScheme.onSecondary,
+      ),
     );
+
   }
 }
