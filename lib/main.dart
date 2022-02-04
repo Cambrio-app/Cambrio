@@ -1,3 +1,4 @@
+import 'package:cambrio/pages/login_page.dart';
 import 'package:cambrio/pages/responsive_main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,7 +9,7 @@ class White {
   static const MaterialColor kToLight = MaterialColor(
     0xFFFFFFFF, // 0% comes in here, this will be color picked if no shade is selected when defining a Color property which doesn’t require a swatch.
     <int, Color>{
-      50:   Color(0xFFFFFFFF ),//10%
+      50:   Color(0xFFFFFFFF),//10%
       100:  Color(0xFFFFFFFF),//20%
       200:  Color(0xFFFFFFFF),//30%
       300:  Color(0xFFFFFFFF),//40%
@@ -22,21 +23,86 @@ class White {
   );
 }
 
+class Whites {
+  static const MaterialColor kToLight = MaterialColor(
+    0xFFFFFFFF, // 0% comes in here, this will be color picked if no shade is selected when defining a Color property which doesn’t require a swatch.
+    <int, Color>{
+      50:   Color(0xFFFFFFFF),//10%
+      100:  Color(0xFFfafafa),//20%
+      200:  Color(0xFFf5f5f5),//30%
+      300:  Color(0xFFf0f0f0),//40%
+      400:  Color(0xFFdedede),//50%
+      500:  Color(0xFFc2c2c2),//60%
+      600:  Color(0xFF979797),//70%
+      700:  Color(0xFF818181),//80%
+      800:  Color(0xFF606060),//90%
+      900:  Color(0xFF3c3c3c),//100%
+    },
+  );
+}
+
+class Purple {
+  static const MaterialColor kToLight = MaterialColor(
+    0xFF778dfc, // 0% comes in here, this will be color picked if no shade is selected when defining a Color property which doesn’t require a swatch.
+    <int, Color>{
+      50:   Color(0xFFe9ecff),//10%
+      100:  Color(0xFFc8cefd),//20%
+      200:  Color(0xFFa2aefc),//30%
+      300:  Color(0xFF778dfc),//40%
+      400:  Color(0xFF5372fa),//50%
+      500:  Color(0xFF3457ef),//60%
+      600:  Color(0xFF2e4ee3),//70%
+      700:  Color(0xFF2343d6),//80%
+      800:  Color(0xFF1b38c8),//90%
+      900:  Color(0xFF0e22b1),//100%
+    },
+  );
+}
+
+final ColorScheme colorScheme = ColorScheme.fromSwatch(
+  primarySwatch: Purple.kToLight,
+  // primaryColorDark: const Color(0xff0e22b1),
+  // backgroundColor: Colors.white,
+).copyWith(
+  // secondary: const Color(0x778dfc),
+  secondary: Colors.white, //Whites.kToLight,
+  onSecondary: Colors.black, //Purple.kToLight,
+);
+// final ColorScheme colorScheme = ColorScheme.fromSwatch(primarySwatch: Colors.grey);
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MaterialApp(
       home:App(),
       theme: ThemeData(
-        // This is the theme of your application.
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: White.kToLight,
-        scaffoldBackgroundColor: const Color(0xFFFFFFFF),
+        colorScheme: colorScheme,
+        accentColor: colorScheme.secondary,
+        primaryColor: colorScheme.primary,
+        canvasColor: colorScheme.secondary,
+        // bottomNavigationBarTheme: BottomNavigationBarThemeData(),
+        // scaffoldBackgroundColor: colorScheme.background,
+        // backgroundColor: colorScheme.background,
+        // primaryColorBrightness: Brightness.light,
+        appBarTheme: AppBarTheme(
+          color: colorScheme.secondary,
+          // toolbarTextStyle: TextStyle(color:colorScheme.primary),
+          iconTheme: IconThemeData(color: colorScheme.onSecondary),
+          // shape: const Border(bottom: BorderSide(width: 1.0, color: Colors.black),),
+        ),
+        tabBarTheme: TabBarTheme(
+          labelColor: colorScheme.onSecondary,
+        ),
+        cardTheme: CardTheme(
+          color: colorScheme.surface,
+          shape: const Border(
+              top:BorderSide(width: 1.50, color: Colors.black),
+              left:BorderSide(width: 1.50, color: Colors.black),
+              bottom:BorderSide(width: 5.0, color: Colors.black),
+              right:BorderSide(width: 5.0, color: Colors.black)
+          ),
+          shadowColor: Colors.transparent,
+        ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(elevation: 0),
       ),
   ));
 }
@@ -84,13 +150,13 @@ class _AppState extends State<App> {
       return const Loading();
     }
 
-    return const ResponsivePage(title: "");
+    // return const ResponsivePage(title: "");
+    return LoginScreen();
   }
 }
 
 class Loading extends StatelessWidget{
   const Loading({Key? key}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {

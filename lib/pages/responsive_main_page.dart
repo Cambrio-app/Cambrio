@@ -3,7 +3,7 @@ import 'package:cambrio/widgets/book_grid_view.dart';
 import 'package:cambrio/pages/write.dart';
 import 'package:flutter/material.dart';
 import 'package:cambrio/widgets/book_list_view.dart';
-import 'package:cambrio/widgets/homeTabView.dart';
+import 'package:cambrio/widgets/home_tab_view.dart';
 import 'package:cambrio/widgets/profile_view.dart';
 
 class ResponsivePage extends StatefulWidget {
