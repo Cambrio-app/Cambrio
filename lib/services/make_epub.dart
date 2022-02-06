@@ -119,6 +119,13 @@ class MakeEpub {
     return await _writeToFile(specificFile, document.toXmlString());
   }
 
+  Future<File> _generateCss() async {
+    const String specificFile = 'EPUB/epubbooks.css';
+    var document = XmlDocument.parse(await _loadAsset('assets/ex_epub/$specificFile'));
+    // (get the file), construct a real directory if it's not made already, Write to file
+    return await _writeToFile(specificFile, document.toXmlString());
+  }
+
   Future<File> _generateMimetype() async {
     const String specificFile = 'mimetype';
     var pureText = await _loadAsset('assets/ex_epub/$specificFile');
@@ -129,8 +136,8 @@ class MakeEpub {
   Future<File> _generateTitlePage() async {
     const String specificFile = 'EPUB/titlepage.xhtml';
     var document = XmlDocument.parse(await _loadAsset('assets/ex_epub/$specificFile'));
-    document.findAllElements('h').first.innerText = title;
-    document.findAllElements('p').first.innerText = 'by $authorName';
+    document.findAllElements('h1').first.innerText = title;
+    document.findAllElements('h2').first.innerText = 'by $authorName';
     // debugPrint(document.toXmlString());
     // (get the file), construct a real directory if it's not made already, Write to file
     return await _writeToFile(specificFile, document.toXmlString());
@@ -143,9 +150,9 @@ class MakeEpub {
     for (var i=0;i<chapters.length;i++) {
       String specificFile = 'EPUB/chapter${i+1}.xhtml'; // +1 to make the chapters start at 1
       var document = XmlDocument.parse(await _loadAsset('assets/ex_epub/$template'));
-      document.findAllElements('body').first.innerXml = chapters[i].text;
-      debugPrint(document.toXmlString());
-      debugPrint(specificFile);
+      document.findAllElements('div').first.innerXml = chapters[i].text;
+      // debugPrint(document.toXmlString());
+      // debugPrint(specificFile);
       // (get the file), construct a real directory if it's not made already, Write to file
       returnfile = await _writeToFile(specificFile, document.toXmlString());
     }
@@ -172,6 +179,7 @@ class MakeEpub {
     _generateMimetype();
     _generateTitlePage();
     _generateChapters();
+    _generateCss();
     // Zip a directory to out.zip using the zipDirectory convenience method
     var encoder = ZipFileEncoder();
     encoder.zipDirectory(Directory('${(await _filePath)}/$bookId'), filename: '${(await _filePath)}/$bookId.epub');
@@ -186,9 +194,9 @@ class MakeEpub {
     // debugPrint(Directory('${(await _filePath)}/goodbook').listSync().toString());
     // Share.shareFiles([zippedFile.path]);
     EpubViewer.setConfig(
-        themeColor: Theme.of(context).primaryColor,
+        themeColor: Colors.green,
         identifier: "iosBook",
-        scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
+        scrollDirection: EpubScrollDirection.VERTICAL,
         allowSharing: true,
         enableTts: true,
         nightMode: true);

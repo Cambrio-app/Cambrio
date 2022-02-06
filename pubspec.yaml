@@ -41,13 +41,15 @@ dependencies:
 
   infinite_scroll_pagination: ^3.1.0
   adaptive_navigation: ^0.0.5
-  html_editor_enhanced: ^2.4.0+1
   path_provider: ^2.0.8
   html: ^0.15.0
   share_plus: ^3.0.4
   xml: ^5.3.1
   archive: ^3.1.9
   epub_viewer: ^0.2.4
+#  epub_viewer:
+#    path: /home/jaden/StudioProjects/epub_viewer
+  flutter_summernote: ^1.0.0
   flutter_login: ^3.1.0
   firebase_auth: ^3.3.6
 

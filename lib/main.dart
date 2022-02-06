@@ -75,10 +75,10 @@ void main() {
   runApp(MaterialApp(
       home:App(),
       theme: ThemeData(
-        colorScheme: colorScheme,
-        accentColor: colorScheme.secondary,
-        primaryColor: colorScheme.primary,
-        canvasColor: colorScheme.secondary,
+        // colorScheme: colorScheme,
+        // accentColor: colorScheme.secondary,
+        // primaryColor: colorScheme.primary,
+        // canvasColor: colorScheme.secondary,
         // bottomNavigationBarTheme: BottomNavigationBarThemeData(),
         // scaffoldBackgroundColor: colorScheme.background,
         // backgroundColor: colorScheme.background,

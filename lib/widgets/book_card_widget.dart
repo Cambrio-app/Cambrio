@@ -61,14 +61,7 @@ class BookCard extends StatelessWidget {
         // epubber.addChapter('chapter tree', '<p>the end</p>');
         epubber.makeEpub(context);
 
-        // EpubViewer.setConfig(
-        //     themeColor: Theme.of(context).primaryColor,
-        //     identifier: "iosBook",
-        //     scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
-        //     allowSharing: true,
-        //     enableTts: true,
-        //     nightMode: true);
-        // EpubViewer.openAsset("assets/ex_epub)");
+
       },
 
     );
