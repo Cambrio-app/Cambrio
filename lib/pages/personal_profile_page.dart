@@ -98,21 +98,7 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
     color: Colors.black,
     height: 30,
     padding: EdgeInsets.only(bottom: 3, right: 4),
-    decoration: BoxDecoration(
-      border: Border.all(color: Colors.black),
-      color: Colors.white,
-      boxShadow: const [
-        BoxShadow(
-          color: Colors.black,
-          offset: Offset(
-            3, // Move to right 3  horizontally
-            3, // Move to bottom 3 Vertically
-          ),
-        )
-      ],
-    ),
       child: MaterialButton(
-
         minWidth: MediaQuery.of(context).size.width ,
         height: 40,
         onPressed: () {
