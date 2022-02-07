@@ -26,16 +26,10 @@ class BookCard extends StatelessWidget {
                 width: 100.0, //was 125
                 height: 140.0, //was 170
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondaryVariant,
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black,
-                      offset: Offset(
-                        3, // Move to right 3  horizontally
-                        3, // Move to bottom 3 Vertically
-                      ),
-                    )
-                  ],
+                  image: DecorationImage(
+                    image: NetworkImage(bookSnap.data()!.imageURL),
+                    fit: BoxFit.fill,
+                  )
                 ),
                 padding: const EdgeInsets.all(0),
                 alignment: Alignment.topCenter),

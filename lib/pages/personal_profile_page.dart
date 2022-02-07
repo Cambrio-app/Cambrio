@@ -41,7 +41,7 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
             height: 20,
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(150, 0, 150, 0),
+            padding: EdgeInsets.fromLTRB(75, 0, 75, 0),
             child: EditButton(),
           ),
           const SizedBox(
@@ -95,10 +95,23 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
   );
 
   Widget EditButton() => Container( 
-    color: Colors.black,
+    //color: Colors.black,
     height: 30,
     padding: EdgeInsets.only(bottom: 3, right: 4),
-      child: MaterialButton(
+    decoration: BoxDecoration(
+      border: Border.all(color: Colors.black),
+      color: Colors.white,
+      boxShadow: const [
+        BoxShadow(
+          color: Colors.black,
+          offset: Offset(
+            3, // Move to right 3  horizontally
+            3, // Move to bottom 3 Vertically
+          ),
+        )
+      ],
+    ),
+    child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width ,
         height: 40,
         onPressed: () {
