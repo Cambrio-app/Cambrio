@@ -111,7 +111,6 @@ class MakeEpub {
     return await _writeToFile(specificFile, document.toXmlString());
   }
 
-  // TODO: Write the functions for generating the other files and then zip them.
   Future<File> _generateContainer() async {
     const String specificFile = 'META-INF/container.xml';
     var document = XmlDocument.parse(await _loadAsset('assets/ex_epub/$specificFile'));
@@ -177,13 +176,13 @@ class MakeEpub {
     //   addChapter(ch.chapter_id, ch.chapter_name, );
     // });
     // for web, it may be possible to simply pass the files directly from each of these functions, and we can avoid needing dart:io.
-    _generateOpf();
-    _generateNav();
-    _generateContainer();
-    _generateMimetype();
-    _generateTitlePage();
-    _generateChapters();
-    _generateCss();
+    await _generateOpf();
+    await _generateNav();
+    await _generateContainer();
+    await _generateMimetype();
+    await _generateTitlePage();
+    await _generateChapters();
+    await _generateCss();
     // debugPrint('${(await _generateCss()).path} and whatever');
     // Zip a directory to out.zip using the zipDirectory convenience method
     var encoder = ZipFileEncoder();
@@ -192,7 +191,8 @@ class MakeEpub {
     // Directory('${(await _filePath)}').list(recursive: true, followLinks: false)) {
     //   print(entity.path);
     // }
-    File zippedFile = File('${(await _filePath)}/$bookId.epub');
+    String filepath = '${(await _filePath)}/$bookId.epub';
+    File zippedFile = File(filepath);
     //share the file
     // debugPrint(await modifiedFile.readAsString());
     // print(modifiedFile.path);
@@ -205,7 +205,7 @@ class MakeEpub {
         allowSharing: true,
         enableTts: true,
         nightMode: true);
-    EpubViewer.open(zippedFile.path);
+    EpubViewer.open(filepath);
     // await EpubViewer.openAsset(
     //   'assets/frank.epub',
     //   lastLocation: EpubLocator.fromJson({
