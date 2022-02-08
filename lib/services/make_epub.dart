@@ -121,9 +121,11 @@ class MakeEpub {
 
   Future<File> _generateCss() async {
     const String specificFile = 'EPUB/epubbooks.css';
-    var document = XmlDocument.parse(await _loadAsset('assets/ex_epub/$specificFile'));
+    var pureText = await _loadAsset('assets/ex_epub/$specificFile');
+    // debugPrint(pureText);
+
     // (get the file), construct a real directory if it's not made already, Write to file
-    return await _writeToFile(specificFile, document.toXmlString());
+    return await _writeToFile(specificFile, pureText);
   }
 
   Future<File> _generateMimetype() async {
@@ -138,7 +140,9 @@ class MakeEpub {
     var document = XmlDocument.parse(await _loadAsset('assets/ex_epub/$specificFile'));
     document.findAllElements('h1').first.innerText = title;
     document.findAllElements('h2').first.innerText = 'by $authorName';
-    // debugPrint(document.toXmlString());
+    document.findAllElements('body').first.attributes.add(XmlAttribute(XmlName('class'), 'titlepage'));
+    document.findAllElements('div').first.attributes.add(XmlAttribute(XmlName('class'), 'titlepage'));
+    debugPrint(document.toXmlString());
     // (get the file), construct a real directory if it's not made already, Write to file
     return await _writeToFile(specificFile, document.toXmlString());
   }
@@ -180,6 +184,7 @@ class MakeEpub {
     _generateTitlePage();
     _generateChapters();
     _generateCss();
+    // debugPrint('${(await _generateCss()).path} and whatever');
     // Zip a directory to out.zip using the zipDirectory convenience method
     var encoder = ZipFileEncoder();
     encoder.zipDirectory(Directory('${(await _filePath)}/$bookId'), filename: '${(await _filePath)}/$bookId.epub');
@@ -194,18 +199,18 @@ class MakeEpub {
     // debugPrint(Directory('${(await _filePath)}/goodbook').listSync().toString());
     // Share.shareFiles([zippedFile.path]);
     EpubViewer.setConfig(
-        themeColor: Colors.green,
+        themeColor: Theme.of(context).colorScheme.primary,
         identifier: "iosBook",
-        scrollDirection: EpubScrollDirection.VERTICAL,
+        scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
         allowSharing: true,
         enableTts: true,
         nightMode: true);
     EpubViewer.open(zippedFile.path);
     // await EpubViewer.openAsset(
-    //   'assets/4.epub',
+    //   'assets/frank.epub',
     //   lastLocation: EpubLocator.fromJson({
     //     "bookId": "2239",
-    //     "href": "/OEBPS/ch06.xhtml",
+    //     "href": "/OEBPS/index.xhtml",
     //     "created": 1539934158390,
     //     "locations": {
     //       "cfi": "epubcfi(/0!/4/4[simple_book]/2/2/6)"

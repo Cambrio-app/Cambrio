@@ -101,7 +101,7 @@ class LoginScreen extends StatelessWidget {
 
 
       theme: LoginTheme(
-        titleStyle: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+        titleStyle: TextStyle(fontFamily: "Unna",color: Theme.of(context).colorScheme.onSecondary),
         // switchAuthTextColor: Theme.of(context).colorScheme.onSurface,
         pageColorLight: Theme.of(context).colorScheme.secondary,
         pageColorDark: Theme.of(context).colorScheme.secondary,
