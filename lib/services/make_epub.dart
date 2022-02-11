@@ -1,5 +1,4 @@
 import 'package:cambrio/services/firebase_service.dart';
-import 'package:epub_viewer/epub_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:async';
@@ -9,6 +8,7 @@ import 'dart:io';
 import 'package:xml/xml.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:archive/archive_io.dart';
+import 'package:iridium_reader_widget/views/viewers/epub_screen.dart';
 
 import '../models/chapter.dart';
 
@@ -198,25 +198,7 @@ class MakeEpub {
     // print(modifiedFile.path);
     // debugPrint(Directory('${(await _filePath)}/goodbook').listSync().toString());
     // Share.shareFiles([zippedFile.path]);
-    EpubViewer.setConfig(
-        themeColor: Theme.of(context).colorScheme.primary,
-        identifier: "iosBook",
-        scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
-        allowSharing: true,
-        enableTts: true,
-        nightMode: true);
-    EpubViewer.open(filepath);
-    // await EpubViewer.openAsset(
-    //   'assets/frank.epub',
-    //   lastLocation: EpubLocator.fromJson({
-    //     "bookId": "2239",
-    //     "href": "/OEBPS/index.xhtml",
-    //     "created": 1539934158390,
-    //     "locations": {
-    //       "cfi": "epubcfi(/0!/4/4[simple_book]/2/2/6)"
-    //     }
-    //   }),
-    // );
+    Navigator.push(context, MaterialPageRoute(builder: (context) => EpubScreen.fromPath(filePath: filepath)));
     return zippedFile;
   }
 
