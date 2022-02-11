@@ -75,6 +75,7 @@ void main() {
   runApp(MaterialApp(
       home:App(),
       theme: ThemeData(
+
         colorScheme: colorScheme,
         accentColor: colorScheme.secondary,
         primaryColor: colorScheme.primary,
@@ -95,10 +96,10 @@ void main() {
         cardTheme: CardTheme(
           color: colorScheme.surface,
           shape: const Border(
-              top:BorderSide(width: 1.50, color: Colors.black),
-              left:BorderSide(width: 1.50, color: Colors.black),
-              bottom:BorderSide(width: 5.0, color: Colors.black),
-              right:BorderSide(width: 5.0, color: Colors.black)
+              top:BorderSide(width: 1.50, color: Colors.white),
+              left:BorderSide(width: 1.50, color: Colors.white),
+              bottom:BorderSide(width: 5.0, color: Colors.white),
+              right:BorderSide(width: 5.0, color: Colors.white)
           ),
           shadowColor: Colors.transparent,
         ),
@@ -150,8 +151,8 @@ class _AppState extends State<App> {
       return const Loading();
     }
 
-    // return const ResponsivePage(title: "");
-    return LoginScreen();
+    return const ResponsivePage(title: "");
+    // return LoginScreen();
   }
 }
 

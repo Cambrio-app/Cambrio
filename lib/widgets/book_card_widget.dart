@@ -1,6 +1,5 @@
 import 'package:cambrio/models/book.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:epub_viewer/epub_viewer.dart';
 import 'package:flutter/material.dart';
 import '../services/make_epub.dart';
 
@@ -50,19 +49,7 @@ class BookCard extends StatelessWidget {
         // final MakeEpub epubber = MakeEpub(title: bookSnap.data()!.title, authorName:'mmmm', authorId:'mm', bookId:bookSnap.data()!.title.replaceAll(RegExp(r"[^a-zA-Z0-9]"), ''));
         final MakeEpub epubber = MakeEpub(title: bookSnap.data()!.title, authorName:'mmmm', authorId:'mm', bookId:bookSnap.id);
 
-        // epubber.addChapter('chapter 1', '<p>whatevs</p>');
-        // epubber.addChapter('chapter 2', '<p>lots of goood stuff</p>');
-        // epubber.addChapter('chapter tree', '<p>the end</p>');
         epubber.makeEpub(context);
-
-        // EpubViewer.setConfig(
-        //     themeColor: Theme.of(context).primaryColor,
-        //     identifier: "iosBook",
-        //     scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
-        //     allowSharing: true,
-        //     enableTts: true,
-        //     nightMode: true);
-        // EpubViewer.openAsset("assets/ex_epub)");
       },
 
     );

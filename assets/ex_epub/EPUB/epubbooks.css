@@ -1,0 +1,47 @@
+
+
+/*
+div {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    vertical-align: middle;
+}
+div, .titlepage {
+    position: relative;
+    width: 90%;
+    height: 25%;
+    border:3px solid white;
+    vertical-align: middle;
+}
+*/
+
+.titlepage * {
+    margin: 0;
+    vertical-align: middle;
+    text-align: center;
+    width: absolute;
+
+}
+
+div .titlepage {
+    margin: 0 auto;
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    /*border: 3px solid white;*/
+
+    box-sizing: border-box;
+}
+
+body .titlepage {
+    margin: 0 auto;
+    position: absolute;
+    width: 90%;
+    top: 50%;
+    transform: translateY(-50%);
+    /*border: 3px solid white;*/
+
+    box-sizing: border-box;
+}
