@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_summernote/fl/utter_summernote.dart';
+import 'package:html_editor_enhanced/html_editor.dart';
 import 'dart:ui' as ui;
 
 class Write extends StatelessWidget {
   // const Write({Key? key}) : super(key: key);
 
-  // final GlobalKey<FlutterSummernoteState> _keyEditor = GlobalKey();
+  HtmlEditorController controller = HtmlEditorController();
 
   @override
   Widget build(BuildContext context) {
@@ -16,29 +16,26 @@ class Write extends StatelessWidget {
         title: const Text('write'),
         actions: [
           IconButton(
-            onPressed: () async {
-              // final _etEditor = await _keyEditor.currentState!.getText();
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.save)),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.save)),
         ],
       ),
       body: Column(
         children: [
           const SizedBox(height: 40),
-          // quill.QuillToolbar.basic(controller: _controller),
-          Expanded(
-            child: Text('eh'),
-            // child: Container(
-            //   child: FlutterSummernote(
-            //       hint: "Your text here...",
-            //       key: _keyEditor
-            //   ),
-              // child: quill.QuillEditor.basic(
-              //   controller: _controller,
-              //   readOnly: false, // true for view only mode
-              // ),
-            // ),
+          HtmlEditor(
+            controller: controller, //required
+            htmlEditorOptions: const HtmlEditorOptions(
+              autoAdjustHeight: true,
+              adjustHeightForKeyboard: true,
+              hint: "Copy/Paste or type here...",
+              // initialText: "and it came to pass...",
+            ),
+            otherOptions: const OtherOptions(
+              height: 400,
+            ),
           ),
         ],
       ),
