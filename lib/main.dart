@@ -1,5 +1,6 @@
 import 'package:cambrio/pages/login_page.dart';
 import 'package:cambrio/pages/responsive_main_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -116,6 +117,8 @@ class _AppState extends State<App> {
   // Set default `_initialized` and `_error` state to false
   bool _initialized = false;
   bool _error = false;
+  // Stream<User?> state = FirebaseAuth.instance.authStateChanges();
+  bool loggedIn = false;
 
   // Define an async function to initialize FlutterFire
   void initializeFlutterFire() async {
@@ -133,6 +136,26 @@ class _AppState extends State<App> {
     }
   }
 
+  // check login state
+  bool isLoggedIn() {
+    debugPrint('checking');
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user==null){
+        setState(() {
+          debugPrint('officially NOT logged in');
+          loggedIn = false;
+        });
+      }
+      else {
+        setState(() {
+          debugPrint('officially logged in');
+          loggedIn = true;
+        });
+      }
+    });
+    return FirebaseAuth.instance.currentUser != null;
+  }
+
   @override
   void initState() {
     initializeFlutterFire();
@@ -147,12 +170,16 @@ class _AppState extends State<App> {
     }
 
     // Show a loader until FlutterFire is initialized
-    if (!_initialized) {
+    else if (!_initialized) {
       return const Loading();
     }
-
-    return const ResponsivePage(title: "");
-    // return LoginScreen();
+    else if (!loggedIn && _initialized) {
+      isLoggedIn();
+      return LoginScreen();
+    }
+    else {
+      return const ResponsivePage(title: "");
+    }
   }
 }
 
