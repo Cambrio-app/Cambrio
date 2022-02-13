@@ -34,25 +34,39 @@ dependencies:
     sdk: flutter
   firebase_core: "^1.7.0"
   cloud_firestore: "2.5.3"
+  shared_preferences: ^2.0.12
+  image_picker: ^0.8.4+6
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
+  html_editor_enhanced: ^2.4.0+1
   infinite_scroll_pagination: ^3.1.0
   adaptive_navigation: ^0.0.5
-  html_editor_enhanced: ^2.4.0+1
   path_provider: ^2.0.8
   html: ^0.15.0
   share_plus: ^3.0.4
   xml: ^5.3.1
   archive: ^3.1.9
-  epub_viewer: ^0.2.4
+  iridium_reader_widget:
+    path: /home/jaden/StudioProjects/iridium/reader_widget
+#  flutter_summernote: ^1.0.0
+  flutter_login: ^3.1.0
+  firebase_auth: ^3.3.6
+  epubx: ^3.0.0
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-#  firebase_core: "^1.7.0"
+  flutter_launcher_icons: "^0.9.2"
+#  flutter_test:
+#    sdk: flutter
+
+
+flutter_icons:
+  ios: true
+  android: true
+  image_path_android: "assets/images/Group43.png"
+  image_path_ios: "assets/images/Group43.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -92,11 +106,14 @@ flutter:
     - assets/ex_epub/
     - assets/ex_epub/EPUB/
     - assets/ex_epub/META-INF/
+    - assets/images/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/assets-and-images/#from-packages
+
+
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a

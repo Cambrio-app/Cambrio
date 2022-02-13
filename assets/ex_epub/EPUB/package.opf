@@ -9,6 +9,7 @@
    </metadata>
    <manifest>
       <item href="titlepage.xhtml" id="ttl" media-type="application/xhtml+xml"/>
+      <item media-type="text/css" id="html-css" href="epubbooks.css"/>
       <item href="nav.xhtml" id="nav" media-type="application/xhtml+xml" properties="nav"/>
    </manifest>
    <spine>

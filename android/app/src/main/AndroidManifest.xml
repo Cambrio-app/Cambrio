@@ -2,9 +2,13 @@
     package="app.cambrio">
    <application
         android:label="cambrio"
-        android:icon="@mipmap/ic_launcher">
-        <activity
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true"
+       >
+       <!--       TODO: fix cleartexttraffic thing, security is wack. also, understand android:exported as well-->
+       <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

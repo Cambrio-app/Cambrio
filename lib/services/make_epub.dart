@@ -1,5 +1,4 @@
 import 'package:cambrio/services/firebase_service.dart';
-import 'package:epub_viewer/epub_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:async';
@@ -9,6 +8,7 @@ import 'dart:io';
 import 'package:xml/xml.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:archive/archive_io.dart';
+import 'package:iridium_reader_widget/views/viewers/epub_screen.dart';
 
 import '../models/chapter.dart';
 
@@ -111,12 +111,20 @@ class MakeEpub {
     return await _writeToFile(specificFile, document.toXmlString());
   }
 
-  // TODO: Write the functions for generating the other files and then zip them.
   Future<File> _generateContainer() async {
     const String specificFile = 'META-INF/container.xml';
     var document = XmlDocument.parse(await _loadAsset('assets/ex_epub/$specificFile'));
     // (get the file), construct a real directory if it's not made already, Write to file
     return await _writeToFile(specificFile, document.toXmlString());
+  }
+
+  Future<File> _generateCss() async {
+    const String specificFile = 'EPUB/epubbooks.css';
+    var pureText = await _loadAsset('assets/ex_epub/$specificFile');
+    // debugPrint(pureText);
+
+    // (get the file), construct a real directory if it's not made already, Write to file
+    return await _writeToFile(specificFile, pureText);
   }
 
   Future<File> _generateMimetype() async {
@@ -129,9 +137,11 @@ class MakeEpub {
   Future<File> _generateTitlePage() async {
     const String specificFile = 'EPUB/titlepage.xhtml';
     var document = XmlDocument.parse(await _loadAsset('assets/ex_epub/$specificFile'));
-    document.findAllElements('h').first.innerText = title;
-    document.findAllElements('p').first.innerText = 'by $authorName';
-    // debugPrint(document.toXmlString());
+    document.findAllElements('h1').first.innerText = title;
+    document.findAllElements('h2').first.innerText = 'by $authorName';
+    document.findAllElements('body').first.attributes.add(XmlAttribute(XmlName('class'), 'titlepage'));
+    document.findAllElements('div').first.attributes.add(XmlAttribute(XmlName('class'), 'titlepage'));
+    debugPrint(document.toXmlString());
     // (get the file), construct a real directory if it's not made already, Write to file
     return await _writeToFile(specificFile, document.toXmlString());
   }
@@ -143,9 +153,9 @@ class MakeEpub {
     for (var i=0;i<chapters.length;i++) {
       String specificFile = 'EPUB/chapter${i+1}.xhtml'; // +1 to make the chapters start at 1
       var document = XmlDocument.parse(await _loadAsset('assets/ex_epub/$template'));
-      document.findAllElements('body').first.innerXml = chapters[i].text;
-      debugPrint(document.toXmlString());
-      debugPrint(specificFile);
+      document.findAllElements('div').first.innerXml = chapters[i].text;
+      // debugPrint(document.toXmlString());
+      // debugPrint(specificFile);
       // (get the file), construct a real directory if it's not made already, Write to file
       returnfile = await _writeToFile(specificFile, document.toXmlString());
     }
@@ -166,12 +176,14 @@ class MakeEpub {
     //   addChapter(ch.chapter_id, ch.chapter_name, );
     // });
     // for web, it may be possible to simply pass the files directly from each of these functions, and we can avoid needing dart:io.
-    _generateOpf();
-    _generateNav();
-    _generateContainer();
-    _generateMimetype();
-    _generateTitlePage();
-    _generateChapters();
+    await _generateOpf();
+    await _generateNav();
+    await _generateContainer();
+    await _generateMimetype();
+    await _generateTitlePage();
+    await _generateChapters();
+    await _generateCss();
+    // debugPrint('${(await _generateCss()).path} and whatever');
     // Zip a directory to out.zip using the zipDirectory convenience method
     var encoder = ZipFileEncoder();
     encoder.zipDirectory(Directory('${(await _filePath)}/$bookId'), filename: '${(await _filePath)}/$bookId.epub');
@@ -179,31 +191,14 @@ class MakeEpub {
     // Directory('${(await _filePath)}').list(recursive: true, followLinks: false)) {
     //   print(entity.path);
     // }
-    File zippedFile = File('${(await _filePath)}/$bookId.epub');
+    String filepath = '${(await _filePath)}/$bookId.epub';
+    File zippedFile = File(filepath);
     //share the file
     // debugPrint(await modifiedFile.readAsString());
     // print(modifiedFile.path);
     // debugPrint(Directory('${(await _filePath)}/goodbook').listSync().toString());
     // Share.shareFiles([zippedFile.path]);
-    EpubViewer.setConfig(
-        themeColor: Theme.of(context).primaryColor,
-        identifier: "iosBook",
-        scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
-        allowSharing: true,
-        enableTts: true,
-        nightMode: true);
-    EpubViewer.open(zippedFile.path);
-    // await EpubViewer.openAsset(
-    //   'assets/4.epub',
-    //   lastLocation: EpubLocator.fromJson({
-    //     "bookId": "2239",
-    //     "href": "/OEBPS/ch06.xhtml",
-    //     "created": 1539934158390,
-    //     "locations": {
-    //       "cfi": "epubcfi(/0!/4/4[simple_book]/2/2/6)"
-    //     }
-    //   }),
-    // );
+    Navigator.push(context, MaterialPageRoute(builder: (context) => EpubScreen.fromPath(filePath: filepath)));
     return zippedFile;
   }
 

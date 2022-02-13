@@ -23,7 +23,7 @@ class _MyTabbedPageState extends State<MyTabbedPage> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(vsync: this, length: myTabs.length);
+    _tabController = TabController(initialIndex: 1,vsync: this, length: myTabs.length);
   }
 
   @override
@@ -41,6 +41,8 @@ class _MyTabbedPageState extends State<MyTabbedPage> with SingleTickerProviderSt
           elevation: 0,
           bottom: TabBar(
             indicatorColor: const Color(0xff000000),
+            indicatorPadding: const EdgeInsets.only(left:30,right:30),
+            indicatorWeight: 2,
             labelStyle: const TextStyle(fontSize: 16, fontWeight:FontWeight.bold, fontFamily: 'Montserrat'),
             controller: _tabController,
             tabs: myTabs,

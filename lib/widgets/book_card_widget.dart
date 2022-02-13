@@ -1,6 +1,5 @@
 import 'package:cambrio/models/book.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:epub_viewer/epub_viewer.dart';
 import 'package:flutter/material.dart';
 import '../services/make_epub.dart';
 
@@ -26,16 +25,10 @@ class BookCard extends StatelessWidget {
                 width: 100.0, //was 125
                 height: 140.0, //was 170
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondaryVariant,
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black,
-                      offset: Offset(
-                        3, // Move to right 3  horizontally
-                        3, // Move to bottom 3 Vertically
-                      ),
-                    )
-                  ],
+                  image: DecorationImage(
+                    image: NetworkImage(bookSnap.data()!.imageURL),
+                    fit: BoxFit.fill,
+                  )
                 ),
                 padding: const EdgeInsets.all(0),
                 alignment: Alignment.topCenter),
@@ -56,19 +49,7 @@ class BookCard extends StatelessWidget {
         // final MakeEpub epubber = MakeEpub(title: bookSnap.data()!.title, authorName:'mmmm', authorId:'mm', bookId:bookSnap.data()!.title.replaceAll(RegExp(r"[^a-zA-Z0-9]"), ''));
         final MakeEpub epubber = MakeEpub(title: bookSnap.data()!.title, authorName:'mmmm', authorId:'mm', bookId:bookSnap.id);
 
-        // epubber.addChapter('chapter 1', '<p>whatevs</p>');
-        // epubber.addChapter('chapter 2', '<p>lots of goood stuff</p>');
-        // epubber.addChapter('chapter tree', '<p>the end</p>');
         epubber.makeEpub(context);
-
-        // EpubViewer.setConfig(
-        //     themeColor: Theme.of(context).primaryColor,
-        //     identifier: "iosBook",
-        //     scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
-        //     allowSharing: true,
-        //     enableTts: true,
-        //     nightMode: true);
-        // EpubViewer.openAsset("assets/ex_epub)");
       },
 
     );

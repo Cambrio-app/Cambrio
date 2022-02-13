@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'dart:ui' as ui;
@@ -16,10 +15,10 @@ class Write extends StatelessWidget {
         title: const Text('write'),
         actions: [
           IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.save)),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.save)),
         ],
       ),
       body: Column(
@@ -30,7 +29,7 @@ class Write extends StatelessWidget {
             htmlEditorOptions: const HtmlEditorOptions(
               autoAdjustHeight: true,
               adjustHeightForKeyboard: true,
-              hint: "Copy/Paste or type under this line...",
+              hint: "Copy/Paste or type here...",
               // initialText: "and it came to pass...",
             ),
             otherOptions: const OtherOptions(

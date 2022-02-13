@@ -34,7 +34,7 @@ class FirebaseService {
 
   Future<List<Chapter>> getChapters(String bookId) async {
     Query<Chapter> _query = FirebaseFirestore.instance
-        .collection('books/$bookId/chapters').withConverter<Chapter>(
+        .collection('books/$bookId/chapters').orderBy('order').withConverter<Chapter>(
       fromFirestore: (snapshot, _) => Chapter.fromJson(snapshot.id, snapshot.data()!),
       toFirestore: (book, _) => book.toJson(),
     );

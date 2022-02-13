@@ -4,8 +4,9 @@ import 'package:cambrio/pages/write.dart';
 import 'package:cambrio/pages/add_book.dart';
 import 'package:flutter/material.dart';
 import 'package:cambrio/widgets/book_list_view.dart';
-import 'package:cambrio/widgets/homeTabView.dart';
+import 'package:cambrio/widgets/home_tab_view.dart';
 import 'package:cambrio/widgets/profile_view.dart';
+import 'package:cambrio/pages/personal_profile_page.dart';
 
 class ResponsivePage extends StatefulWidget {
   const ResponsivePage({Key? key, required this.title}) : super(key: key);
@@ -34,7 +35,7 @@ class _ResponsivePageState extends State<ResponsivePage> {
       case 1:
         return const Center(child: Text("search cool stuff"));
       case 2:
-        return ProfileApp();
+        return PersonalProfilePage();
       default:
         return const Center(child: Text("other cool stuff"));
         break;
