@@ -1,4 +1,3 @@
-
 // Knighten's page to create a new book and add it to the firebase database
 // -- WORK IN PROGRESS --
 
@@ -9,8 +8,7 @@ import 'package:html_editor_enhanced/html_editor.dart';
 import 'dart:ui' as ui;
 import 'package:cambrio/pages/write.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';  // import firestore to access database
-
+import 'package:cloud_firestore/cloud_firestore.dart'; // import firestore to access database
 
 class AddBook extends StatelessWidget {
   const AddBook({Key? key}) : super(key: key);
@@ -77,15 +75,16 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             child: ElevatedButton(
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-
                   // Adds user inputted title to the Firestore database
                   FirebaseFirestore.instance
                       .collection('books') // collection we are adding to
-                      .add({'title': _title_controller.text, // what we are adding
-                      'author': _author_controller.text }); // what we are adding
+                      .add({
+                    'title': _title_controller.text, // what we are adding
+                    'author': _author_controller.text,
+                  }); // what we are adding
 
-                _title_controller.clear();
-                _author_controller.clear();
+                  _title_controller.clear();
+                  _author_controller.clear();
                 }
               },
               child: const Text('Submit'),
