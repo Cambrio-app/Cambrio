@@ -47,9 +47,9 @@ class BookCard extends StatelessWidget {
       onTap: () {
         // TODO: bookID right now the title but cleaned, but it needs to be the actual id.
         // final MakeEpub epubber = MakeEpub(title: bookSnap.data()!.title, authorName:'mmmm', authorId:'mm', bookId:bookSnap.data()!.title.replaceAll(RegExp(r"[^a-zA-Z0-9]"), ''));
-        final MakeEpub epubber = MakeEpub(title: bookSnap.data()!.title, authorName:'mmmm', authorId:'mm', bookId:bookSnap.id);
+        // final MakeEpub epubber = MakeEpub(title: bookSnap.data()!.title, authorName:'mmmm', authorId:'mm', bookId:bookSnap.id);
 
-        epubber.makeEpub(context);
+        // epubber.makeEpub(context);
       },
 
     );
