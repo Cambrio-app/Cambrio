@@ -44,9 +44,8 @@ class _EditProfileState extends State<EditProfile> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close, color: Colors.black,),
-          onPressed: () => Navigator.pushReplacement(
+          onPressed: () => Navigator.pop(
             context,
-            MaterialPageRoute(builder: (context) => PersonalProfilePage()),
           ),
         ),
         backgroundColor: Colors.white60,
@@ -149,9 +148,8 @@ class _EditProfileState extends State<EditProfile> {
                       UserConstant.bio = _bioController.text;
                       UserConstant.imagePath = image!.path;
                     });
-                    Navigator.pushReplacement(
+                    Navigator.pop(
                     context,
-                    MaterialPageRoute(builder: (context) => PersonalProfilePage()),
                   );
                 },  
                 child: const Text('Save', style: TextStyle(color: Colors.white,

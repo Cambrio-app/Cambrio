@@ -14,13 +14,13 @@ class Book {
 
   Book.fromJson(String? id, Map<String, Object?> json)
       : this(
-    imageURL: json['imageURL'] as String,
+    imageURL: json['imageURL'] as String?,
     chapters: json['chapters'] as CollectionReference<Map<String,Chapter>>?,
     title: json['title']! as String,
     id: id,
   );
 
-  final String imageURL;
+  final String? imageURL;
   final String title;
   final String? id;
   final CollectionReference<Map<String,Chapter>>? chapters;
