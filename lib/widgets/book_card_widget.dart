@@ -26,7 +26,7 @@ class BookCard extends StatelessWidget {
                 height: 140.0, //was 170
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(bookSnap.data()!.imageURL),
+                    image: NetworkImage(bookSnap.data()?.imageURL ?? 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7674aee8-a93d-4e4a-8a60-456b3770bbba/d7jk6bp-9e915b66-3e89-4e4f-99bc-b43dd8245355.jpg/v1/fill/w_746,h_1071,q_70,strp/vintage_ornamental_book_cover_by_boldfrontiers_d7jk6bp-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTI5MSIsInBhdGgiOiJcL2ZcLzc2NzRhZWU4LWE5M2QtNGU0YS04YTYwLTQ1NmIzNzcwYmJiYVwvZDdqazZicC05ZTkxNWI2Ni0zZTg5LTRlNGYtOTliYy1iNDNkZDgyNDUzNTUuanBnIiwid2lkdGgiOiI8PTkwMCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.mwO9qA8W8-XIF_ifzkAI6YD54OBknB9slDFYY08mzyY'),
                     fit: BoxFit.fill,
                   )
                 ),
