@@ -115,7 +115,7 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
         minWidth: MediaQuery.of(context).size.width ,
         height: 40,
         onPressed: () {
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => EditProfile(
               name: UserConstant.name,
