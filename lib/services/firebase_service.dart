@@ -15,6 +15,7 @@ enum QueryTypes {
   loved,
   subscribed,
   random,
+  works,
 }
 
 class FirebaseService {
@@ -96,14 +97,15 @@ class FirebaseService {
           toFirestore: (book, _) => book.toJson(),
         );        break;
       case QueryTypes.subscribed:
+        lastDocument ??= (await FirebaseFirestore.instance.collection(collectionToPull).where(FieldPath.documentId, isGreaterThanOrEqualTo: autoId()).limit(1).get()).docs[0];
         _query = FirebaseFirestore.instance
             .collection(collectionToPull)
-            .orderBy("title", descending: true)
             .withConverter<Book>(
           fromFirestore: (snapshot, _) =>
               Book.fromJson(snapshot.id, snapshot.data()!),
           toFirestore: (book, _) => book.toJson(),
-        );        break;
+        );
+        break;
       case QueryTypes.random:
         lastDocument ??= (await FirebaseFirestore.instance.collection(collectionToPull).where(FieldPath.documentId, isGreaterThanOrEqualTo: autoId()).limit(1).get()).docs[0];
         _query = FirebaseFirestore.instance
@@ -114,6 +116,17 @@ class FirebaseService {
           toFirestore: (book, _) => book.toJson(),
         );
         break;
+      case QueryTypes.works:
+        String uid = FirebaseAuth.instance.currentUser!.uid;
+        _query = FirebaseFirestore.instance
+            .collection(collectionToPull)
+            .where('author_id', isEqualTo: uid)
+            // .orderBy("likes", descending: true)
+            .withConverter<Book>(
+          fromFirestore: (snapshot, _) =>
+              Book.fromJson(snapshot.id, snapshot.data()!),
+          toFirestore: (book, _) => book.toJson(),
+        );        break;
       default:
         _query = FirebaseFirestore.instance
             .collection(collectionToPull)

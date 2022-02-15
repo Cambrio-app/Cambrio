@@ -1,6 +1,7 @@
 import 'package:cambrio/models/book.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../pages/write.dart';
 import '../services/make_epub.dart';
 
 class BookCard extends StatelessWidget {
@@ -50,6 +51,12 @@ class BookCard extends StatelessWidget {
         final MakeEpub epubber = MakeEpub(title: bookSnap.data()!.title, authorName:'mmmm', authorId:'mm', bookId:bookSnap.id);
 
         epubber.makeEpub(context);
+      },
+      onLongPress: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Write()),
+        );
       },
 
     );

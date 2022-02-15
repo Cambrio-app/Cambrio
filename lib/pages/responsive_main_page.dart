@@ -35,7 +35,7 @@ class _ResponsivePageState extends State<ResponsivePage> {
       case 1:
         return const Center(child: Text("search cool stuff"));
       case 2:
-        return PersonalProfilePage();
+        return const PersonalProfilePage();
       default:
         return const Center(child: Text("other cool stuff"));
         break;
@@ -54,11 +54,14 @@ class _ResponsivePageState extends State<ResponsivePage> {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => AddBook()), // When the upper right Pencil Icon is tapped, pull up the AddBook page from "add_book.dart"
-                  // MaterialPageRoute(builder: (context) => Write()), // Jaden's Original Code for above line
-                );
+                setState(() {
+                  _selectedIndex = 2;
+                });
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => const PersonalProfilePage()), // When the upper right Pencil Icon is tapped, pull up the AddBook page from "add_book.dart"
+                //   // MaterialPageRoute(builder: (context) => Write()), // Jaden's Original Code for above line
+                // );
               },
               icon: const Icon(Icons.edit)),
           IconButton(
