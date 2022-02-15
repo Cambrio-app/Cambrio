@@ -1,10 +1,12 @@
-import 'package:cambrio/models/user.dart';
+import 'package:cambrio/models/user_profile.dart';
 import 'package:cambrio/pages/editProfile.dart';
-import 'package:cambrio/services/user_preferences.dart';
+import 'package:cambrio/models/user_preferences.dart';
+import 'package:cambrio/services/firebase_service.dart';
 import 'package:cambrio/widgets/NumbersWidget.dart';
 import 'package:cambrio/widgets/ProfileEditWidget.dart';
 import 'package:cambrio/widgets/ProfileWidget.dart';
 import 'package:cambrio/widgets/TabBarView.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'add_book.dart';
@@ -17,46 +19,58 @@ class PersonalProfilePage extends StatefulWidget {
 class _PersonalProfilePageState extends State<PersonalProfilePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          SizedBox(height: 20),
-          ProfileWidget(
-            imagePath: UserConstant.imagePath,
+    // UserProfile? profile = await FirebaseService().getProfile(uid: FirebaseAuth.instance.currentUser!.uid);
+    return FutureBuilder<UserProfile?>(
+      future: FirebaseService().getProfile(uid: FirebaseAuth.instance.currentUser!.uid),
+      builder: (BuildContext context, AsyncSnapshot<UserProfile?> snapshot) {
+        UserProfile profile = UserProfile(bio: 'loading', handle: 'loading', imageURL: null, full_name: 'loading');
+        if (snapshot.hasData && snapshot.data != null) {
+          profile = snapshot.data!;
+        }
+        else {
+          profile = UserProfile(bio: 'loading', handle: 'loading', imageURL: null, full_name: 'loading');
+        }
+        return Scaffold(
+          body: Column(
+            children: [
+              SizedBox(height: 20),
+              ProfileWidget(
+                imagePath: profile.imageURL,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              buildName(profile.full_name ?? 'no full_name chosen', profile.handle ?? "no handle minted"),
+              const SizedBox(
+                height: 20,
+              ),
+              buildBio(profile.bio ?? "tell them what you're about"),
+              const SizedBox(
+                height: 20,
+              ),
+              NumbersWidget(),
+              const SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(75, 0, 75, 0),
+                child: EditButton(),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              TabBarToggle(),
+            ],
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          buildName(UserConstant.name),
-          const SizedBox(
-            height: 20,
-          ),
-          buildBio(UserConstant.bio),
-          const SizedBox(
-            height: 20,
-          ),
-          NumbersWidget(),
-          const SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(75, 0, 75, 0),
-            child: EditButton(),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          TabBarToggle(),
-        ],
-      ),
-
+        );
+      },
     );
   }
 
-  Widget buildName(String name) => Column(
+  Widget buildName(String name, String handle) => Column(
         children: [
           Text(
-            UserConstant.name,
+            name,
             style: const TextStyle(
               fontSize: 23,
               fontWeight: FontWeight.normal,
@@ -67,7 +81,7 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
             height: 4,
           ),
           Text(
-            "@" + UserConstant.handle,
+            "@" + handle,
             style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.normal,
@@ -78,10 +92,10 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
         ],
       );
 
-  Widget buildBio(String name) => Column(
+  Widget buildBio(String bio) => Column(
         children: [
           Text(
-            UserConstant.bio,
+            bio,
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,

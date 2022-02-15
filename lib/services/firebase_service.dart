@@ -1,19 +1,57 @@
 import 'package:cambrio/models/book.dart';
 import 'package:cambrio/models/chapter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
+import '../models/user_profile.dart';
 
 class FirebaseService {
-  FirebaseService() {
+  FirebaseService() {}
 
+  Future<UserProfile?> getProfile({required String uid}) async {
+    debugPrint(uid);
+    var result = (await FirebaseFirestore.instance
+        .collection('user_profiles') // collection we are adding to
+        .doc(uid)
+        .withConverter<UserProfile>(
+        fromFirestore: (snapshot, _) =>
+            UserProfile.fromJson(snapshot.id, snapshot.data()!),
+        toFirestore: (user, _) => user.toJson())
+        .get()).data();
+    debugPrint(result!.full_name);
+    debugPrint('wat');
+    return result;
   }
 
-  Future<List<QueryDocumentSnapshot<Book>>> getBooks(String collectionToPull, DocumentSnapshot? lastDocument, int pageSize) async {
+  void editProfile(
+      {String? full_name, String? handle, String? bio, String? url_pic}) async {
+    String? _user_id = FirebaseAuth.instance.currentUser?.uid;
+    if (_user_id != null) {
+      // Adds user inputted title to the Firestore database
+      FirebaseFirestore.instance
+          .collection('user_profiles') // collection we are adding to
+          .doc(_user_id)
+          .set({
+        // what we are adding
+        'full_name': full_name,
+        'handle': handle,
+        'bio': bio,
+        'url_pic': url_pic,
+      });
+    }
+  }
+
+  Future<List<QueryDocumentSnapshot<Book>>> getBooks(String collectionToPull,
+      DocumentSnapshot? lastDocument, int pageSize) async {
     Query<Book> _query = FirebaseFirestore.instance
-        .collection(collectionToPull).orderBy("title", descending: true).withConverter<Book>(
-          fromFirestore: (snapshot, _) => Book.fromJson(snapshot.id, snapshot.data()!),
+        .collection(collectionToPull)
+        .orderBy("title", descending: true)
+        .withConverter<Book>(
+          fromFirestore: (snapshot, _) =>
+              Book.fromJson(snapshot.id, snapshot.data()!),
           toFirestore: (book, _) => book.toJson(),
-    );
+        );
 
     // start after the last document that the requester already has. If they don't have any, start at the first document
     if (lastDocument != null) {
@@ -22,7 +60,7 @@ class FirebaseService {
       _query = _query.limit(pageSize);
     }
 
-    final QuerySnapshot<Book> query =  await _query.get();
+    final QuerySnapshot<Book> query = await _query.get();
     final List<QueryDocumentSnapshot<Book>> newItems = query.docs;
 
     // List<Book> returnItems = newItems.map((doc) {
@@ -34,12 +72,15 @@ class FirebaseService {
 
   Future<List<Chapter>> getChapters(String bookId) async {
     Query<Chapter> _query = FirebaseFirestore.instance
-        .collection('books/$bookId/chapters').orderBy('order').withConverter<Chapter>(
-      fromFirestore: (snapshot, _) => Chapter.fromJson(snapshot.id, snapshot.data()!),
-      toFirestore: (book, _) => book.toJson(),
-    );
+        .collection('books/$bookId/chapters')
+        .orderBy('order')
+        .withConverter<Chapter>(
+          fromFirestore: (snapshot, _) =>
+              Chapter.fromJson(snapshot.id, snapshot.data()!),
+          toFirestore: (book, _) => book.toJson(),
+        );
 
-    final QuerySnapshot<Chapter> query =  await _query.get();
+    final QuerySnapshot<Chapter> query = await _query.get();
     final List<QueryDocumentSnapshot<Chapter>> newItems = query.docs;
 
     List<Chapter> returnItems = newItems.map((doc) {

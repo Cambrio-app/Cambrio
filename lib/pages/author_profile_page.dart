@@ -1,5 +1,5 @@
 
-import 'package:cambrio/services/user_preferences.dart';
+import 'package:cambrio/models/user_preferences.dart';
 import 'package:cambrio/widgets/NumbersWidget.dart';
 import 'package:cambrio/widgets/ProfileWidget.dart';
 import 'package:flutter/material.dart';

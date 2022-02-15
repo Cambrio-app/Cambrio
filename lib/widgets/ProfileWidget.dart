@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ProfileWidget extends StatelessWidget {
-  final dynamic imagePath;
+  final String? imagePath;
 
   const ProfileWidget({Key? key, required this.imagePath}) : super(key: key);
 
@@ -19,7 +19,7 @@ class ProfileWidget extends StatelessWidget {
     );
   }
 
-  Widget buildImage(String imagePath) {
+  Widget buildImage(String? imagePath) {
     return ClipOval(
       child: Material(
         child: Image.network(

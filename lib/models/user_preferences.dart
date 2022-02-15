@@ -1,4 +1,4 @@
-import 'package:cambrio/models/user.dart';
+import 'package:cambrio/models/user_profile.dart';
 import 'package:flutter/material.dart';
 
 class UserConstant {

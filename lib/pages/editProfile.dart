@@ -1,8 +1,9 @@
 import 'dart:io';
 
 import 'package:cambrio/pages/personal_profile_page.dart';
+import 'package:cambrio/services/firebase_service.dart';
 import 'package:flutter/material.dart';
-import 'package:cambrio/services/user_preferences.dart';
+import 'package:cambrio/models/user_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfile extends StatefulWidget {
@@ -142,11 +143,17 @@ class _EditProfileState extends State<EditProfile> {
                   minWidth: 200,
                   color: const Color(0xff778DFC),
                 onPressed: () {
+                    FirebaseService().editProfile(
+                        full_name: _nameController.text,
+                        handle: _handleController.text,
+                        bio: _bioController.text,
+                        url_pic: image?.path,
+                    );
                     setState(() {
                       UserConstant.name = _nameController.text;
                       UserConstant.handle = _handleController.text;
                       UserConstant.bio = _bioController.text;
-                      UserConstant.imagePath = image!.path;
+                      UserConstant.imagePath = image?.path;
                     });
                     Navigator.pop(
                     context,
