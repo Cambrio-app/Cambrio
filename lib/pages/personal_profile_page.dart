@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'add_book.dart';
 
 class PersonalProfilePage extends StatefulWidget {
+  const PersonalProfilePage({Key? key}) : super(key: key);
+
   @override
   _PersonalProfilePageState createState() => _PersonalProfilePageState();
 }
@@ -23,17 +25,17 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
     return FutureBuilder<UserProfile?>(
       future: FirebaseService().getProfile(uid: FirebaseAuth.instance.currentUser!.uid),
       builder: (BuildContext context, AsyncSnapshot<UserProfile?> snapshot) {
-        UserProfile profile = UserProfile(bio: 'loading', handle: 'loading', imageURL: null, full_name: 'loading');
+        UserProfile profile = const UserProfile(bio: 'loading', handle: 'loading', imageURL: null, full_name: 'loading');
         if (snapshot.hasData && snapshot.data != null) {
           profile = snapshot.data!;
         }
         else {
-          profile = UserProfile(bio: 'loading', handle: 'loading', imageURL: null, full_name: 'loading');
+          profile = const UserProfile(bio: 'loading', handle: 'loading', imageURL: null, full_name: 'loading');
         }
         return Scaffold(
           body: Column(
             children: [
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ProfileWidget(
                 imagePath: profile.imageURL,
               ),
@@ -53,13 +55,13 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
                 height: 20,
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(75, 0, 75, 0),
+                padding: const EdgeInsets.fromLTRB(75, 0, 75, 0),
                 child: EditButton(),
               ),
               const SizedBox(
                 height: 20,
               ),
-              TabBarToggle(),
+              TabBarToggle(profile: profile),
             ],
           ),
         );

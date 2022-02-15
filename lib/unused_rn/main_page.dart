@@ -94,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       // body: GetThing(),
-      body: const BookListView(collectionToPull: "books"),
+      body: const BookListView(collectionTitle: 'whatever',collectionToPull: "books"),
       // floatingActionButton: FloatingActionButton(
       //   // onPressed: _incrementCounter,
       //   tooltip: 'Increment',

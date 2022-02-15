@@ -1,3 +1,4 @@
+import 'package:cambrio/pages/library_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -53,7 +54,7 @@ class _MyTabbedPageState extends State<MyTabbedPage> with SingleTickerProviderSt
         controller: _tabController,
         children: const <Widget> [
           ChapterInfScroll(collectionToPull: "books"),
-          BookListView(collectionToPull: "books"),
+          LibraryPage(),
         ]
       ),
     );

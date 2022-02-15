@@ -1,11 +1,14 @@
+import 'package:cambrio/models/user_profile.dart';
 import 'package:flutter/material.dart';
 
 import '../pages/add_book.dart';
+import 'book_list_view.dart';
 
 int _selectedIndex = 0;
 
 class TabBarToggle extends StatefulWidget {
-  const TabBarToggle({Key? key}) : super(key: key);
+  final UserProfile profile;
+  const TabBarToggle({Key? key, required this.profile}) : super(key: key);
 
   @override
   _TabBarToggleState createState() => _TabBarToggleState();
@@ -28,9 +31,9 @@ class _TabBarToggleState extends State<TabBarToggle>
                   labelColor: Colors.black,
                   unselectedLabelColor: Colors.grey,
                   controller: _tabController,
-                  labelStyle: TextStyle(
+                  labelStyle: const TextStyle(
                       fontSize: 16, fontFamily: "Montserrat-Semibold"),
-                  tabs: [
+                  tabs: const [
                     Tab(
                       text: "Subscriptions",
                     ),
@@ -38,19 +41,14 @@ class _TabBarToggleState extends State<TabBarToggle>
                   ])),
           Expanded(
               child: TabBarView(controller: _tabController, children: [
-                Center(
+                const Center(
                     child: Text(
                   "Subscriptions Page",
                   style: TextStyle(
                       fontSize: 16, fontFamily: "Montserrat-Semibold"),
                 )),
                 Scaffold(
-                  body: Center(
-                      child: Text(
-                    "Your Books",
-                    style: TextStyle(
-                        fontSize: 16, fontFamily: "Montserrat-Semibold"),
-                  )),
+                  body: BookListView(collectionToPull: 'books', collectionTitle: "The Ingenious Work of ${widget.profile.full_name}"),
                   floatingActionButton: FloatingActionButton(
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     child: const Icon(Icons.add),
