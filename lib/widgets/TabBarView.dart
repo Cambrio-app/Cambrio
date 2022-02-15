@@ -38,13 +38,13 @@ class _TabBarToggleState extends State<TabBarToggle>
                     Tab(
                       text: "Subscriptions",
                     ),
-                    Tab(text: "Your Books"),
+                    Tab(text: "Your Works"),
                   ])),
           Expanded(
               child: TabBarView(controller: _tabController, children: [
                 const BookListView(collectionToPull: 'books', collectionTitle: "Subscriptions", queryType: QueryTypes.subscribed),
                 Scaffold(
-                  body: BookListView(collectionToPull: 'books', collectionTitle: "The Ingenious Work of ${widget.profile.full_name}", queryType: QueryTypes.works),
+                  body: BookListView(collectionToPull: 'books', collectionTitle: "The Ingenious Works of ${widget.profile.full_name}", queryType: QueryTypes.works),
                   floatingActionButton: FloatingActionButton(
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     child: const Icon(Icons.add),

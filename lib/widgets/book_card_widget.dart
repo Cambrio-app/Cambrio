@@ -55,7 +55,7 @@ class BookCard extends StatelessWidget {
       onLongPress: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Write()),
+          MaterialPageRoute(builder: (context) => Write(book_id: bookSnap.id, num_chapters: bookSnap.data()!.num_chapters, )),
         );
       },
 

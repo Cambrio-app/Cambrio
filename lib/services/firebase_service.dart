@@ -203,6 +203,27 @@ class FirebaseService {
     return returnItems;
   }
 
+  void editChapter(
+      {required String book_id, String? chapter_id, String? chapter_name, String? text, int? order, bool is_paywalled = false}) async {
+    debugPrint(order.toString());
+    String? _user_id = FirebaseAuth.instance.currentUser?.uid;
+    if (_user_id != null) {
+      // Adds user inputted title to the Firestore database
+      FirebaseFirestore.instance
+          .collection('books') // collection we are adding to
+          .doc(book_id)
+          .collection('chapters')
+          .doc(chapter_id) // if this is null, an auto-generated value will be used (a new chapter will be made)
+          .set({
+        // what we are adding
+        'chapter_name': chapter_name,
+        'text': text,
+        'order': order,
+        'is_paywalled': is_paywalled,
+      });
+    }
+  }
+
   final int AUTO_ID_LENGTH = 20;
 
   final String AUTO_ID_ALPHABET =
