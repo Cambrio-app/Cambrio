@@ -4,8 +4,12 @@ import 'package:cambrio/widgets/NumbersWidget.dart';
 import 'package:cambrio/widgets/ProfileWidget.dart';
 import 'package:flutter/material.dart';
 
+import '../models/user_profile.dart';
+
 class AuthorProfilePage extends StatefulWidget {
-  const AuthorProfilePage({ Key? key }) : super(key: key);
+  final UserProfile profile;
+
+  const AuthorProfilePage({ Key? key, required this.profile}) : super(key: key);
   @override
   _AuthorProfilePageState createState() => _AuthorProfilePageState();
 }
@@ -19,16 +23,16 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
         children: [
           const SizedBox(height: 20),
           ProfileWidget(
-            imagePath: UserConstant.imagePath,
+            imagePath: widget.profile.imageURL,
           ),
           const SizedBox(
             height: 20,
           ),
-          buildName(UserConstant.name),
+          buildName(widget.profile.full_name??'anonymous', widget.profile.handle ?? 'user'),
           const SizedBox(
             height: 20,
           ),
-          buildBio(UserConstant.bio),
+          buildBio(widget.profile.bio??"we don't even know if this author is human"),
           const SizedBox(
             height: 20,
           ),
@@ -49,10 +53,10 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
     );
   }
 
-  Widget buildName(String name) => Column(
+  Widget buildName(String name, String handle) => Column(
     children: [
       Text(
-        UserConstant.name,
+        name,
         style: const TextStyle(
           fontSize: 23,
           fontWeight: FontWeight.normal,
@@ -63,7 +67,7 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
         height: 4,
       ),
       Text(
-        "@"+ UserConstant.handle,
+        "@"+handle,
         style: const TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.normal,
@@ -77,7 +81,7 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
   Widget buildBio(String bio) => Column(
     children: [
       Text(
-        UserConstant.bio,
+        bio,
         style: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
