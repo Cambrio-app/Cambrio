@@ -71,16 +71,11 @@ class _BookListViewState extends State<BookListView> {
                     )),
 
                 Expanded(
-                    // this view is dynamically populated with book cards from book.dart, using data received -
-                    // - in the form of a DocumentSnapshot<Book. Calling .data() gives a Map, which then resolves into the data we want.
-                    child: PagedListView<DocumentSnapshot<Book>?, DocumentSnapshot<Book>>( //used to be PagedGridView
+                    child: PagedListView<DocumentSnapshot<Book>?, DocumentSnapshot<Book>>( 
                       scrollDirection: Axis.horizontal,
                       pagingController: _pagingController,
-
                       builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot<Book>>(
-                        // noItemsFoundIndicatorBuilder: (context) => const Text('No more items!'),
                         noMoreItemsIndicatorBuilder: (_) => const Text('no more!',textAlign: TextAlign.center,),
-
                         itemBuilder: (context, item, index) {
                           // TODO: these comments probably need to be implemented in the book.dart or in make_zip.dart or a seperate database pulling class
                           // CollectionReference users = FirebaseFirestore.instance.collection('books/${item.id}/chapters');
