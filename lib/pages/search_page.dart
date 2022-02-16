@@ -1,4 +1,4 @@
-import 'package:cambrio/pages/author_profile_page.dart';
+import 'package:cambrio/pages/profile/author_profile_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 // TODO: get away from firestore_search. It's not scalable.
 import 'package:firestore_search/firestore_search.dart';

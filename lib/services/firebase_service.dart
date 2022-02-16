@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../models/user_profile.dart';
+import '../models/author_subscription.dart';
 
 enum QueryTypes {
   alphabetical,
@@ -24,13 +25,14 @@ class FirebaseService {
   Future<UserProfile?> getProfile({required String uid}) async {
     debugPrint(uid);
     var result = (await FirebaseFirestore.instance
-        .collection('user_profiles') // collection we are adding to
-        .doc(uid)
-        .withConverter<UserProfile>(
-        fromFirestore: (snapshot, _) =>
-            UserProfile.fromJson(snapshot.id, snapshot.data()!),
-        toFirestore: (user, _) => user.toJson())
-        .get()).data();
+            .collection('user_profiles') // collection we are adding to
+            .doc(uid)
+            .withConverter<UserProfile>(
+                fromFirestore: (snapshot, _) =>
+                    UserProfile.fromJson(snapshot.id, snapshot.data()!),
+                toFirestore: (user, _) => user.toJson())
+            .get())
+        .data();
     debugPrint(result!.full_name);
     debugPrint('wat');
     return result;
@@ -54,8 +56,9 @@ class FirebaseService {
     }
   }
 
-  Future<List<QueryDocumentSnapshot<Book>>> getBookDocs(String collectionToPull,
-      DocumentSnapshot? lastDocument, int pageSize, {QueryTypes? type = QueryTypes.alphabetical}) async {
+  Future<List<QueryDocumentSnapshot<Book>>> getBookDocs(
+      String collectionToPull, DocumentSnapshot? lastDocument, int pageSize,
+      {QueryTypes? type = QueryTypes.alphabetical}) async {
     late Query<Book> _query;
     switch (type) {
       case QueryTypes.alphabetical:
@@ -63,58 +66,79 @@ class FirebaseService {
             .collection(collectionToPull)
             .orderBy("title", descending: true)
             .withConverter<Book>(
-          fromFirestore: (snapshot, _) =>
-              Book.fromJson(snapshot.id, snapshot.data()!),
-          toFirestore: (book, _) => book.toJson(),
-        );
+              fromFirestore: (snapshot, _) =>
+                  Book.fromJson(snapshot.id, snapshot.data()!),
+              toFirestore: (book, _) => book.toJson(),
+            );
         break;
       case QueryTypes.reverseAlphabetical:
         _query = FirebaseFirestore.instance
             .collection(collectionToPull)
             .orderBy("title", descending: false)
             .withConverter<Book>(
-          fromFirestore: (snapshot, _) =>
-              Book.fromJson(snapshot.id, snapshot.data()!),
-          toFirestore: (book, _) => book.toJson(),
-        );
+              fromFirestore: (snapshot, _) =>
+                  Book.fromJson(snapshot.id, snapshot.data()!),
+              toFirestore: (book, _) => book.toJson(),
+            );
         break;
       case QueryTypes.hated:
         _query = FirebaseFirestore.instance
             .collection(collectionToPull)
             .orderBy("likes", descending: false)
             .withConverter<Book>(
-          fromFirestore: (snapshot, _) =>
-              Book.fromJson(snapshot.id, snapshot.data()!),
-          toFirestore: (book, _) => book.toJson(),
-        );        break;
+              fromFirestore: (snapshot, _) =>
+                  Book.fromJson(snapshot.id, snapshot.data()!),
+              toFirestore: (book, _) => book.toJson(),
+            );
+        break;
       case QueryTypes.loved:
         _query = FirebaseFirestore.instance
             .collection(collectionToPull)
             .orderBy("likes", descending: true)
             .withConverter<Book>(
-          fromFirestore: (snapshot, _) =>
-              Book.fromJson(snapshot.id, snapshot.data()!),
-          toFirestore: (book, _) => book.toJson(),
-        );        break;
+              fromFirestore: (snapshot, _) =>
+                  Book.fromJson(snapshot.id, snapshot.data()!),
+              toFirestore: (book, _) => book.toJson(),
+            );
+        break;
       case QueryTypes.subscribed:
-        lastDocument ??= (await FirebaseFirestore.instance.collection(collectionToPull).where(FieldPath.documentId, isGreaterThanOrEqualTo: autoId()).limit(1).get()).docs[0];
+        String uid =
+            FirebaseAuth.instance.currentUser!.uid; // get current user id
+        //get the list of ids of the current user's author subscriptions
+        List<String> subs = (await FirebaseFirestore.instance
+                .collection('user_profiles/$uid/author_subscriptions')
+                //     .withConverter<AuthorSubscription>(
+                //   fromFirestore: (snapshot, _) =>
+                //       AuthorSubscription.fromJson(snapshot.id, snapshot.data()!),
+                //   toFirestore: (sub, _) => sub.toJson(),
+                // )
+                .get())
+            .docs
+            .map((sub) => sub.id)
+            .toList();
         _query = FirebaseFirestore.instance
-            .collection(collectionToPull)
+            .collection('books')
+            .where('author_id', whereIn: subs.isEmpty?['1skenow34']:subs)
             .withConverter<Book>(
-          fromFirestore: (snapshot, _) =>
-              Book.fromJson(snapshot.id, snapshot.data()!),
-          toFirestore: (book, _) => book.toJson(),
-        );
+              fromFirestore: (snapshot, _) =>
+                  Book.fromJson(snapshot.id, snapshot.data()!),
+              toFirestore: (book, _) => book.toJson(),
+            );
         break;
       case QueryTypes.random:
-        lastDocument ??= (await FirebaseFirestore.instance.collection(collectionToPull).where(FieldPath.documentId, isGreaterThanOrEqualTo: autoId()).limit(1).get()).docs[0];
+        lastDocument ??= (await FirebaseFirestore.instance
+                .collection(collectionToPull)
+                .where(FieldPath.documentId, isGreaterThanOrEqualTo: autoId())
+                .limit(1)
+                .get())
+            .docs[0];
         _query = FirebaseFirestore.instance
             .collection(collectionToPull)
             .withConverter<Book>(
-          fromFirestore: (snapshot, _) =>
-              Book.fromJson(snapshot.id, snapshot.data()!),
-          toFirestore: (book, _) => book.toJson(),
-        );
+              fromFirestore: (snapshot, _) =>
+                  Book.fromJson(snapshot.id, snapshot.data()!),
+              toFirestore: (book, _) => book.toJson(),
+            );
         break;
       case QueryTypes.works:
         String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -123,21 +147,22 @@ class FirebaseService {
             .where('author_id', isEqualTo: uid)
             // .orderBy("likes", descending: true)
             .withConverter<Book>(
-          fromFirestore: (snapshot, _) =>
-              Book.fromJson(snapshot.id, snapshot.data()!),
-          toFirestore: (book, _) => book.toJson(),
-        );        break;
+              fromFirestore: (snapshot, _) =>
+                  Book.fromJson(snapshot.id, snapshot.data()!),
+              toFirestore: (book, _) => book.toJson(),
+            );
+        break;
       default:
         _query = FirebaseFirestore.instance
             .collection(collectionToPull)
             .orderBy("title", descending: true)
             .withConverter<Book>(
-          fromFirestore: (snapshot, _) =>
-              Book.fromJson(snapshot.id, snapshot.data()!),
-          toFirestore: (book, _) => book.toJson(),
-        );
+              fromFirestore: (snapshot, _) =>
+                  Book.fromJson(snapshot.id, snapshot.data()!),
+              toFirestore: (book, _) => book.toJson(),
+            );
         break;
-  }
+    }
     // start after the last document that the requester already has. If they don't have any, start at the first document
     if (lastDocument != null) {
       _query = _query.startAfterDocument(lastDocument).limit(pageSize);
@@ -155,16 +180,18 @@ class FirebaseService {
     return newItems;
   }
 
-  Future<List<QueryDocumentSnapshot<Chapter>>> getChapterDocs(String collectionToPull,
-      DocumentSnapshot? lastDocument, int pageSize) async {
+  Future<List<QueryDocumentSnapshot<Chapter>>> getChapterDocs(
+      String collectionToPull,
+      DocumentSnapshot? lastDocument,
+      int pageSize) async {
     Query<Chapter> _query = FirebaseFirestore.instance
         .collection(collectionToPull)
         .orderBy("order", descending: false)
         .withConverter<Chapter>(
-      fromFirestore: (snapshot, _) =>
-          Chapter.fromJson(snapshot.id, snapshot.data()!),
-      toFirestore: (chapter, _) => chapter.toJson(),
-    );
+          fromFirestore: (snapshot, _) =>
+              Chapter.fromJson(snapshot.id, snapshot.data()!),
+          toFirestore: (chapter, _) => chapter.toJson(),
+        );
 
     // start after the last document that the requester already has. If they don't have any, start at the first document
     if (lastDocument != null) {
@@ -204,7 +231,12 @@ class FirebaseService {
   }
 
   void editChapter(
-      {required String book_id, String? chapter_id, String? chapter_name, String? text, int? order, bool is_paywalled = false}) async {
+      {required String book_id,
+      String? chapter_id,
+      String? chapter_name,
+      String? text,
+      int? order,
+      bool is_paywalled = false}) async {
     debugPrint(order.toString());
     String? _user_id = FirebaseAuth.instance.currentUser?.uid;
     if (_user_id != null) {
@@ -213,13 +245,32 @@ class FirebaseService {
           .collection('books') // collection we are adding to
           .doc(book_id)
           .collection('chapters')
-          .doc(chapter_id) // if this is null, an auto-generated value will be used (a new chapter will be made)
+          .doc(
+              chapter_id) // if this is null, an auto-generated value will be used (a new chapter will be made)
           .set({
         // what we are adding
         'chapter_name': chapter_name,
         'text': text,
         'order': order,
         'is_paywalled': is_paywalled,
+      });
+    }
+  }
+
+  void editSubscription({required String author_id}) async {
+    String? _user_id = FirebaseAuth.instance.currentUser?.uid;
+    if (_user_id != null) {
+      // Adds user inputted title to the Firestore database
+      FirebaseFirestore.instance
+          .collection('user_profiles') // collection we are adding to
+          .doc(_user_id)
+          .collection('author_subscriptions')
+          .doc(
+              author_id) // if this is null, an auto-generated value will be used (a new chapter will be made)
+          .set({
+        // what we are adding
+        'author_id': author_id,
+        'time_subscribed': FieldValue.serverTimestamp(),
       });
     }
   }
@@ -235,7 +286,7 @@ class FirebaseService {
     String builder = '';
     int maxRandom = AUTO_ID_ALPHABET.length;
     for (int i = 0; i < AUTO_ID_LENGTH; i++) {
-      builder+=(AUTO_ID_ALPHABET[rand.nextInt(maxRandom)]);
+      builder += (AUTO_ID_ALPHABET[rand.nextInt(maxRandom)]);
     }
     return builder.toString();
   }

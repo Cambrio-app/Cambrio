@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:cambrio/pages/personal_profile_page.dart';
+import 'package:cambrio/pages/profile/personal_profile_page.dart';
 import 'package:cambrio/services/firebase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:cambrio/models/user_preferences.dart';

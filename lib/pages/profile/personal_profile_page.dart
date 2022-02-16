@@ -1,5 +1,5 @@
 import 'package:cambrio/models/user_profile.dart';
-import 'package:cambrio/pages/editProfile.dart';
+import 'package:cambrio/pages/profile/editProfile.dart';
 import 'package:cambrio/models/user_preferences.dart';
 import 'package:cambrio/services/firebase_service.dart';
 import 'package:cambrio/widgets/NumbersWidget.dart';
@@ -9,7 +9,7 @@ import 'package:cambrio/widgets/TabBarView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'add_book.dart';
+import '../add_book.dart';
 
 class PersonalProfilePage extends StatefulWidget {
   const PersonalProfilePage({Key? key}) : super(key: key);
@@ -25,12 +25,12 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
     return FutureBuilder<UserProfile?>(
       future: FirebaseService().getProfile(uid: FirebaseAuth.instance.currentUser!.uid),
       builder: (BuildContext context, AsyncSnapshot<UserProfile?> snapshot) {
-        UserProfile profile = const UserProfile(bio: 'loading', handle: 'loading', imageURL: null, full_name: 'loading');
+        UserProfile profile = const UserProfile(user_id: 'idk',bio: 'loading', handle: 'loading', imageURL: null, full_name: 'loading');
         if (snapshot.hasData && snapshot.data != null) {
           profile = snapshot.data!;
         }
         else {
-          profile = const UserProfile(bio: 'loading', handle: 'loading', imageURL: null, full_name: 'loading');
+          profile = const UserProfile(user_id: 'idk', bio: 'loading', handle: 'loading', imageURL: null, full_name: 'loading');
         }
         return Scaffold(
           body: Column(

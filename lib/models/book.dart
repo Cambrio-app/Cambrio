@@ -5,6 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 @immutable
 class Book {
+  final String? imageURL;
+  final String title;
+  final String? id;
+  final CollectionReference<Map<String,Chapter>>? chapters;
+  final int? num_chapters;
+
   const Book({
     required this.imageURL,
     required this.chapters,
@@ -21,12 +27,6 @@ class Book {
     id: id,
     num_chapters: json['num_chapters'] as int?,
   );
-
-  final String? imageURL;
-  final String title;
-  final String? id;
-  final CollectionReference<Map<String,Chapter>>? chapters;
-  final int? num_chapters;
 
   Map<String, Object?> toJson() {
     return {
