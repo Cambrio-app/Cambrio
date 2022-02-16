@@ -10,10 +10,10 @@ class BookCard extends StatelessWidget {
   // final String bookId;
 
   final DocumentSnapshot<Book> bookSnap;
-  const BookCard({Key? key, required this.bookSnap}) : super(key: key);
+    const BookCard({Key? key, required this.bookSnap}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
+    @override
+    Widget build(BuildContext context) {
     return GestureDetector(
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

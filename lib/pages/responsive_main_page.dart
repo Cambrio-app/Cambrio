@@ -1,4 +1,5 @@
 import 'package:adaptive_navigation/adaptive_navigation.dart';
+import 'package:cambrio/pages/search_page.dart';
 import 'package:cambrio/widgets/book_grid_view.dart';
 import 'package:cambrio/pages/write.dart';
 import 'package:cambrio/pages/add_book.dart';
@@ -27,17 +28,18 @@ class _ResponsivePageState extends State<ResponsivePage> {
     });
   }
 
+  // *these are the pages*
   Widget bodyFunction() {
     switch (_selectedIndex) {
       case 0:
         return const MyTabbedPage(); //BookListView(collectionToPull: "books");
         break;
       case 1:
-        return const Center(child: Text("search cool stuff"));
+        return const SearchPage();
       case 2:
         return const PersonalProfilePage();
       default:
-        return const Center(child: Text("other cool stuff"));
+        return const Center(child: Text("you managed to enter into the secret section of the app. prepare to fight the shadow boss"));
         break;
     }
   }
