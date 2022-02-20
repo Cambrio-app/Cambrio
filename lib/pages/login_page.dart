@@ -16,16 +16,6 @@ class LoginScreen extends StatelessWidget {
 
   Duration get loginTime => Duration(milliseconds: 2250);
   Future<String?> _authUser(LoginData data) async {
-    // debugPrint('Name: ${data.name}, Password: ${data.password}');
-    // return Future.delayed(loginTime).then((_) {
-    //   if (!users.containsKey(data.name)) {
-    //     return 'User not exists';
-    //   }
-    //   if (users[data.name] != data.password) {
-    //     return 'Password does not match';
-    //   }
-    //   return null;
-    // });
     try {
       final User user = (await _auth.signInWithEmailAndPassword(
         email: data.name,
@@ -42,9 +32,6 @@ class LoginScreen extends StatelessWidget {
 
   Future<String?> _signupUser(SignupData data) async {
     debugPrint('Signup Name: ${data.name}, Password: ${data.password}');
-    // return Future.delayed(loginTime).then((_) {
-    //   return null;
-    // });
 
     final User? user = (await _auth.createUserWithEmailAndPassword(
       email: data.name ?? '',
@@ -52,13 +39,8 @@ class LoginScreen extends StatelessWidget {
     ))
         .user;
     if (user != null) {
-      // setState(() {
-      //   _success = true;
-      //   _userEmail = user.email ?? '';
-      // });
       return null;
     } else {
-      // _success = false;
       return 'failure';
     }
   }

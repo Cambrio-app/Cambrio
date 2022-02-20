@@ -1,22 +1,23 @@
 import 'package:cambrio/models/book.dart';
 import 'package:cambrio/services/firebase_service.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cambrio/widgets/book_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:cambrio/widgets/book_card_widget.dart';
 
 class BookListView extends StatefulWidget {
   final String collectionToPull;
+  final String collectionTitle;
+  final QueryTypes? queryType;
 
-  const BookListView ({ Key? key, required this.collectionToPull}): super(key: key);
+  const BookListView ({ Key? key, required this.collectionToPull, required this.collectionTitle, this.queryType}): super(key: key);
 
   @override
   _BookListViewState createState() => _BookListViewState();
 }
 
 class _BookListViewState extends State<BookListView> {
-  static const _pageSize = 15;
+  static const _pageSize = 4;
   final PagingController<DocumentSnapshot<Book>?, DocumentSnapshot<Book>> _pagingController = PagingController(firstPageKey: null, invisibleItemsThreshold: 3);
 
   @override
@@ -29,17 +30,7 @@ class _BookListViewState extends State<BookListView> {
 
   Future<void> _fetchPage(DocumentSnapshot<Book>? pageKey) async {
     try {
-      // Query _query = FirebaseFirestore.instance
-      //     .collection(widget.collectionToPull).orderBy("title", descending: true);
-      // if (pageKey != null) {
-      //   _query = _query.startAfterDocument(pageKey).limit(_pageSize);
-      // } else {
-      //   _query = _query.limit(_pageSize);
-      // }
-      //
-      // final QuerySnapshot query =  await _query.get();
-      // final List<DocumentSnapshot<Book> newItems = query.docs;
-      final List<QueryDocumentSnapshot<Book>> newItems = await FirebaseService().getBooks(widget.collectionToPull,pageKey,_pageSize);
+      final List<QueryDocumentSnapshot<Book>> newItems = await FirebaseService().getBookDocs(widget.collectionToPull,pageKey,_pageSize, type: widget.queryType);
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
@@ -60,18 +51,22 @@ class _BookListViewState extends State<BookListView> {
                 () => _pagingController.refresh(),
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
                     padding: const EdgeInsets.all(8),
-                    child: const Align(
+                    child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text("Current Subscriptions", // TODO: text currently hardcoded in, should be converted to a variable
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)
+                        child: Text(widget.collectionTitle,
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25)
                         )
                     )),
 
-                Expanded(
-                    child: PagedListView<DocumentSnapshot<Book>?, DocumentSnapshot<Book>>( 
+                Container(
+                    height: 200,
+                    // this view is dynamically populated with book cards from book.dart, using data received -
+                    // - in the form of a DocumentSnapshot<Book. Calling .data() gives a Map, which then resolves into the data we want.
+                    child: PagedListView<DocumentSnapshot<Book>?, DocumentSnapshot<Book>>( //used to be PagedGridView
                       scrollDirection: Axis.horizontal,
                       pagingController: _pagingController,
                       builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot<Book>>(

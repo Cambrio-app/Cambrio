@@ -1,53 +1,63 @@
+import 'package:cambrio/models/user_profile.dart';
 import 'package:flutter/material.dart';
 
-int _selectedIndex = 0;
+import '../pages/add_book.dart';
+import '../services/firebase_service.dart';
+import 'book_list_view.dart';
+
+
 class TabBarToggle extends StatefulWidget {
-  const TabBarToggle({ Key? key }) : super(key: key);
+  final int initialIndex;
+  final UserProfile profile;
+  const TabBarToggle({Key? key, required this.profile, this.initialIndex = 1}) : super(key: key);
 
   @override
   _TabBarToggleState createState() => _TabBarToggleState();
 }
 
-class _TabBarToggleState extends State<TabBarToggle> with TickerProviderStateMixin {
-  
+class _TabBarToggleState extends State<TabBarToggle>
+    with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    
-    TabController _tabController = TabController(length: 2, vsync: this);
+    TabController _tabController = TabController(initialIndex: widget.initialIndex, length: 2, vsync: this);
 
-    return Center(
-    child: Column(
-      children: [
-        Container(
-          height: 60,
-          width: double.infinity,
-          child: TabBar(
-             indicatorColor: Colors.grey,
-            labelColor: Colors.black,
-            unselectedLabelColor: Colors.grey,
-            controller: _tabController,
-            labelStyle: TextStyle(fontSize: 16, fontFamily: "Montserrat-Semibold"),
-            tabs: [
-              Tab(
-                text: "Subscriptions",
-              ),
-              Tab(text: "Your Books"),
-            ]
-          )
-        ),
-        Container(
-          height: 200,
-          width: double.infinity,
-          child: TabBarView(
-            controller: _tabController,
-            children: [
-              Center(child: Text("Subscriptions Page",style: TextStyle(fontSize: 16, fontFamily: "Montserrat-Semibold"),)),
-              Center(child: Text("Your Books",style: TextStyle(fontSize: 16, fontFamily: "Montserrat-Semibold"),)),
-            ]
-          )
-          ),
-      ],
-        ),
+    return Expanded(
+      child: Column(
+        children: [
+          Container(
+              height: 60,
+              width: double.infinity,
+              child: TabBar(
+                  indicatorColor: Colors.grey,
+                  labelColor: Colors.black,
+                  unselectedLabelColor: Colors.grey,
+                  controller: _tabController,
+                  labelStyle: const TextStyle(
+                      fontSize: 16, fontFamily: "Montserrat-Semibold"),
+                  tabs: const [
+                    Tab(
+                      text: "Subscriptions",
+                    ),
+                    Tab(text: "Your Works"),
+                  ])),
+          Expanded(
+              child: TabBarView(controller: _tabController, children: [
+                const BookListView(collectionToPull: 'books', collectionTitle: "Subscriptions", queryType: QueryTypes.subscribed),
+                Scaffold(
+                  body: BookListView(collectionToPull: 'books', collectionTitle: "The Ingenious Works of ${widget.profile.full_name}", queryType: QueryTypes.works),
+                  floatingActionButton: FloatingActionButton(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    child: const Icon(Icons.add),
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AddBook()),
+                    ),
+                  ),
+                ),
+              ])),
+        ],
+      ),
     );
   }
 }
