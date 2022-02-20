@@ -107,6 +107,7 @@ class FirebaseService {
         //get the list of ids of the current user's author subscriptions
         List<String> subs = (await FirebaseFirestore.instance
                 .collection('user_profiles/$uid/author_subscriptions')
+                .limit(100)
                 //     .withConverter<AuthorSubscription>(
                 //   fromFirestore: (snapshot, _) =>
                 //       AuthorSubscription.fromJson(snapshot.id, snapshot.data()!),
