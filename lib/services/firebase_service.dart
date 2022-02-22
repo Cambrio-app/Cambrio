@@ -22,6 +22,7 @@ enum QueryTypes {
 class FirebaseService {
   FirebaseService() {}
 
+  // pulls existing profile information.
   Future<UserProfile?> getProfile({required String uid}) async {
     debugPrint(uid);
     var result = (await FirebaseFirestore.instance
@@ -38,6 +39,7 @@ class FirebaseService {
     return result;
   }
 
+  // modify or create a new profile for the user.
   void editProfile(
       {String? full_name, String? handle, String? bio, String? url_pic}) async {
     String? _user_id = FirebaseAuth.instance.currentUser?.uid;
@@ -56,6 +58,7 @@ class FirebaseService {
     }
   }
 
+  // grab all documentsnapshots of book, for use in scrolling listview of book widgets in ui
   Future<List<QueryDocumentSnapshot<Book>>> getBookDocs(
       String collectionToPull, DocumentSnapshot? lastDocument, int pageSize,
       {QueryTypes? type = QueryTypes.alphabetical}) async {
@@ -181,6 +184,7 @@ class FirebaseService {
     return newItems;
   }
 
+  // grab all documentsnapshots of chapter, for use in chapter views in ui
   Future<List<QueryDocumentSnapshot<Chapter>>> getChapterDocs(
       String collectionToPull,
       DocumentSnapshot? lastDocument,
@@ -211,6 +215,7 @@ class FirebaseService {
     return newItems;
   }
 
+  // grab all chapters of the book, for use in epub reader
   Future<List<Chapter>> getChapters(String bookId) async {
     Query<Chapter> _query = FirebaseFirestore.instance
         .collection('books/$bookId/chapters')
@@ -261,13 +266,12 @@ class FirebaseService {
   void editSubscription({required String author_id}) async {
     String? _user_id = FirebaseAuth.instance.currentUser?.uid;
     if (_user_id != null) {
-      // Adds user inputted title to the Firestore database
+      // Adds the chosen author id to the user's author subscription list.
       FirebaseFirestore.instance
           .collection('user_profiles') // collection we are adding to
           .doc(_user_id)
           .collection('author_subscriptions')
-          .doc(
-              author_id) // if this is null, an auto-generated value will be used (a new chapter will be made)
+          .doc(author_id) // if this is null, an auto-generated value will be used (a new entry will be made)
           .set({
         // what we are adding
         'author_id': author_id,
@@ -276,6 +280,7 @@ class FirebaseService {
     }
   }
 
+  // the below is for finding random items in the database.
   final int AUTO_ID_LENGTH = 20;
 
   final String AUTO_ID_ALPHABET =
