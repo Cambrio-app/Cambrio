@@ -110,8 +110,8 @@ class _SearchPageState extends State<SearchPage> {
                                   builder: (context) => AuthorProfilePage(profile: data,))
                             );
                           } else {
-                            final MakeEpub epubber = MakeEpub(title: data.title, authorName:'mmmm', authorId:'mm', bookId:data.id);
-                            epubber.makeEpub(context);
+                            // final MakeEpub epubber = MakeEpub(title: data.title, authorName:'mmmm', authorId:'mm', bookId:data.id);
+                            // epubber.makeEpub(context);
                           }
                         },
                         child: Column(

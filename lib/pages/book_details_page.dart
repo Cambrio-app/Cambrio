@@ -15,7 +15,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
         physics: BouncingScrollPhysics(),
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(6.0),
             child: Container(
               child: Image.asset(
                 'assets/pictures/lake.png',
@@ -28,9 +28,8 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
           buildName(),
           Padding(
             padding: const EdgeInsets.all(18.0),
-            child: TableOfContentDropDownButton(),
+            child: Container(child: ExpandableWidget(context)),
           ),
-
           buildDescription(),
         ],
       )
@@ -86,7 +85,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
             height: 4,
           ),
           Text(
-            "Pride and Prejudice follows the turbulent relationship between Elizabeth Bennet, the daughter of a country gentleman, and Fitzwilliam Darcy, a rich aristocratic landowner. They must overcome the titular sins of pride and prejudice in order to fall in love and marry.",
+            "Prides and Prejudice follows the turbulent relationship between Elizabeth Bennet, the daughter of a country gentleman, and Fitzwilliam Darcy, a rich aristocratic landowner. They must overcome the titular sins of pride and prejudice in order to fall in love and marry.",
             style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.normal,
@@ -107,6 +106,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
         minWidth: MediaQuery.of(context).size.width ,
         height: 40,
         onPressed: () {
+
         },
         color: Colors.white,
         elevation: 0,
@@ -133,5 +133,81 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
         ),
       ),
     );
+
+    Widget ExpandableWidget(BuildContext context){
+      return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ExpansionTile(
+            title: Text(
+              "Table of Content",
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.normal,
+                color: Colors.black,
+                fontFamily: "Montserrat-Semibold",
+              ),
+            ),
+            expandedCrossAxisAlignment: 
+            CrossAxisAlignment.center,
+            initiallyExpanded: false,
+            
+            children: [
+              ListTile(
+                title: Text(
+                  "Chapter 1",
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.black,
+                    fontFamily: "Montserrat-Semibold",
+                  ),
+                ),
+                onTap: () {
+                },
+              ),
+              Divider(),
+              ListTile(
+                title: Text(
+                  "Chapter 2",
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.black,
+                    fontFamily: "Montserrat-Semibold",
+                  ),
+                ),
+                onTap: () {
+                },
+              ),
+              Divider(),
+              ListTile(
+                title: Text(
+                  "Chapter 3",
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.black,
+                    fontFamily: "Montserrat-Semibold",
+                  ),
+                ),
+                onTap: () {
+                },
+              ),
+              Divider(),
+              ListTile(
+                title: Text(
+                  "Chapter 4",
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.black,
+                    fontFamily: "Montserrat-Semibold",
+                  ),
+                ),
+          ),
+            ],
+          ),
+      );
+    }
 
 }
