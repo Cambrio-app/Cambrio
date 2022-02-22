@@ -19,13 +19,14 @@ class PersonalProfilePage extends StatefulWidget {
 }
 
 class _PersonalProfilePageState extends State<PersonalProfilePage> {
+  UserProfile profile = const UserProfile(user_id: 'idk',bio: 'loading', handle: 'loading', imageURL: null, full_name: 'loading');
+
   @override
   Widget build(BuildContext context) {
     // UserProfile? profile = await FirebaseService().getProfile(uid: FirebaseAuth.instance.currentUser!.uid);
     return FutureBuilder<UserProfile?>(
       future: FirebaseService().getProfile(uid: FirebaseAuth.instance.currentUser!.uid),
       builder: (BuildContext context, AsyncSnapshot<UserProfile?> snapshot) {
-        UserProfile profile = const UserProfile(user_id: 'idk',bio: 'loading', handle: 'loading', imageURL: null, full_name: 'loading');
         if (snapshot.hasData && snapshot.data != null) {
           profile = snapshot.data!;
         }
@@ -135,9 +136,9 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
               context,
               MaterialPageRoute(
                   builder: (context) => EditProfile(
-                        name: UserConstant.name,
-                        bio: UserConstant.bio,
-                        handle: UserConstant.handle,
+                        name: profile.full_name!,
+                        bio: profile.bio!,
+                        handle: profile.handle!,
                       )),
             );
           },
