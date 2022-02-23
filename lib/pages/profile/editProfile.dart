@@ -149,12 +149,12 @@ class _EditProfileState extends State<EditProfile> {
                         bio: _bioController.text,
                         url_pic: image?.path,
                     );
-                    setState(() {
-                      UserConstant.name = _nameController.text;
-                      UserConstant.handle = _handleController.text;
-                      UserConstant.bio = _bioController.text;
-                      UserConstant.imagePath = image?.path;
-                    });
+                    // setState(() {
+                    //   UserConstant.name = _nameController.text;
+                    //   UserConstant.handle = _handleController.text;
+                    //   UserConstant.bio = _bioController.text;
+                    //   UserConstant.imagePath = image?.path;
+                    // });
                     Navigator.pop(
                     context,
                   );

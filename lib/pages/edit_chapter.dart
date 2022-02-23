@@ -4,17 +4,17 @@ import 'package:flutter/services.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'dart:ui' as ui;
 
-class Write extends StatefulWidget {
+class EditChapter extends StatefulWidget {
   final String book_id;
   final String? chapter_id;
   final int? num_chapters;
 
-  const Write({Key? key, required this.book_id, this.chapter_id, this.num_chapters}) : super(key: key);
+  const EditChapter({Key? key, required this.book_id, this.chapter_id, this.num_chapters}) : super(key: key);
   @override
-  State<Write> createState() => _WriteState();
+  State<EditChapter> createState() => _EditChapterState();
 }
 
-class _WriteState extends State<Write> {
+class _EditChapterState extends State<EditChapter> {
   HtmlEditorController controller = HtmlEditorController();
   final _chapter_name_controller = TextEditingController();
   late final _chapter_order_controller = TextEditingController(text: '${widget.num_chapters ?? 0}');

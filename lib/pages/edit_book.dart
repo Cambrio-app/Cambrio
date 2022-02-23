@@ -7,12 +7,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'dart:ui' as ui;
-import 'package:cambrio/pages/write.dart';
+import 'package:cambrio/pages/edit_chapter.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart'; // import firestore to access database
 
-class AddBook extends StatelessWidget {
-  const AddBook({Key? key}) : super(key: key);
+class EditBook extends StatelessWidget {
+  const EditBook({Key? key}) : super(key: key);
 
   static const String _title = 'Create New Book';
 

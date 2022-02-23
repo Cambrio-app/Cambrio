@@ -9,7 +9,7 @@ import 'package:cambrio/widgets/TabBarView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../add_book.dart';
+import '../edit_book.dart';
 
 class PersonalProfilePage extends StatefulWidget {
   const PersonalProfilePage({Key? key}) : super(key: key);
