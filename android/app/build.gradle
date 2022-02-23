@@ -66,8 +66,7 @@ android {
         }
     }
 
-    ndkVersion "23.1.7779620"
-    ndkPath= '/home/jaden/Android/Sdk/ndk/23.1.7779620'
+
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
@@ -80,9 +79,11 @@ android {
             // I am not sure what these next two lines do but it's for using the ereader library
 //            minifyEnabled false
 //            shrinkResources false
-//            ndk {
-//                debugSymbolLevel 'SYMBOL_TABLE'
-//            }
+            ndkVersion "23.1.7779620"
+            ndkPath= '/home/jaden/Android/Sdk/ndk/23.1.7779620'
+            ndk {
+                debugSymbolLevel 'FULL'
+            }
         }
     }
 //    configurations {
@@ -117,4 +118,4 @@ dependencies {
 }
 
 
-android.buildTypes.release.ndk.debugSymbolLevel = 'SYMBOL_TABLE'
+//android.buildTypes.release.ndk.debugSymbolLevel = 'SYMBOL_TABLE'
