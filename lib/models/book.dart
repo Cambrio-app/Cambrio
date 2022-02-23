@@ -10,6 +10,9 @@ class Book {
   final String? id;
   final CollectionReference<Map<String,Chapter>>? chapters;
   final int? num_chapters;
+  final String? author_id;
+  final String author_name;
+  final int likes;
 
   const Book({
     required this.imageURL,
@@ -17,6 +20,9 @@ class Book {
     required this.title,
     required this.id,
     this.num_chapters,
+    required this.author_id,
+    required this.author_name,
+    required this.likes,
   });
 
   Book.fromJson(String? id, Map<String, Object?> json)
@@ -26,6 +32,9 @@ class Book {
     title: json['title']! as String,
     id: id,
     num_chapters: json['num_chapters'] as int?,
+    author_id: json['author_id'] as String?,
+    author_name: json['author_name'] as String,
+    likes: json['likes'] as int,
   );
 
   Map<String, Object?> toJson() {
@@ -35,6 +44,9 @@ class Book {
       'title': title,
       'id': id,
       'num_chapters': num_chapters,
+      'author_id': author_id,
+      'author_name': author_name,
+      'likes': likes,
     };
   }
 }
