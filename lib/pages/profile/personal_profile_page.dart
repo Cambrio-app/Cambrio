@@ -19,7 +19,7 @@ class PersonalProfilePage extends StatefulWidget {
 }
 
 class _PersonalProfilePageState extends State<PersonalProfilePage> {
-  UserProfile profile = const UserProfile(user_id: 'idk',bio: 'loading', handle: 'loading', imageURL: null, full_name: 'loading');
+  UserProfile profile = const UserProfile(user_id: 'idk', bio: 'loading', handle: 'loading', imageURL: null, full_name: 'loading');
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +114,7 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
   Widget EditButton() => Container(
         //color: Colors.black,
         height: 30,
-        padding: EdgeInsets.only(bottom: 3, right: 4),
+        padding: const EdgeInsets.only(bottom: 3, right: 4),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black),
           color: Colors.white,

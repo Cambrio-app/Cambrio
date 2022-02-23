@@ -7,10 +7,10 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class BookListView extends StatefulWidget {
   final String collectionToPull;
-  final String collectionTitle;
+  final String? collectionTitle;
   final QueryTypes? queryType;
 
-  const BookListView ({ Key? key, required this.collectionToPull, required this.collectionTitle, this.queryType}): super(key: key);
+  const BookListView ({ Key? key, required this.collectionToPull, this.collectionTitle, this.queryType}): super(key: key);
 
   @override
   _BookListViewState createState() => _BookListViewState();
@@ -53,11 +53,12 @@ class _BookListViewState extends State<BookListView> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
+
+                if (widget.collectionTitle!=null) Container(
                     padding: const EdgeInsets.all(8),
                     child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(widget.collectionTitle,
+                        child: Text(widget.collectionTitle!,
                             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25)
                         )
                     )),
@@ -72,19 +73,8 @@ class _BookListViewState extends State<BookListView> {
                       builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot<Book>>(
                         noMoreItemsIndicatorBuilder: (_) => const Text('no more!',textAlign: TextAlign.center,),
                         itemBuilder: (context, item, index) {
-                          // TODO: these comments probably need to be implemented in the book.dart or in make_zip.dart or a seperate database pulling class
-                          // CollectionReference users = FirebaseFirestore.instance.collection('books/${item.id}/chapters');
-                          // debugPrint((await users.orderBy('order',descending:false).get()).docs.toString());
                           return BookCard(
                             bookSnap: item,
-                            // title: item.title,
-                            // bookId: item.id,
-                            // chapters: ((item.data() as Map<String, dynamic>)["chapters"]) ?? {
-                            //   'fakeChapterId0': {
-                            //     'chapter_name': 'chapter 1',
-                            //     'text': "<p>terribly sorry, the chapters didn't load</p>"
-                            //   }
-                            // },
                           );
                         },
                       ),
