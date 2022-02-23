@@ -11,6 +11,7 @@ class Book {
   final CollectionReference<Map<String,Chapter>>? chapters;
   final int? num_chapters;
   final String? author_id;
+  final String? description;
   final String author_name;
   final int likes;
 
@@ -21,6 +22,7 @@ class Book {
     required this.id,
     this.num_chapters,
     required this.author_id,
+    required this.description,
     required this.author_name,
     required this.likes,
   });
@@ -33,6 +35,7 @@ class Book {
     id: id,
     num_chapters: json['num_chapters'] as int?,
     author_id: json['author_id'] as String?,
+    description: json['description'] as String?,
     author_name: json['author_name'] as String,
     likes: json['likes'] as int,
   );
@@ -45,6 +48,7 @@ class Book {
       'id': id,
       'num_chapters': num_chapters,
       'author_id': author_id,
+      'description': description,
       'author_name': author_name,
       'likes': likes,
     };

@@ -1,9 +1,13 @@
+// import 'dart:html';
+
 import 'package:cambrio/services/firebase_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:html/parser.dart' as htmlparser;
-import 'package:html/dom.dart' as dom;
-import 'package:flutter_html/flutter_html.dart';
+// import 'package:html/parser.dart' as htmlparser;
+// import 'package:html/dom.dart' as dom;
+// import 'package:flutter_html/flutter_html.dart';
+import '../services/make_epub.dart';
+
 
 import '../models/book.dart';
 import '../models/chapter.dart';
@@ -36,7 +40,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
               }
               return ListView(
                 physics: BouncingScrollPhysics(),
-                controller: ScrollController(initialScrollOffset: 350),
+                controller: ScrollController(initialScrollOffset: MediaQuery.of(context).size.height*0.35),
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(6.0),
@@ -112,7 +116,16 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
               const SizedBox(
                 height: 4,
               ),
-              Html(data:chapters[selected].text),
+              Text(
+                widget.bookSnap.data()?.description ?? 'no description',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.normal,
+                  fontFamily: "Montserrat-Semibold",
+                ),
+                softWrap: true,
+              ),
+              // Html(data:chapters[selected].text),
               const SizedBox(
                 height: 40,
               ),
@@ -173,10 +186,10 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ExpansionTile(
-        key: Key(selected.toString()),
-        title: Text(
-          "Table of Contents: ${chapters[selected].chapter_name}",
-          style: const TextStyle(
+        // key: Key(selected.toString()),
+        title: const Text(
+          "Table of Contents",
+          style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.normal,
             color: Colors.black,
@@ -203,31 +216,17 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                 ),
               ),
               onTap: () {
-                setState(() {
-                  selected = i;
-                });
+                final MakeEpub epubber = MakeEpub(title: widget.bookSnap.data()!.title, authorName: widget.bookSnap.data()!.author_name, authorId: widget.bookSnap.data()!.author_id ?? 'wat', bookId:widget.bookSnap.id);
+                epubber.makeEpub(context);
+                // setState(() {
+                //   selected = i;
+                // });
               },
 
             ));
           }
           return widgets;
         }.call(),
-
-        // children: [
-        // ListTile(
-        //   title: Text(
-        //     "Chapter 1",
-        //     style: const TextStyle(
-        //       fontSize: 15,
-        //       fontWeight: FontWeight.normal,
-        //       color: Colors.black,
-        //       fontFamily: "Montserrat-Semibold",
-        //     ),
-        //   ),
-        //   onTap: () {},
-        // ),
-        // Divider(),
-        // ],
       ),
     );
   }

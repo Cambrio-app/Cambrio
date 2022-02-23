@@ -22,6 +22,13 @@ enum QueryTypes {
 class FirebaseService {
   FirebaseService() {}
 
+  String? cachedUserId;
+
+  String get userId {
+    cachedUserId ??= FirebaseAuth.instance.currentUser!.uid;
+    return cachedUserId!;
+  }
+
   // pulls existing profile information.
   Future<UserProfile?> getProfile({required String uid}) async {
     debugPrint(uid);
