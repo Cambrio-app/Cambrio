@@ -57,6 +57,9 @@ dependencies:
   epubx: ^3.0.0
   firestore_search: ^0.1.7
 
+  # for the book details page
+  flutter_html: ^2.2.1
+
 dev_dependencies:
   flutter_launcher_icons: "^0.9.2"
   flutter_lints: ^1.0.4

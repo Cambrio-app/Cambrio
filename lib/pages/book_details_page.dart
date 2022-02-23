@@ -1,6 +1,9 @@
 import 'package:cambrio/services/firebase_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart' as htmlparser;
+import 'package:html/dom.dart' as dom;
+import 'package:flutter_html/flutter_html.dart';
 
 import '../models/book.dart';
 import '../models/chapter.dart';
@@ -17,7 +20,7 @@ class BookDetailsPage extends StatefulWidget {
 class _BookDetailsPageState extends State<BookDetailsPage> {
   List<Chapter> chapters = [
     const Chapter(
-        chapter_id: null, chapter_name: 'loading', text: 'loading', order: 0)
+        chapter_id: null, chapter_name: 'loading', text: '<span style="padding-top:40px"><pre>\n\n... loading ...\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nloadiing\n\n\n\n\n\n\n\n\n</pre></span>', order: 0)
   ];
   int selected = 0;
 
@@ -29,9 +32,11 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
             builder: (context, snapshot) {
               if (snapshot.hasData && snapshot.data != null) {
                 chapters = snapshot.data!;
+
               }
               return ListView(
                 physics: BouncingScrollPhysics(),
+                controller: ScrollController(initialScrollOffset: 350),
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(6.0),
@@ -107,14 +112,18 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
               const SizedBox(
                 height: 4,
               ),
-              Text(
-                chapters[selected].text,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.normal,
-                  fontFamily: "Montserrat-Semibold",
-                ),
-              )
+              Html(data:chapters[selected].text),
+              const SizedBox(
+                height: 40,
+              ),
+              // Text(
+              //   chapters[selected].text,
+              //   style: const TextStyle(
+              //     fontSize: 15,
+              //     fontWeight: FontWeight.normal,
+              //     fontFamily: "Montserrat-Semibold",
+              //   ),
+              // )
             ],
           ),
         ),
