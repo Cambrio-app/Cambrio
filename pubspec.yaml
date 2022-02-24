@@ -50,7 +50,7 @@ dependencies:
   xml: ^5.3.1
   archive: ^3.1.9
   iridium_reader_widget:
-    path: /home/jaden/StudioProjects/iridium/reader_widget
+    path: iridium/reader_widget
 #  flutter_summernote: ^1.0.0
   flutter_login: ^3.1.0
   firebase_auth: ^3.3.6
