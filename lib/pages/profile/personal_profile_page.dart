@@ -2,10 +2,10 @@ import 'package:cambrio/models/user_profile.dart';
 import 'package:cambrio/pages/profile/editProfile.dart';
 import 'package:cambrio/models/user_preferences.dart';
 import 'package:cambrio/services/firebase_service.dart';
-import 'package:cambrio/widgets/NumbersWidget.dart';
-import 'package:cambrio/widgets/ProfileEditWidget.dart';
-import 'package:cambrio/widgets/ProfileWidget.dart';
-import 'package:cambrio/widgets/TabBarView.dart';
+import 'package:cambrio/widgets/profile/NumbersWidget.dart';
+import 'package:cambrio/widgets/profile/ProfileEditWidget.dart';
+import 'package:cambrio/widgets/profile/ProfileWidget.dart';
+import 'package:cambrio/widgets/profile/TabBarView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

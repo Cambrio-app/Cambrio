@@ -1,9 +1,9 @@
 import 'package:cambrio/models/user_profile.dart';
 import 'package:flutter/material.dart';
 
-import '../pages/edit_book.dart';
-import '../services/firebase_service.dart';
-import 'book_list_view.dart';
+import '../../pages/edit_book.dart';
+import '../../services/firebase_service.dart';
+import '../book_list_view.dart';
 
 
 class TabBarToggle extends StatefulWidget {

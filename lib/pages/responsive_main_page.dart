@@ -6,7 +6,7 @@ import 'package:cambrio/pages/edit_book.dart';
 import 'package:flutter/material.dart';
 import 'package:cambrio/widgets/book_list_view.dart';
 import 'package:cambrio/widgets/home_tab_view.dart';
-import 'package:cambrio/widgets/profile_view.dart';
+import 'package:cambrio/widgets/profile/profile_view.dart';
 import 'package:cambrio/pages/profile/personal_profile_page.dart';
 
 class ResponsivePage extends StatefulWidget {

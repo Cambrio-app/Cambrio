@@ -1,6 +1,6 @@
 import 'package:cambrio/models/user_preferences.dart';
-import 'package:cambrio/widgets/NumbersWidget.dart';
-import 'package:cambrio/widgets/ProfileWidget.dart';
+import 'package:cambrio/widgets/profile/NumbersWidget.dart';
+import 'package:cambrio/widgets/profile/ProfileWidget.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/user_profile.dart';
