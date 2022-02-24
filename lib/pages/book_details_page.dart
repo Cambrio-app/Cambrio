@@ -217,7 +217,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
               ),
               onTap: () {
                 final MakeEpub epubber = MakeEpub(title: widget.bookSnap.data()!.title, authorName: widget.bookSnap.data()!.author_name, authorId: widget.bookSnap.data()!.author_id ?? 'wat', bookId:widget.bookSnap.id);
-                epubber.makeEpub(context);
+                epubber.makeEpub(context, location: i);
                 // setState(() {
                 //   selected = i;
                 // });

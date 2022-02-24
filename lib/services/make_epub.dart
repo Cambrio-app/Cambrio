@@ -166,7 +166,7 @@ class MakeEpub {
     chapters.add(Chapter(chapter_id:id,chapter_name:name,text:text,order:order));
   }
 
-  Future<File> makeEpub(BuildContext context) async{
+  Future<File> makeEpub(BuildContext context, {int? location}) async{
     // pull up the path to where the temporary epub will go
     // final path = await _extFile;
 
@@ -198,7 +198,7 @@ class MakeEpub {
     // print(modifiedFile.path);
     // debugPrint(Directory('${(await _filePath)}/goodbook').listSync().toString());
     // Share.shareFiles([zippedFile.path]);
-    Navigator.push(context, MaterialPageRoute(builder: (context) => EpubScreen.fromPath(filePath: filepath)));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => EpubScreen.fromPath(filePath: filepath, location: location!=null ? '{"cfi":" ","idref":"ch${location+1}"}':null,)));
     return zippedFile;
   }
 
