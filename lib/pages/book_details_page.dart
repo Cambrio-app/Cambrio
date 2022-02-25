@@ -52,7 +52,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (clicked==true) {
+    if (clicked == true) {
       Future.delayed(const Duration(milliseconds: 100), () {
         epubber.makeEpub(context);
       });
@@ -152,11 +152,12 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
           RichText(
             text: TextSpan(
               text: widget.bookSnap.data()!.title,
-              recognizer: TapGestureRecognizer()..onTap = () {
-                setState(() {
-                  clicked = true;
-                });
-              },
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  setState(() {
+                    clicked = true;
+                  });
+                },
               style: const TextStyle(
                 fontSize: 23,
                 color: Colors.black,
@@ -308,22 +309,39 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
           List<Widget> widgets = [];
           for (int i = 0; i < chapters.length; i++) {
             widgets.add(const Divider());
-            widgets.add(ListTile(
-              title: Text(
-                chapters[i].chapter_name,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.normal,
-                  color: Colors.black,
-                  fontFamily: "Montserrat-Semibold",
+            widgets.add(Row(
+              children: [
+                Expanded(
+                  child: ListTile(
+
+                    title: Text(
+                      chapters[i].chapter_name,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.black,
+                        fontFamily: "Montserrat-Semibold",
+                      ),
+                    ),
+                    onTap: () {
+                      epubber.makeEpub(context, location: i);
+                      // setState(() {
+                      //   selected = i;
+                      // });
+                    },
+                  ),
                 ),
-              ),
-              onTap: () {
-                epubber.makeEpub(context, location: i);
-                // setState(() {
-                //   selected = i;
-                // });
-              },
+                IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                EditChapter(book_id: widget.bookSnap.id)),
+                      );
+                    },
+                    icon: const Icon(Icons.edit))
+              ],
             ));
           }
           return widgets;
