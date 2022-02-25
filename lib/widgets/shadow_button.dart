@@ -18,10 +18,11 @@ class ShadowButton extends StatelessWidget {
       child: Container(
         //color: Colors.black,
         constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height * 0.04
-        ),
+          minHeight: MediaQuery.of(context).size.height * 0.04,
+          minWidth: MediaQuery.of(context).size.width,
+      ),
         // height: MediaQuery.of(context).size.height * 0.04,
-        padding: const EdgeInsets.only(bottom: 3, right: 4),
+        padding: const EdgeInsets.only(top: 3, bottom: 3, right: 4),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black),
           color: Colors.white,
@@ -36,7 +37,6 @@ class ShadowButton extends StatelessWidget {
           ],
         ),
         child: MaterialButton(
-          minWidth: MediaQuery.of(context).size.width,
           height: 40,
           onPressed: () {
             onclick.call();

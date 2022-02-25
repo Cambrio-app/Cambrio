@@ -46,6 +46,32 @@ class FirebaseService {
     return result;
   }
 
+  // pull user subscription info
+  Future<List<String>> authorSubscriptions() async {
+    String uid =
+        FirebaseAuth.instance.currentUser!.uid; // get current user id
+    //get the list of ids of the current user's author subscriptions
+    List<String> subs = (await FirebaseFirestore.instance
+        .collection('user_profiles/$uid/author_subscriptions')
+        .limit(100)
+    //     .withConverter<AuthorSubscription>(
+    //   fromFirestore: (snapshot, _) =>
+    //       AuthorSubscription.fromJson(snapshot.id, snapshot.data()!),
+    //   toFirestore: (sub, _) => sub.toJson(),
+    // )
+        .get())
+        .docs
+        .map((sub) => sub.id)
+    .toList();
+    return subs;
+  }
+
+  // check whether the user is subscribed to the author
+  Future<bool> isSubscribed(String authorId) async {
+    return (await FirebaseFirestore.instance.collection('user_profiles/$userId/author_subscriptions')
+    .doc(authorId).get()).exists;
+  }
+
   // modify or create a new profile for the user.
   void editProfile(
       {String? full_name, String? handle, String? bio, String? url_pic}) async {
@@ -285,6 +311,16 @@ class FirebaseService {
         'time_subscribed': FieldValue.serverTimestamp(),
       });
     }
+  }
+
+  void removeSubscription({required String author_id}) {
+      // Removes the chosen author id from the user's author subscription list.
+      FirebaseFirestore.instance
+          .collection('user_profiles') // collection we are adding to
+          .doc(userId)
+          .collection('author_subscriptions')
+          .doc(author_id)
+          .delete();
   }
 
   // the below is for finding random items in the database.

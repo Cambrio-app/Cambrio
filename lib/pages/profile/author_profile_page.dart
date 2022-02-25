@@ -44,7 +44,7 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
             height: 20,
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: EditButton(),
           ),
           Container(
@@ -98,42 +98,66 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
       );
 
   // ignore: non_constant_identifier_names
-  Widget EditButton() => ShadowButton(text: "Subscribe", onclick: () {
-    showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(builder: (BuildContext context,
-              StateSetter setState /*You can rename this!*/) {
-            return Container(
-              color: const Color(0xFF737373),
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.8,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0,30,0,0),
-                      child: SubscribeButton(),
-                    ),
-                  ],
-                ),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
-                  ),
-                ),
-              ),
-            );
-          });
-        });
-  });
+  Widget EditButton() => FutureBuilder<bool>(
+      future: FirebaseService().isSubscribed(widget.profile.user_id),
+      builder: (context, snapshot) {
+        return ShadowButton(
+            text:
+                (snapshot.data ?? false) ? "Manage Subscription" : "Subscribe",
+            onclick: () {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return StatefulBuilder(builder: (BuildContext context,
+                        StateSetter setState /*You can rename this!*/) {
+                      return Container(
+                        color: const Color(0xFF737373),
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.55,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                                child: SubscribeButton(),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.fromLTRB(20, 40, 20, 0),
+                                child: Text("Coming Soon: More ways to financially support your favorite author!"),
+                              ),
+                            ],
+                          ),
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(30),
+                              topRight: Radius.circular(30),
+                            ),
+                          ),
+                        ),
+                      );
+                    });
+                  }).then((_) => setState(() {}));
+            });
+      });
 
-  Widget SubscribeButton() => Center(
-        child: ShadowButton(text: "Subscribe to All Their Books", onclick: () {
-          FirebaseService()
-              .editSubscription(author_id: widget.profile.user_id);
-          Navigator.of(context).pop();
-        }),
-      );
+  Widget SubscribeButton() => FutureBuilder<bool>(
+      future: FirebaseService().isSubscribed(widget.profile.user_id),
+      builder: (context, snapshot) {
+        return Center(
+          child: ShadowButton(
+              text: (snapshot.data ?? false)
+                  ? "Unsubscribe"
+                  : "Subscribe to All Their Books",
+              onclick: () {
+                if (snapshot.data ?? false) {
+                  FirebaseService()
+                      .removeSubscription(author_id: widget.profile.user_id);
+                } else {
+                  FirebaseService()
+                      .editSubscription(author_id: widget.profile.user_id);
+                }
+                Navigator.of(context).pop();
+              }),
+        );
+      });
 }
