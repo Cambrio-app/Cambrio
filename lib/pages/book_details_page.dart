@@ -1,13 +1,18 @@
 // import 'dart:html';
 
+import 'package:cambrio/pages/edit_book.dart';
+import 'package:cambrio/pages/edit_chapter.dart';
+import 'package:cambrio/pages/profile/author_profile_page.dart';
 import 'package:cambrio/services/firebase_service.dart';
+import 'package:cambrio/widgets/shadow_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 // import 'package:html/parser.dart' as htmlparser;
 // import 'package:html/dom.dart' as dom;
 // import 'package:flutter_html/flutter_html.dart';
+import '../models/user_profile.dart';
 import '../services/make_epub.dart';
-
 
 import '../models/book.dart';
 import '../models/chapter.dart';
@@ -24,38 +29,112 @@ class BookDetailsPage extends StatefulWidget {
 class _BookDetailsPageState extends State<BookDetailsPage> {
   List<Chapter> chapters = [
     const Chapter(
-        chapter_id: null, chapter_name: 'loading', text: '<span style="padding-top:40px"><pre>\n\n... loading ...\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nloadiing\n\n\n\n\n\n\n\n\n</pre></span>', order: 0)
+        chapter_id: null,
+        chapter_name: 'loading',
+        text:
+            '<span style="padding-top:40px"><pre>\n\n... loading ...\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nloadiing\n\n\n\n\n\n\n\n\n</pre></span>',
+        order: 0)
   ];
   int selected = 0;
+  bool clicked = false;
+  late final epubber;
+
+  @override
+  void initState() {
+    super.initState();
+    clicked = false;
+    epubber = MakeEpub(
+        title: widget.bookSnap.data()!.title,
+        authorName: widget.bookSnap.data()!.author_name,
+        authorId: widget.bookSnap.data()!.author_id ?? 'wat',
+        bookId: widget.bookSnap.id);
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (clicked==true) {
+      Future.delayed(const Duration(milliseconds: 100), () {
+        epubber.makeEpub(context);
+      });
+    }
     return Scaffold(
+        floatingActionButton:
+            FirebaseService().userId == widget.bookSnap.data()?.author_id
+                ? FloatingActionButton(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    child: const Icon(Icons.add),
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              EditChapter(book_id: widget.bookSnap.id)),
+                    ),
+                  )
+                : null,
         body: FutureBuilder<List<Chapter>>(
             future: FirebaseService().getChapters(widget.bookSnap.id),
             builder: (context, snapshot) {
               if (snapshot.hasData && snapshot.data != null) {
                 chapters = snapshot.data!;
-
               }
               return ListView(
                 physics: BouncingScrollPhysics(),
-                controller: ScrollController(initialScrollOffset: MediaQuery.of(context).size.height*0.35),
+                controller: ScrollController(
+                    initialScrollOffset:
+                        MediaQuery.of(context).size.height * 0.35),
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                        image: NetworkImage(widget.bookSnap.data()?.imageURL ??
-                            'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7674aee8-a93d-4e4a-8a60-456b3770bbba/d7jk6bp-9e915b66-3e89-4e4f-99bc-b43dd8245355.jpg/v1/fill/w_746,h_1071,q_70,strp/vintage_ornamental_book_cover_by_boldfrontiers_d7jk6bp-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTI5MSIsInBhdGgiOiJcL2ZcLzc2NzRhZWU4LWE5M2QtNGU0YS04YTYwLTQ1NmIzNzcwYmJiYVwvZDdqazZicC05ZTkxNWI2Ni0zZTg5LTRlNGYtOTliYy1iNDNkZDgyNDUzNTUuanBnIiwid2lkdGgiOiI8PTkwMCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.mwO9qA8W8-XIF_ifzkAI6YD54OBknB9slDFYY08mzyY'),
-                        fit: BoxFit.cover,
-                      )),
-                      height: MediaQuery.of(context).size.height * 0.7,
-                      width: MediaQuery.of(context).size.width,
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        clicked = true;
+                      });
+                    },
+                    child: Center(
+                      child: AnimatedContainer(
+                        width: clicked
+                            ? MediaQuery.of(context).size.width * 0.9
+                            : MediaQuery.of(context).size.width,
+                        height: clicked
+                            ? MediaQuery.of(context).size.height * 0.6
+                            : MediaQuery.of(context).size.height * 0.7,
+                        // color: clicked ? Colors.red : Colors.blue,
+                        alignment: clicked
+                            ? Alignment.center
+                            : AlignmentDirectional.topCenter,
+                        duration: const Duration(seconds: 2),
+                        curve: Curves.easeOut,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                          image: NetworkImage(widget.bookSnap
+                                  .data()
+                                  ?.imageURL ??
+                              'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7674aee8-a93d-4e4a-8a60-456b3770bbba/d7jk6bp-9e915b66-3e89-4e4f-99bc-b43dd8245355.jpg/v1/fill/w_746,h_1071,q_70,strp/vintage_ornamental_book_cover_by_boldfrontiers_d7jk6bp-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTI5MSIsInBhdGgiOiJcL2ZcLzc2NzRhZWU4LWE5M2QtNGU0YS04YTYwLTQ1NmIzNzcwYmJiYVwvZDdqazZicC05ZTkxNWI2Ni0zZTg5LTRlNGYtOTliYy1iNDNkZDgyNDUzNTUuanBnIiwid2lkdGgiOiI8PTkwMCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.mwO9qA8W8-XIF_ifzkAI6YD54OBknB9slDFYY08mzyY'),
+                          fit: BoxFit.cover,
+                        )),
+                        onEnd: () {
+                          setState(() {
+                            clicked = false;
+                          });
+                        },
+                      ),
                     ),
                   ),
                   buildName(),
+                  // only show this widget if the book in question is written by this user.
+                  if (FirebaseService().userId ==
+                      widget.bookSnap.data()?.author_id)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                      child: ShadowButton(
+                          text: 'Edit Book Details',
+                          onclick: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditBook()),
+                            );
+                          }),
+                    ),
                   Padding(
                     padding: const EdgeInsets.all(18.0),
                     child: Container(child: ExpandableWidget(context)),
@@ -70,40 +149,66 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            widget.bookSnap.data()!.title,
-            style: const TextStyle(
-              fontSize: 23,
-              color: Colors.black,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 1.1,
-              fontFamily: "Unna",
+          RichText(
+            text: TextSpan(
+              text: widget.bookSnap.data()!.title,
+              recognizer: TapGestureRecognizer()..onTap = () {
+                setState(() {
+                  clicked = true;
+                });
+              },
+              style: const TextStyle(
+                fontSize: 23,
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 1.1,
+                fontFamily: "Unna",
+              ),
             ),
           ),
           const SizedBox(
             height: 10,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.person,
-                color: Colors.black,
-                size: 14,
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Text(
-                widget.bookSnap.data()!.author_name,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.normal,
+          MaterialButton(
+            onPressed: () async {
+              try {
+                String authorId = (widget.bookSnap.data()?.author_id)!;
+                UserProfile authorProfile =
+                    (await FirebaseService().getProfile(uid: authorId))!;
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AuthorProfilePage(
+                              profile: authorProfile,
+                            )));
+              } on TypeError catch (e) {
+                debugPrint(e.toString());
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('this author never made a profile')));
+              }
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.person,
                   color: Colors.black,
-                  fontFamily: "Montserrat-Semibold",
+                  size: 14,
                 ),
-              ),
-            ],
+                const SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  widget.bookSnap.data()!.author_name,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.black,
+                    fontFamily: "Montserrat-Semibold",
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       );
@@ -201,10 +306,8 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
 
         children: () {
           List<Widget> widgets = [];
-          for (int i=0; i<chapters.length; i++) {
-            widgets.add(
-                const Divider()
-            );
+          for (int i = 0; i < chapters.length; i++) {
+            widgets.add(const Divider());
             widgets.add(ListTile(
               title: Text(
                 chapters[i].chapter_name,
@@ -216,13 +319,11 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                 ),
               ),
               onTap: () {
-                final MakeEpub epubber = MakeEpub(title: widget.bookSnap.data()!.title, authorName: widget.bookSnap.data()!.author_name, authorId: widget.bookSnap.data()!.author_id ?? 'wat', bookId:widget.bookSnap.id);
                 epubber.makeEpub(context, location: i);
                 // setState(() {
                 //   selected = i;
                 // });
               },
-
             ));
           }
           return widgets;

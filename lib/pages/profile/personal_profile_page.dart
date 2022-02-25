@@ -6,6 +6,7 @@ import 'package:cambrio/widgets/profile/NumbersWidget.dart';
 import 'package:cambrio/widgets/profile/ProfileEditWidget.dart';
 import 'package:cambrio/widgets/profile/ProfileWidget.dart';
 import 'package:cambrio/widgets/profile/TabBarView.dart';
+import 'package:cambrio/widgets/shadow_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -19,19 +20,29 @@ class PersonalProfilePage extends StatefulWidget {
 }
 
 class _PersonalProfilePageState extends State<PersonalProfilePage> {
-  UserProfile profile = const UserProfile(user_id: 'idk', bio: 'loading', handle: 'loading', imageURL: null, full_name: 'loading');
+  UserProfile profile = const UserProfile(
+      user_id: 'idk',
+      bio: 'loading',
+      handle: 'loading',
+      imageURL: null,
+      full_name: 'loading');
 
   @override
   Widget build(BuildContext context) {
     // UserProfile? profile = await FirebaseService().getProfile(uid: FirebaseAuth.instance.currentUser!.uid);
     return FutureBuilder<UserProfile?>(
-      future: FirebaseService().getProfile(uid: FirebaseAuth.instance.currentUser!.uid),
+      future: FirebaseService()
+          .getProfile(uid: FirebaseAuth.instance.currentUser!.uid),
       builder: (BuildContext context, AsyncSnapshot<UserProfile?> snapshot) {
         if (snapshot.hasData && snapshot.data != null) {
           profile = snapshot.data!;
-        }
-        else {
-          profile = const UserProfile(user_id: 'idk', bio: 'loading', handle: 'loading', imageURL: null, full_name: 'loading');
+        } else {
+          profile = const UserProfile(
+              user_id: 'idk',
+              bio: 'loading',
+              handle: 'loading',
+              imageURL: null,
+              full_name: 'loading');
         }
         return Scaffold(
           body: Column(
@@ -43,7 +54,8 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
               const SizedBox(
                 height: 20,
               ),
-              buildName(profile.full_name ?? 'no full_name chosen', profile.handle ?? "no handle minted"),
+              buildName(profile.full_name ?? 'no full_name chosen',
+                  profile.handle ?? "no handle minted"),
               const SizedBox(
                 height: 20,
               ),
@@ -55,10 +67,19 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
               const SizedBox(
                 height: 20,
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(75, 0, 75, 0),
-                child: EditButton(),
-              ),
+              ShadowButton(
+                  text: "Edit",
+                  onclick: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EditProfile(
+                                name: profile.full_name!,
+                                bio: profile.bio!,
+                                handle: profile.handle!,
+                              )),
+                    );
+                  }),
               const SizedBox(
                 height: 20,
               ),
@@ -109,48 +130,5 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
             overflow: TextOverflow.fade,
           ),
         ],
-      );
-
-  Widget EditButton() => Container(
-        //color: Colors.black,
-        height: 30,
-        padding: const EdgeInsets.only(bottom: 3, right: 4),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black),
-          color: Colors.white,
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black,
-              offset: Offset(
-                3, // Move to right 3  horizontally
-                3, // Move to bottom 3 Vertically
-              ),
-            )
-          ],
-        ),
-        child: MaterialButton(
-          minWidth: MediaQuery.of(context).size.width,
-          height: 40,
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => EditProfile(
-                        name: profile.full_name!,
-                        bio: profile.bio!,
-                        handle: profile.handle!,
-                      )),
-            );
-          },
-          color: Colors.white,
-          elevation: 0,
-          child: const Text(
-            "Edit",
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 18,
-            ),
-          ),
-        ),
       );
 }
