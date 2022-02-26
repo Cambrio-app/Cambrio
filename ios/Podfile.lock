@@ -338,14 +338,13 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
-  - AEXML (4.6.0)
   - BoringSSL-GRPC (0.0.7):
     - BoringSSL-GRPC/Implementation (= 0.0.7)
     - BoringSSL-GRPC/Interface (= 0.0.7)
   - BoringSSL-GRPC/Implementation (0.0.7):
     - BoringSSL-GRPC/Interface (= 0.0.7)
   - BoringSSL-GRPC/Interface (0.0.7)
-  - cloud_firestore (2.5.3):
+  - cloud_firestore (2.5.4):
     - Firebase/Firestore (= 8.11.0)
     - firebase_core
     - Flutter
@@ -380,16 +379,6 @@ PODS:
   - DKPhotoGallery/Resource (0.0.17):
     - SDWebImage
     - SwiftyGif
-  - epub_viewer (0.0.2):
-    - EpubViewerKit (~> 0.1.3)
-    - Flutter
-  - EpubViewerKit (0.1.3):
-    - AEXML (= 4.6.0)
-    - FontBlaster (= 5.1.1)
-    - MenuItemKit (= 4.0.1)
-    - RealmSwift (= 5.5.1)
-    - SSZipArchive (= 2.2.3)
-    - ZFDragableModalTransition (= 0.6)
   - file_picker (0.0.1):
     - DKImagePickerController/PhotoGallery
     - Flutter
@@ -401,7 +390,7 @@ PODS:
   - Firebase/Firestore (8.11.0):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 8.11.0)
-  - firebase_auth (3.3.6):
+  - firebase_auth (3.3.7):
     - Firebase/Auth (= 8.11.0)
     - firebase_core
     - Flutter
@@ -436,6 +425,8 @@ PODS:
     - leveldb-library (~> 1.22)
     - nanopb (~> 2.30908.0)
   - Flutter (1.0.0)
+  - flutter_fimber (0.0.1):
+    - Flutter
   - flutter_inappwebview (0.0.1):
     - Flutter
     - flutter_inappwebview/Core (= 0.0.1)
@@ -445,7 +436,9 @@ PODS:
     - OrderedSet (~> 5.0)
   - flutter_keyboard_visibility (0.0.1):
     - Flutter
-  - FontBlaster (5.1.1)
+  - fluttertoast (0.0.2):
+    - Flutter
+    - Toast
   - GoogleDataTransport (9.1.2):
     - GoogleUtilities/Environment (~> 7.2)
     - nanopb (~> 2.30908.0)
@@ -493,21 +486,19 @@ PODS:
   - image_picker (0.0.1):
     - Flutter
   - leveldb-library (1.22.1)
-  - MenuItemKit (4.0.1)
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
   - OrderedSet (5.0.0)
+  - package_info_plus (0.4.5):
+    - Flutter
   - path_provider_ios (0.0.1):
     - Flutter
+  - "permission_handler (5.1.0+2)":
+    - Flutter
   - PromisesObjC (2.0.0)
-  - Realm (5.5.1):
-    - Realm/Headers (= 5.5.1)
-  - Realm/Headers (5.5.1)
-  - RealmSwift (5.5.1):
-    - Realm (= 5.5.1)
   - SDWebImage (5.12.2):
     - SDWebImage/Core (= 5.12.2)
   - SDWebImage/Core (5.12.2)
@@ -515,63 +506,59 @@ PODS:
     - Flutter
   - shared_preferences_ios (0.0.1):
     - Flutter
-  - SSZipArchive (2.2.3)
   - SwiftyGif (5.4.2)
+  - Toast (4.0.0)
   - url_launcher_ios (0.0.1):
     - Flutter
-  - ZFDragableModalTransition (0.6)
+  - webview_flutter_wkwebview (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
-  - epub_viewer (from `.symlinks/plugins/epub_viewer/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
+  - flutter_fimber (from `.symlinks/plugins/flutter_fimber/ios`)
   - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
+  - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
+  - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
+  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
 
 SPEC REPOS:
   trunk:
     - abseil
-    - AEXML
     - BoringSSL-GRPC
     - DKImagePickerController
     - DKPhotoGallery
-    - EpubViewerKit
     - Firebase
     - FirebaseAuth
     - FirebaseCore
     - FirebaseCoreDiagnostics
     - FirebaseFirestore
-    - FontBlaster
     - GoogleDataTransport
     - GoogleUtilities
     - "gRPC-C++"
     - gRPC-Core
     - GTMSessionFetcher
     - leveldb-library
-    - MenuItemKit
     - nanopb
     - OrderedSet
     - PromisesObjC
-    - Realm
-    - RealmSwift
     - SDWebImage
-    - SSZipArchive
     - SwiftyGif
-    - ZFDragableModalTransition
+    - Toast
 
 EXTERNAL SOURCES:
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
-  epub_viewer:
-    :path: ".symlinks/plugins/epub_viewer/ios"
   file_picker:
     :path: ".symlinks/plugins/file_picker/ios"
   firebase_auth:
@@ -580,63 +567,70 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_core/ios"
   Flutter:
     :path: Flutter
+  flutter_fimber:
+    :path: ".symlinks/plugins/flutter_fimber/ios"
   flutter_inappwebview:
     :path: ".symlinks/plugins/flutter_inappwebview/ios"
   flutter_keyboard_visibility:
     :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
+  fluttertoast:
+    :path: ".symlinks/plugins/fluttertoast/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
+  package_info_plus:
+    :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_ios:
     :path: ".symlinks/plugins/path_provider_ios/ios"
+  permission_handler:
+    :path: ".symlinks/plugins/permission_handler/ios"
   share_plus:
     :path: ".symlinks/plugins/share_plus/ios"
   shared_preferences_ios:
     :path: ".symlinks/plugins/shared_preferences_ios/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
+  webview_flutter_wkwebview:
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
-  AEXML: 2fbb73d8724797ed2cde888731e176fa4d44dd83
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
-  cloud_firestore: 13f394c065f164d1894bc309c0480f37502a02e8
+  cloud_firestore: b6f2881c2ab05197836bf773780c1b9ba4411156
   DKImagePickerController: b5eb7f7a388e4643264105d648d01f727110fc3d
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
-  epub_viewer: 422e82cc0068756c376102e3fa0e0fda570ddeb8
-  EpubViewerKit: 5f6c8ff9161bba18d6742c59b3c575c19f0623a9
   file_picker: 3e6c3790de664ccf9b882732d9db5eaf6b8d4eb1
   Firebase: 44dd9724c84df18b486639e874f31436eaa9a20c
-  firebase_auth: ccdb84a0d52a2d7897898ae8121689da6e13d71f
+  firebase_auth: 20bf788012988ef04ce608fada5b8d8cd1069302
   firebase_core: 443bccfd6aa6b42f07be365b500773dc69db2d87
   FirebaseAuth: d96d73aba85d192d7a7aa0b86dd6d7f8ec170b4b
   FirebaseCore: 2f4f85b453cc8fea4bb2b37e370007d2bcafe3f0
   FirebaseCoreDiagnostics: 64d9709d804a6c25bd77841371c1fcfd909d5601
   FirebaseFirestore: 3b2e4b532c68809b3df5f8d39d28b3398ffc196b
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  flutter_fimber: 4a6b342666fecb329fca23143f4b72c46cdd8022
   flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
-  FontBlaster: 8897ebdbb4b6ace3ab78c92b665d88c954f19e4a
+  fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   "gRPC-C++": 13d8ccef97d5c3c441b7e3c529ef28ebee86fad2
   gRPC-Core: 4afa11bfbedf7cdecd04de535a9e046893404ed5
   GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
-  image_picker: 0d37d1cb66231c2473a0e3ccb8d062d0c2b3d297
+  image_picker: 541dcbb3b9cf32d87eacbd957845d8651d6c62c3
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
-  MenuItemKit: 1459920e984d823e1bcc858b7a964f94e6bfa0f6
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
+  package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider_ios: 7d7ce634493af4477d156294792024ec3485acd5
+  permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
-  Realm: c2ffe0667f9c98c9ba65f608ba85684d39826145
-  RealmSwift: 5a35c1c35c3e1925e6fcd092c881d5cc4a826bff
   SDWebImage: 240e5c12b592fb1268c1d03b8c90d90e8c2ffe82
   share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68
-  shared_preferences_ios: aef470a42dc4675a1cdd50e3158b42e3d1232b32
-  SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
+  shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   SwiftyGif: dec758a9dd3d278e5a855dbf279bf062c923c387
-  url_launcher_ios: 02f1989d4e14e998335b02b67a7590fa34f971af
-  ZFDragableModalTransition: 0d294eaaba6edfcb9839595de765f9ca06a4b524
+  Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
+  url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
+  webview_flutter_wkwebview: 005fbd90c888a42c5690919a1527ecc6649e1162
 
 PODFILE CHECKSUM: 4e8f8b2be68aeea4c0d5beb6ff1e79fface1d048
 
