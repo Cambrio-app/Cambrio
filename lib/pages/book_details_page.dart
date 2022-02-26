@@ -1,13 +1,17 @@
 // import 'dart:html';
 
+import 'dart:math';
+
 import 'package:cambrio/pages/edit_book.dart';
 import 'package:cambrio/pages/edit_chapter.dart';
 import 'package:cambrio/pages/profile/author_profile_page.dart';
 import 'package:cambrio/services/firebase_service.dart';
 import 'package:cambrio/widgets/shadow_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 // import 'package:html/parser.dart' as htmlparser;
 // import 'package:html/dom.dart' as dom;
 // import 'package:flutter_html/flutter_html.dart';
@@ -101,8 +105,9 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                         alignment: clicked
                             ? Alignment.center
                             : AlignmentDirectional.topCenter,
-                        duration: const Duration(seconds: 2),
-                        curve: Curves.easeOut,
+                        duration: const Duration(milliseconds: 1000),
+                        curve:
+                            (clicked) ? Curves.slowMiddle : Curves.elasticOut,
                         decoration: BoxDecoration(
                             image: DecorationImage(
                           image: NetworkImage(widget.bookSnap
@@ -119,7 +124,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                       ),
                     ),
                   ),
-                  buildName(),
+                  buildName(context),
                   // only show this widget if the book in question is written by this user.
                   if (FirebaseService().userId ==
                       widget.bookSnap.data()?.author_id)
@@ -145,7 +150,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
             }));
   }
 
-  Widget buildName() => Column(
+  Widget buildName(BuildContext context) => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -170,46 +175,78 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
           const SizedBox(
             height: 10,
           ),
-          MaterialButton(
-            onPressed: () async {
-              try {
-                String authorId = (widget.bookSnap.data()?.author_id)!;
-                UserProfile authorProfile =
-                    (await FirebaseService().getProfile(uid: authorId))!;
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AuthorProfilePage(
-                              profile: authorProfile,
-                            )));
-              } on TypeError catch (e) {
-                debugPrint(e.toString());
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text('this author never made a profile')));
-              }
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.person,
-                  color: Colors.black,
-                  size: 14,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              MaterialButton(
+                padding: const EdgeInsets.all(0),
+                onPressed: () async {
+                  try {
+                    String authorId = (widget.bookSnap.data()?.author_id)!;
+                    UserProfile authorProfile =
+                        (await FirebaseService().getProfile(uid: authorId))!;
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AuthorProfilePage(
+                                  profile: authorProfile,
+                                )));
+                  } on TypeError catch (e) {
+                    debugPrint(e.toString());
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('this author never made a profile')));
+                  }
+                },
+                child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Icon(
+                      Icons.person,
+                      color: Colors.black,
+                      size: 14,
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                      widget.bookSnap.data()!.author_name,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.black,
+                        fontFamily: "Montserrat-Semibold",
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  widget.bookSnap.data()!.author_name,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.black,
-                    fontFamily: "Montserrat-Semibold",
-                  ),
-                ),
-              ],
-            ),
+              ),
+              FutureBuilder<bool>(
+                  future: FirebaseService().isLiked(widget.bookSnap.id),
+                  builder: (context, snapshot) {
+                    bool isLiked = (snapshot.data ?? false);
+                    return IconButton(
+                        iconSize: 24,
+                        splashColor: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.3),
+                        splashRadius: 200,
+                        // constraints: BoxConstraints.loose(Size(30, 30)),
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        onPressed: () {
+                          debugPrint('liked/unliked');
+                          FirebaseService()
+                              .likeOrUnlike(widget.bookSnap.id, isLiked);
+                          setState(() {});
+                        },
+                        icon: (isLiked)
+                            ? Icon(
+                                Icons.favorite,
+                                color: Theme.of(context).colorScheme.primary,
+                              )
+                            : const Icon(Icons.favorite_border));
+                  }),
+            ],
           ),
         ],
       );
@@ -313,7 +350,6 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
               children: [
                 Expanded(
                   child: ListTile(
-
                     title: Text(
                       chapters[i].chapter_name,
                       style: const TextStyle(
