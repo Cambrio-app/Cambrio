@@ -58,6 +58,28 @@ class FirebaseService {
     }
   }
 
+  // modify or create a new book for the user.
+  void editBook(
+      {String? author_id, String? author_name, String? book_id, String? description, String? likes, String? tag, String? title}) async {
+    String? _user_id = FirebaseAuth.instance.currentUser?.uid;
+    if (book_id != null) {
+      // Allows user to update all book values or create a new book if there is no book_id
+      FirebaseFirestore.instance
+          .collection('books') // collection we are adding to
+          .doc(book_id)
+          .set({
+        // what we are adding
+        'author_id': author_id,
+        'author_name': author_name,
+        'book_id': book_id,
+        'description': description,
+        'likes': likes,
+        'tag': tag,
+        'title': title,
+      });
+    }
+  }
+
   // grab all documentsnapshots of book, for use in scrolling listview of book widgets in ui
   Future<List<QueryDocumentSnapshot<Book>>> getBookDocs(
       String collectionToPull, DocumentSnapshot? lastDocument, int pageSize,
