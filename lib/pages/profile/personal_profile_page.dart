@@ -46,27 +46,29 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
         }
         return Scaffold(
           body: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const SizedBox(height: 20),
+              // const SizedBox(height: 20),
               ProfileWidget(
                 imagePath: profile.imageURL,
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
               buildName(profile.full_name ?? 'no full_name chosen',
                   profile.handle ?? "no handle minted"),
-              const SizedBox(
-                height: 20,
-              ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
               buildBio(profile.bio ?? "tell them what you're about"),
-              const SizedBox(
-                height: 20,
-              ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
               NumbersWidget(),
-              const SizedBox(
-                height: 20,
-              ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
               ShadowButton(
                   text: "Edit",
                   onclick: () {
@@ -80,9 +82,9 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
                               )),
                     );
                   }),
-              const SizedBox(
-                height: 20,
-              ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
               TabBarToggle(profile: profile),
             ],
           ),
@@ -116,19 +118,15 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
         ],
       );
 
-  Widget buildBio(String bio) => Column(
-        children: [
-          Text(
-            bio,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              fontFamily: "Montserrat-Semibold",
-            ),
-            maxLines: 4,
-            softWrap: true,
-            overflow: TextOverflow.fade,
-          ),
-        ],
-      );
+  Widget buildBio(String bio) => Text(
+    bio,
+    style: const TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+      fontFamily: "Montserrat-Semibold",
+    ),
+    maxLines: 4,
+    softWrap: true,
+    overflow: TextOverflow.fade,
+  );
 }
