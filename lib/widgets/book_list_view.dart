@@ -65,7 +65,7 @@ class _BookListViewState extends State<BookListView> {
 
                 Container(
                   // fit: FlexFit.loose,
-                    height: 150 + 2*14*MediaQuery.of(context).textScaleFactor*1.2,
+                    height: 150 + 2*14*MediaQuery.of(context).textScaleFactor*1.2, // trying to calculate the height of the book_card_widget
                     // color: Colors.green,
                     // this view is dynamically populated with book cards from book.dart, using data received -
                     // - in the form of a DocumentSnapshot<Book. Calling .data() gives a Map, which then resolves into the data we want.

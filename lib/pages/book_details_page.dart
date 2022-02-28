@@ -52,6 +52,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
         authorName: widget.bookSnap.data()!.author_name,
         authorId: widget.bookSnap.data()!.author_id ?? 'wat',
         bookId: widget.bookSnap.id);
+    debugPrint('madeEpub!!!!');
   }
 
   @override
