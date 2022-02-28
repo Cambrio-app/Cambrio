@@ -47,8 +47,7 @@ class _TabBarToggleState extends State<TabBarToggle>
               child: TabBarView(controller: _tabController, children: [
             const BookListView(
                 collectionToPull: 'books',
-                collectionTitle: "Subscriptions",
-                queryType: QueryTypes.subscribed),
+                  queryType: QueryTypes.subscribed),
             Stack(
               children: [
                 const BookListView(
