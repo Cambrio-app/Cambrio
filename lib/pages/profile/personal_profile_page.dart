@@ -47,45 +47,58 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
         return Scaffold(
           body: Column(
             mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // const SizedBox(height: 20),
-              ProfileWidget(
-                imagePath: profile.imageURL,
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20,0,10,10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Flexible(
+                          child: ProfileWidget(
+                            imagePath: profile.imageURL,
+                          ),
+                        ),
+
+                        Expanded(flex:2,child: Center(child: NumbersWidget())),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildName(profile.full_name ?? 'no full_name chosen',
+                        profile.handle ?? "no handle minted"),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildBio(profile.bio ?? "tell them what you're about"),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    ShadowButton(
+                        text: "Edit Profile",
+                        onclick: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditProfile(
+                                      name: profile.full_name!,
+                                      bio: profile.bio!,
+                                      handle: profile.handle!,
+                                    )),
+                          );
+                        }),
+                  ],
+                ),
               ),
-              // const SizedBox(
-              //   height: 20,
-              // ),
-              buildName(profile.full_name ?? 'no full_name chosen',
-                  profile.handle ?? "no handle minted"),
-              // const SizedBox(
-              //   height: 20,
-              // ),
-              buildBio(profile.bio ?? "tell them what you're about"),
-              // const SizedBox(
-              //   height: 20,
-              // ),
-              NumbersWidget(),
-              // const SizedBox(
-              //   height: 20,
-              // ),
-              ShadowButton(
-                  text: "Edit",
-                  onclick: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => EditProfile(
-                                name: profile.full_name!,
-                                bio: profile.bio!,
-                                handle: profile.handle!,
-                              )),
-                    );
-                  }),
-              // const SizedBox(
-              //   height: 20,
-              // ),
-              TabBarToggle(profile: profile),
+              const SizedBox(
+                height: 20,
+              ),
+              Expanded(child: TabBarToggle(profile: profile)),
             ],
           ),
         );
@@ -93,23 +106,26 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
     );
   }
 
-  Widget buildName(String name, String handle) => Column(
+  Widget buildName(String name, String handle) => Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
         children: [
           Text(
             name,
             style: const TextStyle(
-              fontSize: 23,
+              fontSize: 35,
               fontWeight: FontWeight.normal,
               fontFamily: "Unna",
             ),
           ),
           const SizedBox(
-            height: 4,
+            width: 10,
           ),
           Text(
             "@" + handle,
             style: const TextStyle(
-              fontSize: 15,
+              fontSize: 18,
               fontWeight: FontWeight.normal,
               color: Colors.grey,
               fontFamily: "Montserrat-Semibold",
@@ -118,15 +134,18 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
         ],
       );
 
-  Widget buildBio(String bio) => Text(
-    bio,
-    style: const TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.bold,
-      fontFamily: "Montserrat-Semibold",
+  Widget buildBio(String bio) => Align(
+    alignment: AlignmentDirectional.topStart,
+    child: Text(
+      bio,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        fontFamily: "Montserrat-Semibold",
+      ),
+      maxLines: 4,
+      softWrap: true,
+      overflow: TextOverflow.fade,
     ),
-    maxLines: 4,
-    softWrap: true,
-    overflow: TextOverflow.fade,
   );
 }
