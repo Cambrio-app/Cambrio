@@ -373,7 +373,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                EditChapter(book_id: widget.bookSnap.id)),
+                                EditChapter(book_id: widget.bookSnap.id, chapter: chapters[i], num_chapters: chapters.length)),
                       );
                     },
                     icon: const Icon(Icons.edit))

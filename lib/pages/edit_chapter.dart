@@ -1,23 +1,26 @@
 import 'package:cambrio/services/firebase_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'dart:ui' as ui;
 
+import '../models/chapter.dart';
+
 class EditChapter extends StatefulWidget {
   final String book_id;
-  final String? chapter_id;
+  final Chapter? chapter;
   final int? num_chapters;
 
-  const EditChapter({Key? key, required this.book_id, this.chapter_id, this.num_chapters}) : super(key: key);
+  const EditChapter({Key? key, required this.book_id, this.chapter, this.num_chapters}) : super(key: key);
   @override
   State<EditChapter> createState() => _EditChapterState();
 }
 
 class _EditChapterState extends State<EditChapter> {
-  HtmlEditorController controller = HtmlEditorController();
-  final _chapter_name_controller = TextEditingController();
-  late final _chapter_order_controller = TextEditingController(text: '${widget.num_chapters ?? 0}');
+  HtmlEditorController controller = HtmlEditorController(processOutputHtml: true, processNewLineAsBr: true, );
+  late final _chapter_name_controller = TextEditingController(text: widget.chapter?.chapter_name);
+  late final _chapter_order_controller = TextEditingController(text: '${widget.chapter?.order ?? (widget.num_chapters ?? 0 +1)}');
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +31,7 @@ class _EditChapterState extends State<EditChapter> {
         actions: [
           IconButton(
               onPressed: () async {
-                FirebaseService().editChapter(book_id: widget.book_id, chapter_id: widget.chapter_id, chapter_name: _chapter_name_controller.text, order: (_chapter_order_controller.text=='')?null:int.parse(_chapter_order_controller.text), is_paywalled: false, text: await controller.getText());
+                FirebaseService().editChapter(book_id: widget.book_id, chapter_id: widget.chapter?.chapter_id, chapter_name: _chapter_name_controller.text, order: (_chapter_order_controller.text=='')?null:int.parse(_chapter_order_controller.text), is_paywalled: false, text: await controller.getText());
                 Navigator.pop(context);
               },
               icon: const Icon(Icons.save)),
@@ -38,7 +41,6 @@ class _EditChapterState extends State<EditChapter> {
         children: [
           TextFormField(
             controller: _chapter_name_controller,
-
             decoration: const InputDecoration(
               hintText: 'Enter Chapter Name',
             ),
@@ -69,13 +71,13 @@ class _EditChapterState extends State<EditChapter> {
           const SizedBox(height: 40),
           HtmlEditor(
             controller: controller, //required
-            htmlEditorOptions: const HtmlEditorOptions(
+            htmlEditorOptions: HtmlEditorOptions(
               autoAdjustHeight: true,
               mobileLongPressDuration: Duration(milliseconds: 3),
+
               adjustHeightForKeyboard: true,
               hint: "Copy/Paste or type here...",
-              // initialText: "",
-
+              initialText: widget.chapter?.text,
             ),
             otherOptions: const OtherOptions(
               height: 400,

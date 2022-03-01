@@ -153,7 +153,7 @@ class MakeEpub {
     for (var i=0;i<chapters.length;i++) {
       String specificFile = 'EPUB/chapter${i+1}.xhtml'; // +1 to make the chapters start at 1
       var document = XmlDocument.parse(await _loadAsset('assets/ex_epub/$template'));
-      document.findAllElements('div').first.innerXml = chapters[i].text;
+      document.findAllElements('body').first.innerXml = chapters[i].text;
       // debugPrint(document.toXmlString());
       // debugPrint(specificFile);
       // (get the file), construct a real directory if it's not made already, Write to file
