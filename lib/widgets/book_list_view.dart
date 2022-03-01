@@ -51,11 +51,11 @@ class _BookListViewState extends State<BookListView> {
                 () => _pagingController.refresh(),
           ),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.max,
               children: [
 
                 if (widget.collectionTitle!=null) Container(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.fromLTRB(8,8,8,0),
                     child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(widget.collectionTitle!,
@@ -64,10 +64,13 @@ class _BookListViewState extends State<BookListView> {
                     )),
 
                 Container(
-                    height: 200,
+                  // fit: FlexFit.loose,
+                    height: 150 + 2*14*MediaQuery.of(context).textScaleFactor*1.2,
+                    // color: Colors.green,
                     // this view is dynamically populated with book cards from book.dart, using data received -
                     // - in the form of a DocumentSnapshot<Book. Calling .data() gives a Map, which then resolves into the data we want.
                     child: PagedListView<DocumentSnapshot<Book>?, DocumentSnapshot<Book>>( //used to be PagedGridView
+                      shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
                       pagingController: _pagingController,
                       builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot<Book>>(

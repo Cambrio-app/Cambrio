@@ -49,8 +49,8 @@ dependencies:
   share_plus: ^3.0.4
   xml: ^5.3.1
   archive: ^3.1.9
-  # iridium_reader_widget:
-  #   path: /home/jaden/StudioProjects/iridium/reader_widget
+  iridium_reader_widget:
+    path: iridium/reader_widget
 #  flutter_summernote: ^1.0.0
   flutter_login: ^3.1.0
   firebase_auth: ^3.3.6
@@ -58,7 +58,7 @@ dependencies:
   firestore_search: ^0.1.7
 
   # for the book details page
-  flutter_html: ^2.2.1
+#  flutter_html: ^2.2.1
 
 dev_dependencies:
   flutter_launcher_icons: "^0.9.2"
@@ -70,8 +70,8 @@ dev_dependencies:
 flutter_icons:
   ios: true
   android: true
-  image_path_android: "assets/images/Group43.png"
-  image_path_ios: "assets/images/Group43.png"
+  image_path_android: "assets/images/app_icon.png"
+  image_path_ios: "assets/images/white_app_icon.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

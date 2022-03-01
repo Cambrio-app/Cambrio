@@ -61,7 +61,7 @@ class LoginScreen extends StatelessWidget {
     return FlutterLogin(
 
       title: 'Cambrio',
-      logo: const AssetImage('assets/images/Group43.png'),
+      logo: const AssetImage('assets/images/app_icon.png'),
       // theme: ,
       onLogin: _authUser,
       onSignup: _signupUser,

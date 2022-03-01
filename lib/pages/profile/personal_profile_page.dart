@@ -2,14 +2,15 @@ import 'package:cambrio/models/user_profile.dart';
 import 'package:cambrio/pages/profile/editProfile.dart';
 import 'package:cambrio/models/user_preferences.dart';
 import 'package:cambrio/services/firebase_service.dart';
-import 'package:cambrio/widgets/NumbersWidget.dart';
-import 'package:cambrio/widgets/ProfileEditWidget.dart';
-import 'package:cambrio/widgets/ProfileWidget.dart';
-import 'package:cambrio/widgets/TabBarView.dart';
+import 'package:cambrio/widgets/profile/NumbersWidget.dart';
+import 'package:cambrio/widgets/profile/ProfileEditWidget.dart';
+import 'package:cambrio/widgets/profile/ProfileWidget.dart';
+import 'package:cambrio/widgets/profile/TabBarView.dart';
+import 'package:cambrio/widgets/shadow_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../add_book.dart';
+import '../edit_book.dart';
 
 class PersonalProfilePage extends StatefulWidget {
   const PersonalProfilePage({Key? key}) : super(key: key);
@@ -19,50 +20,85 @@ class PersonalProfilePage extends StatefulWidget {
 }
 
 class _PersonalProfilePageState extends State<PersonalProfilePage> {
-  UserProfile profile = const UserProfile(user_id: 'idk', bio: 'loading', handle: 'loading', imageURL: null, full_name: 'loading');
+  UserProfile profile = const UserProfile(
+      user_id: 'idk',
+      bio: 'loading',
+      handle: 'loading',
+      imageURL: null,
+      full_name: 'loading');
 
   @override
   Widget build(BuildContext context) {
     // UserProfile? profile = await FirebaseService().getProfile(uid: FirebaseAuth.instance.currentUser!.uid);
     return FutureBuilder<UserProfile?>(
-      future: FirebaseService().getProfile(uid: FirebaseAuth.instance.currentUser!.uid),
+      future: FirebaseService()
+          .getProfile(uid: FirebaseAuth.instance.currentUser!.uid),
       builder: (BuildContext context, AsyncSnapshot<UserProfile?> snapshot) {
         if (snapshot.hasData && snapshot.data != null) {
           profile = snapshot.data!;
-        }
-        else {
-          profile = const UserProfile(user_id: 'idk', bio: 'loading', handle: 'loading', imageURL: null, full_name: 'loading');
+        } else {
+          profile = const UserProfile(
+              user_id: 'idk',
+              bio: 'loading',
+              handle: 'loading',
+              imageURL: null,
+              full_name: 'loading');
         }
         return Scaffold(
           body: Column(
+            mainAxisSize: MainAxisSize.max,
+            // crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 20),
-              ProfileWidget(
-                imagePath: profile.imageURL,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              buildName(profile.full_name ?? 'no full_name chosen', profile.handle ?? "no handle minted"),
-              const SizedBox(
-                height: 20,
-              ),
-              buildBio(profile.bio ?? "tell them what you're about"),
-              const SizedBox(
-                height: 20,
-              ),
-              NumbersWidget(),
-              const SizedBox(
-                height: 20,
-              ),
+              // const SizedBox(height: 20),
               Padding(
-                padding: const EdgeInsets.fromLTRB(75, 0, 75, 0),
-                child: EditButton(),
+                padding: const EdgeInsets.fromLTRB(20,0,10,10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Flexible(
+                          child: ProfileWidget(
+                            imagePath: profile.imageURL,
+                          ),
+                        ),
+
+                        Expanded(flex:2,child: Center(child: NumbersWidget())),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildName(profile.full_name ?? 'no full_name chosen',
+                        profile.handle ?? "no handle minted"),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildBio(profile.bio ?? "tell them what you're about"),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    ShadowButton(
+                        text: "Edit Profile",
+                        onclick: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditProfile(
+                                      name: profile.full_name!,
+                                      bio: profile.bio!,
+                                      handle: profile.handle!,
+                                    )),
+                          );
+                        }),
+                  ],
+                ),
               ),
               const SizedBox(
                 height: 20,
               ),
-              TabBarToggle(profile: profile),
+              Expanded(child: TabBarToggle(profile: profile)),
             ],
           ),
         );
@@ -70,23 +106,26 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
     );
   }
 
-  Widget buildName(String name, String handle) => Column(
+  Widget buildName(String name, String handle) => Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
         children: [
           Text(
             name,
             style: const TextStyle(
-              fontSize: 23,
+              fontSize: 35,
               fontWeight: FontWeight.normal,
               fontFamily: "Unna",
             ),
           ),
           const SizedBox(
-            height: 4,
+            width: 10,
           ),
           Text(
             "@" + handle,
             style: const TextStyle(
-              fontSize: 15,
+              fontSize: 18,
               fontWeight: FontWeight.normal,
               color: Colors.grey,
               fontFamily: "Montserrat-Semibold",
@@ -95,62 +134,18 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
         ],
       );
 
-  Widget buildBio(String bio) => Column(
-        children: [
-          Text(
-            bio,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              fontFamily: "Montserrat-Semibold",
-            ),
-            maxLines: 4,
-            softWrap: true,
-            overflow: TextOverflow.fade,
-          ),
-        ],
-      );
-
-  Widget EditButton() => Container(
-        //color: Colors.black,
-        height: 30,
-        padding: const EdgeInsets.only(bottom: 3, right: 4),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black),
-          color: Colors.white,
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black,
-              offset: Offset(
-                3, // Move to right 3  horizontally
-                3, // Move to bottom 3 Vertically
-              ),
-            )
-          ],
-        ),
-        child: MaterialButton(
-          minWidth: MediaQuery.of(context).size.width,
-          height: 40,
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => EditProfile(
-                        name: profile.full_name!,
-                        bio: profile.bio!,
-                        handle: profile.handle!,
-                      )),
-            );
-          },
-          color: Colors.white,
-          elevation: 0,
-          child: const Text(
-            "Edit",
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 18,
-            ),
-          ),
-        ),
-      );
+  Widget buildBio(String bio) => Align(
+    alignment: AlignmentDirectional.topStart,
+    child: Text(
+      bio,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        fontFamily: "Montserrat-Semibold",
+      ),
+      maxLines: 4,
+      softWrap: true,
+      overflow: TextOverflow.fade,
+    ),
+  );
 }

@@ -1,12 +1,12 @@
 import 'package:adaptive_navigation/adaptive_navigation.dart';
 import 'package:cambrio/pages/search_page.dart';
 import 'package:cambrio/widgets/book_grid_view.dart';
-import 'package:cambrio/pages/write.dart';
-import 'package:cambrio/pages/add_book.dart';
+import 'package:cambrio/pages/edit_chapter.dart';
+import 'package:cambrio/pages/edit_book.dart';
 import 'package:flutter/material.dart';
 import 'package:cambrio/widgets/book_list_view.dart';
 import 'package:cambrio/widgets/home_tab_view.dart';
-import 'package:cambrio/widgets/profile_view.dart';
+import 'package:cambrio/widgets/profile/profile_view.dart';
 import 'package:cambrio/pages/profile/personal_profile_page.dart';
 
 class ResponsivePage extends StatefulWidget {

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cambrio/models/book.dart';
 import 'package:cambrio/models/chapter.dart';
+import 'package:cambrio/models/like.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,13 @@ enum QueryTypes {
 class FirebaseService {
   FirebaseService() {}
 
+  String? cachedUserId;
+
+  String get userId {
+    cachedUserId ??= FirebaseAuth.instance.currentUser!.uid;
+    return cachedUserId!;
+  }
+
   // pulls existing profile information.
   Future<UserProfile?> getProfile({required String uid}) async {
     debugPrint(uid);
@@ -37,6 +45,34 @@ class FirebaseService {
     debugPrint(result!.full_name);
     debugPrint('wat');
     return result;
+  }
+
+  // pull user subscription info
+  Future<List<String>> authorSubscriptions() async {
+    String uid = FirebaseAuth.instance.currentUser!.uid; // get current user id
+    //get the list of ids of the current user's author subscriptions
+    List<String> subs = (await FirebaseFirestore.instance
+            .collection('user_profiles/$uid/author_subscriptions')
+            .limit(100)
+            //     .withConverter<AuthorSubscription>(
+            //   fromFirestore: (snapshot, _) =>
+            //       AuthorSubscription.fromJson(snapshot.id, snapshot.data()!),
+            //   toFirestore: (sub, _) => sub.toJson(),
+            // )
+            .get())
+        .docs
+        .map((sub) => sub.id)
+        .toList();
+    return subs;
+  }
+
+  // check whether the user is subscribed to the author
+  Future<bool> isSubscribed(String authorId) async {
+    return (await FirebaseFirestore.instance
+            .collection('user_profiles/$userId/author_subscriptions')
+            .doc(authorId)
+            .get())
+        .exists;
   }
 
   // modify or create a new profile for the user.
@@ -144,7 +180,7 @@ class FirebaseService {
             .toList();
         _query = FirebaseFirestore.instance
             .collection('books')
-            .where('author_id', whereIn: subs.isEmpty?['1skenow34']:subs)
+            .where('author_id', whereIn: subs.isEmpty ? ['1skenow34'] : subs)
             .withConverter<Book>(
               fromFirestore: (snapshot, _) =>
                   Book.fromJson(snapshot.id, snapshot.data()!),
@@ -293,13 +329,24 @@ class FirebaseService {
           .collection('user_profiles') // collection we are adding to
           .doc(_user_id)
           .collection('author_subscriptions')
-          .doc(author_id) // if this is null, an auto-generated value will be used (a new entry will be made)
+          .doc(
+              author_id) // if this is null, an auto-generated value will be used (a new entry will be made)
           .set({
         // what we are adding
         'author_id': author_id,
         'time_subscribed': FieldValue.serverTimestamp(),
       });
     }
+  }
+
+  void removeSubscription({required String author_id}) {
+    // Removes the chosen author id from the user's author subscription list.
+    FirebaseFirestore.instance
+        .collection('user_profiles') // collection we are adding to
+        .doc(userId)
+        .collection('author_subscriptions')
+        .doc(author_id)
+        .delete();
   }
 
   // the below is for finding random items in the database.
@@ -317,5 +364,58 @@ class FirebaseService {
       builder += (AUTO_ID_ALPHABET[rand.nextInt(maxRandom)]);
     }
     return builder.toString();
+  }
+
+  Future<bool> isLiked(String bookId) async {
+    bool record = (await FirebaseFirestore.instance
+            .collection('user_profiles') // collection we are adding to
+            .doc(userId)
+            .collection('liked_books')
+            .doc(bookId)
+            .get())
+        .exists;
+    return record;
+  }
+
+  void likeOrUnlike(String bookId, bool isLiked) {
+    if (isLiked) {
+      // Removes the like from the user's liked books list.
+      FirebaseFirestore.instance
+          .collection('user_profiles') // collection we are adding to
+          .doc(userId)
+          .collection('liked_books')
+          .doc(bookId)
+          .delete();
+    } else {
+      // adds the like to the user's liked books list
+      FirebaseFirestore.instance
+          .collection('user_profiles') // collection we are adding to
+          .doc(userId)
+          .collection('liked_books')
+          .doc(bookId)
+          .withConverter<Like>(
+            fromFirestore: (snapshot, _) =>
+                Like.fromJson(snapshot.id, snapshot.data()!),
+            toFirestore: (like, _) => like.toJson(),
+          )
+          .set(Like(book_id: bookId));
+    }
+    debugPrint('does it store the like??');
+    // update the like counter on the book. This is not scalable. TODO: implement distributed counter here.
+    FirebaseFirestore.instance.runTransaction((transaction) async {
+      DocumentReference<Book> reference =
+          FirebaseFirestore.instance.doc('books/$bookId').withConverter<Book>(
+                fromFirestore: (snapshot, _) =>
+                    Book.fromJson(snapshot.id, snapshot.data()!),
+                toFirestore: (book, _) => book.toJson(),
+              );
+      DocumentSnapshot<Book> bookSnap = await transaction.get(reference);
+      int newLikesCount = bookSnap.data()!.likes +
+          (isLiked
+              ? -1
+              : 1); // check whether it's liked or not, then add or remove accordingly
+      transaction.update(bookSnap.reference, {'likes': newLikesCount});
+      return newLikesCount;
+    });
   }
 }
