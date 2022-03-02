@@ -57,6 +57,10 @@ dependencies:
   epubx: ^3.0.0
   firestore_search: ^0.1.7
 
+  # because html coming from html_editor_enhanced includes entity names that xhtml in epub3 does not support
+#  html_unescape: ^2.0.0
+
+
   # for the book details page
 #  flutter_html: ^2.2.1
 

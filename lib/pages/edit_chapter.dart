@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'dart:ui' as ui;
+// import 'package:html_unescape/html_unescape.dart';
+
 
 import '../models/chapter.dart';
 
@@ -31,7 +33,13 @@ class _EditChapterState extends State<EditChapter> {
         actions: [
           IconButton(
               onPressed: () async {
-                FirebaseService().editChapter(book_id: widget.book_id, chapter_id: widget.chapter?.chapter_id, chapter_name: _chapter_name_controller.text, order: (_chapter_order_controller.text=='')?null:int.parse(_chapter_order_controller.text), is_paywalled: false, text: await controller.getText());
+                // convert html
+                String originalText = await controller.getText();
+                // var unescape = HtmlUnescape();
+                // String text = unescape.convert(originalText);
+                String text = originalText;
+
+                FirebaseService().editChapter(book_id: widget.book_id, chapter_id: widget.chapter?.chapter_id, chapter_name: _chapter_name_controller.text, order: (_chapter_order_controller.text=='')?null:int.parse(_chapter_order_controller.text), is_paywalled: false, text: text);
                 Navigator.pop(context);
               },
               icon: const Icon(Icons.save)),
