@@ -49,13 +49,14 @@ dependencies:
   share_plus: ^3.0.4
   xml: ^5.3.1
   archive: ^3.1.9
-  iridium_reader_widget:
-    path: iridium/reader_widget
+  # iridium_reader_widget:
+  #   path: iridium/reader_widget
 #  flutter_summernote: ^1.0.0
   flutter_login: ^3.1.0
   firebase_auth: ^3.3.6
   epubx: ^3.0.0
   firestore_search: ^0.1.7
+  animate_do: ^2.1.0
 
   # for the book details page
 #  flutter_html: ^2.2.1

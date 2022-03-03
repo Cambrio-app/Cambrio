@@ -47,11 +47,11 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
   void initState() {
     super.initState();
     clicked = false;
-    epubber = MakeEpub(
-        title: widget.bookSnap.data()!.title,
-        authorName: widget.bookSnap.data()!.author_name,
-        authorId: widget.bookSnap.data()!.author_id ?? 'wat',
-        bookId: widget.bookSnap.id);
+    // epubber = MakeEpub(
+    //     title: widget.bookSnap.data()!.title,
+    //     authorName: widget.bookSnap.data()!.author_name,
+    //     authorId: widget.bookSnap.data()!.author_id ?? 'wat',
+    //     bookId: widget.bookSnap.id);
   }
 
   @override

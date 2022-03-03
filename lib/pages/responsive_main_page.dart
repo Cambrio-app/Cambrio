@@ -1,4 +1,5 @@
 import 'package:adaptive_navigation/adaptive_navigation.dart';
+import 'package:cambrio/pages/searchPage.dart';
 import 'package:cambrio/pages/search_page.dart';
 import 'package:cambrio/widgets/book_grid_view.dart';
 import 'package:cambrio/pages/edit_chapter.dart';
@@ -35,7 +36,7 @@ class _ResponsivePageState extends State<ResponsivePage> {
         return const MyTabbedPage(); 
         break;
       case 1:
-        return const SearchPage();
+        return const SearchingPage();
       case 2:
         return const PersonalProfilePage();
       default:
