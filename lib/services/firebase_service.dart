@@ -23,12 +23,12 @@ enum QueryTypes {
 class FirebaseService {
   FirebaseService() {}
 
-  String? cachedUserId;
+  String? _cachedUserId;
+  UserProfile? _cachedCurrentUserProfile;
 
-  String get userId {
-    cachedUserId ??= FirebaseAuth.instance.currentUser!.uid;
-    return cachedUserId!;
-  }
+  String get userId => _cachedUserId ?? FirebaseAuth.instance.currentUser!.uid;
+
+  Future<UserProfile> get currentUserProfile async => _cachedCurrentUserProfile ?? (await getProfile(uid: userId))!;
 
   // pulls existing profile information.
   Future<UserProfile?> getProfile({required String uid}) async {
@@ -95,25 +95,34 @@ class FirebaseService {
   }
 
   // modify or create a new book for the user.
-  void editBook(
-      {String? author_id, String? author_name, String? book_id, String? description, String? likes, String? tag, String? title}) async {
+  void editBook({required Book book}) async {
     String? _user_id = FirebaseAuth.instance.currentUser?.uid;
-    if (book_id != null) {
+    // if (book.id != null) {
       // Allows user to update all book values or create a new book if there is no book_id
       FirebaseFirestore.instance
           .collection('books') // collection we are adding to
-          .doc(book_id)
-          .set({
-        // what we are adding
-        'author_id': author_id,
-        'author_name': author_name,
-        'book_id': book_id,
-        'description': description,
-        'likes': likes,
-        'tag': tag,
-        'title': title,
-      });
-    }
+          .doc(book.id)
+          .withConverter<Book>(
+            fromFirestore: (snapshot, _) =>
+                Book.fromJson(snapshot.id, snapshot.data()!),
+            toFirestore: (book, _) => book.toJson(),
+          )
+          .set(book);
+    // }
+    // else
+    //   {
+    //     Book actual = FieldValue.serverTimestamp();
+    //     // Allows user to update all book values or create a new book if there is no book_id
+    //     FirebaseFirestore.instance
+    //         .collection('books') // collection we are adding to
+    //         // .doc(book.id)
+    //         .withConverter<Book>(
+    //       fromFirestore: (snapshot, _) =>
+    //           Book.fromJson(snapshot.id, snapshot.data()!),
+    //       toFirestore: (book, _) => book.toJson(),
+    //     )
+    //         .add(book);
+    //   }
   }
 
   // grab all documentsnapshots of book, for use in scrolling listview of book widgets in ui
@@ -400,7 +409,7 @@ class FirebaseService {
           )
           .set(Like(book_id: bookId));
     }
-    debugPrint('does it store the like??');
+    // debugPrint('does it store the like??');
     // update the like counter on the book. This is not scalable. TODO: implement distributed counter here.
     FirebaseFirestore.instance.runTransaction((transaction) async {
       DocumentReference<Book> reference =

@@ -22,9 +22,9 @@ import '../models/book.dart';
 import '../models/chapter.dart';
 
 class BookDetailsPage extends StatefulWidget {
-  final DocumentSnapshot<Book> bookSnap;
+  DocumentSnapshot<Book> bookSnap;
 
-  const BookDetailsPage({Key? key, required this.bookSnap}) : super(key: key);
+  BookDetailsPage({Key? key, required this.bookSnap}) : super(key: key);
 
   @override
   _BookDetailsPageState createState() => _BookDetailsPageState();
@@ -131,13 +131,21 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                       child: ShadowButton(
+                          icon: Icons.edit,
                           text: 'Edit Book Details',
                           onclick: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => EditBook()),
-                            );
+                                  builder: (context) => EditBook(
+                                        bookSnap: widget.bookSnap,
+                                      )),
+                            ).then((value) async {
+                              DocumentSnapshot<Book> newSnap = await widget.bookSnap.reference.get();
+                              setState((){
+                                widget.bookSnap = newSnap;
+                              });
+                              });
                           }),
                     ),
                   Padding(
@@ -154,6 +162,9 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          const SizedBox(
+            height: 25,
+          ),
           RichText(
             text: TextSpan(
               text: widget.bookSnap.data()!.title,
@@ -164,17 +175,17 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                   });
                 },
               style: const TextStyle(
-                fontSize: 23,
+                fontSize: 35,
                 color: Colors.black,
-                fontWeight: FontWeight.w600,
+                // fontWeight: FontWeight.w500,
                 letterSpacing: 1.1,
                 fontFamily: "Unna",
               ),
             ),
           ),
-          const SizedBox(
-            height: 10,
-          ),
+          // const SizedBox(
+          //   height: 0,
+          // ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -367,16 +378,25 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                     },
                   ),
                 ),
-                IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                EditChapter(book_id: widget.bookSnap.id, chapter: chapters[i], num_chapters: chapters.length)),
-                      );
-                    },
-                    icon: const Icon(Icons.edit))
+                if (FirebaseService().userId ==
+                    widget.bookSnap.data()?.author_id)
+                  IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditChapter(
+                                  book_id: widget.bookSnap.id,
+                                  chapter: chapters[i],
+                                  num_chapters: chapters.length)),
+                        ).then((value) async {
+                          DocumentSnapshot<Book> newSnap = await widget.bookSnap.reference.get();
+                          setState((){
+                            widget.bookSnap = newSnap;
+                          });
+                        });
+                      },
+                      icon: const Icon(Icons.edit)),
               ],
             ));
           }

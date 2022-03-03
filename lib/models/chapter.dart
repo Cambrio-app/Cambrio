@@ -24,7 +24,6 @@ class Chapter {
     order: json['order']! as int,
   );
 
-
   Map<String, Object?> toJson() {
     return {
       'chapter_id': chapter_id,

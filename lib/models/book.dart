@@ -14,6 +14,7 @@ class Book {
   final String? description;
   final String author_name;
   final int likes;
+  final String? tags;
 
   const Book({
     required this.imageURL,
@@ -25,6 +26,7 @@ class Book {
     required this.description,
     required this.author_name,
     required this.likes,
+    required this.tags,
   });
 
   Book.fromJson(String? id, Map<String, Object?> json)
@@ -38,6 +40,7 @@ class Book {
     description: json['description'] as String?,
     author_name: json['author_name'] as String,
     likes: json['likes'] as int,
+    tags: json['tags'] as String?,
   );
 
   Map<String, Object?> toJson() {
@@ -51,6 +54,7 @@ class Book {
       'description': description,
       'author_name': author_name,
       'likes': likes,
+      'tags': tags,
     };
   }
 }

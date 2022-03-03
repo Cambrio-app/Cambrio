@@ -6,20 +6,22 @@ import '../pages/profile/editProfile.dart';
 class ShadowButton extends StatelessWidget {
   final Function() onclick;
   String text;
+  IconData? icon;
 
-
-  ShadowButton({Key? key, required this.text, required this.onclick}) : super(key: key);
+  ShadowButton({Key? key, required this.text, required this.onclick, this.icon}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
       child: Container(
         //color: Colors.black,
         constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height * 0.02,
+          minHeight: MediaQuery.of(context).size.height * 0.03,
+          maxHeight: MediaQuery.of(context).size.height * 0.04,
           minWidth: MediaQuery.of(context).size.width,
+          // maxWidth: MediaQuery.of(context).size.width,
       ),
         // height: MediaQuery.of(context).size.height * 0.04,
         padding: const EdgeInsets.only(top: 0, bottom: 0, right: 0),
@@ -43,12 +45,22 @@ class ShadowButton extends StatelessWidget {
           },
           color: Colors.white,
           elevation: 0,
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 18,
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (icon!=null) Padding(
+                padding: const EdgeInsets.fromLTRB(0,0,8,0),
+                child: Icon(icon),
+              ),
+              Text(
+                text,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontFamily: "Montserrat",
+                  fontSize: 14,
+                ),
+              ),
+            ],
           ),
         ),
       ),
