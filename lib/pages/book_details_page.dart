@@ -42,6 +42,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
   int selected = 0;
   bool clicked = false;
   late final epubber;
+  late final bool isUsersBook;
 
   @override
   void initState() {
@@ -52,6 +53,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
         authorName: widget.bookSnap.data()!.author_name,
         authorId: widget.bookSnap.data()!.author_id ?? 'wat',
         bookId: widget.bookSnap.id);
+    isUsersBook = FirebaseService().userId == widget.bookSnap.data()?.author_id;
   }
 
   @override
@@ -61,9 +63,10 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
         epubber.makeEpub(context);
       });
     }
+
     return Scaffold(
         floatingActionButton:
-            FirebaseService().userId == widget.bookSnap.data()?.author_id
+            isUsersBook
                 ? FloatingActionButton(
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     child: const Icon(Icons.add),
@@ -71,8 +74,10 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              EditChapter(book_id: widget.bookSnap.id)),
-                    ),
+                              EditChapter(book: widget.bookSnap.data()!, num_chapters: chapters.length,)),
+                    ).then((value) {
+                       setState(() {});
+                    }),
                   )
                 : null,
         body: FutureBuilder<List<Chapter>>(
@@ -126,8 +131,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                   ),
                   buildName(context),
                   // only show this widget if the book in question is written by this user.
-                  if (FirebaseService().userId ==
-                      widget.bookSnap.data()?.author_id)
+                  if (isUsersBook)
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                       child: ShadowButton(
@@ -386,13 +390,22 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => EditChapter(
-                                  book_id: widget.bookSnap.id,
+                                  book: widget.bookSnap!.data()!,
                                   chapter: chapters[i],
                                   num_chapters: chapters.length)),
                         ).then((value) async {
                           DocumentSnapshot<Book> newSnap = await widget.bookSnap.reference.get();
+
                           setState((){
                             widget.bookSnap = newSnap;
+                            // chapters = [
+                            //   const Chapter(
+                            //       chapter_id: null,
+                            //       chapter_name: 'loading',
+                            //       text:
+                            //       '<span style="padding-top:40px"><pre>\n\n... loading ...\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nloadiing\n\n\n\n\n\n\n\n\n</pre></span>',
+                            //       order: 0)
+                            // ];
                           });
                         });
                       },

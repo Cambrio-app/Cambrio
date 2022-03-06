@@ -7,14 +7,16 @@ import 'dart:ui' as ui;
 // import 'package:html_unescape/html_unescape.dart';
 
 
+import '../models/book.dart';
 import '../models/chapter.dart';
+import '../widgets/alert.dart';
 
 class EditChapter extends StatefulWidget {
-  final String book_id;
+  final Book book;
   final Chapter? chapter;
   final int? num_chapters;
 
-  const EditChapter({Key? key, required this.book_id, this.chapter, this.num_chapters}) : super(key: key);
+  const EditChapter({Key? key, required this.book, this.chapter, this.num_chapters}) : super(key: key);
   @override
   State<EditChapter> createState() => _EditChapterState();
 }
@@ -39,7 +41,7 @@ class _EditChapterState extends State<EditChapter> {
                 // String text = unescape.convert(originalText);
                 String text = originalText;
 
-                FirebaseService().editChapter(book_id: widget.book_id, chapter_id: widget.chapter?.chapter_id, chapter_name: _chapter_name_controller.text, order: (_chapter_order_controller.text=='')?null:int.parse(_chapter_order_controller.text), is_paywalled: false, text: text);
+                FirebaseService().editChapter(book_id: widget.book.id!, chapter_id: widget.chapter?.chapter_id, chapter_name: _chapter_name_controller.text, order: (_chapter_order_controller.text=='')?null:int.parse(_chapter_order_controller.text), is_paywalled: false, text: text);
                 Navigator.pop(context);
               },
               icon: const Icon(Icons.save)),
@@ -91,8 +93,26 @@ class _EditChapterState extends State<EditChapter> {
               height: 400,
             ),
           ),
+          if (widget.chapter!=null) Expanded(
+            child: Align(
+              alignment: AlignmentDirectional.bottomStart,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: ElevatedButton(
+                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
+                  onPressed: () async {
+                    bool goAhead = await Alert().isSure(context);
+                    if (goAhead) FirebaseService().deleteChapter(book: widget.book, chapter_id: widget.chapter!.chapter_id!);
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Delete Chapter'),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
+
 }

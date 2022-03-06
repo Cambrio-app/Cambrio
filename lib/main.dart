@@ -178,7 +178,7 @@ class _AppState extends State<App> {
       return LoginScreen();
     }
     else {
-      return const ResponsivePage(title: "");
+      return ResponsivePage(title: "");
     }
   }
 }

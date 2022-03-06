@@ -125,6 +125,19 @@ class FirebaseService {
     //   }
   }
 
+  bool deleteBook({required Book book}) {
+    if (book.author_id == userId) { // double check that this is indeed the user's book
+      FirebaseFirestore.instance
+          .collection('books') // collection we are adding to
+          .doc(book.id)
+          .delete();
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
   // grab all documentsnapshots of book, for use in scrolling listview of book widgets in ui
   Future<List<QueryDocumentSnapshot<Book>>> getBookDocs(
       String collectionToPull, DocumentSnapshot? lastDocument, int pageSize,
@@ -327,6 +340,21 @@ class FirebaseService {
         'order': order,
         'is_paywalled': is_paywalled,
       });
+    }
+  }
+
+  bool deleteChapter({required Book book, required String chapter_id}) {
+    if (book.author_id == userId) { // double check that this is indeed the user's book
+      FirebaseFirestore.instance
+          .collection('books') // collection we are adding to
+          .doc(book.id)
+          .collection('chapters')
+          .doc(chapter_id)
+          .delete();
+      return true;
+    }
+    else {
+      return false;
     }
   }
 

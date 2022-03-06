@@ -42,56 +42,85 @@ class _EditBookState extends State<EditBook> {
           IconButton(onPressed: () async => submit(), icon: const Icon(Icons.save)),
         ],
       ),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            // each input has a field for the user to type into
-            TextFormField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                hintText: 'Enter Title',
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              // each input has a field for the user to type into
+              TextFormField(
+                controller: _titleController,
+                decoration: const InputDecoration(
+                  hintText: 'Enter Title',
+                ),
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter title here';
+                  }
+                  return null;
+                },
               ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter title here';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(
-                hintText: 'Enter Description',
+              TextFormField(
+                controller: _descriptionController,
+                decoration: const InputDecoration(
+                  hintText: 'Enter Description',
+                ),
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter description here';
+                  }
+                  return null;
+                },
               ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter description here';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: _tagController,
-              decoration: const InputDecoration(
-                hintText: 'Enter Tags',
+              TextFormField(
+                controller: _tagController,
+                decoration: const InputDecoration(
+                  hintText: 'Enter Tags',
+                ),
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter tag here';
+                  }
+                  return null;
+                },
               ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter tag here';
-                }
-                return null;
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: ElevatedButton(
-                onPressed: () async => submit(),
-                child: const Text('Submit'),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: ElevatedButton(
+                  onPressed: () async => submit(),
+                  child: const Text('Submit'),
+                ),
               ),
-            ),
-          ],
+              if (book!=null) Expanded(
+                child: Align(
+                  alignment: AlignmentDirectional.bottomStart,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: ElevatedButton(
+                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
+                      onPressed: () {
+                        FirebaseService().deleteBook(book: book!);
+                        _descriptionController.clear();
+                        _tagController.clear();
+                        _titleController.clear();
+
+                        // Navigator.of(context).popUntil((route) => route.isFirst);
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => ResponsivePage(title: '', selectedIndex: 2,)),
+                              (Route<dynamic> route) => false,
+                        );
+                      },
+                      child: const Text('Delete Book'),
+                    ),
+                  ),
+                ),
+              ),
+
+            ],
+          ),
         ),
       ),
     );
@@ -131,5 +160,11 @@ class _EditBookState extends State<EditBook> {
     _titleController.clear();
 
     Navigator.of(context).pop();
+    // instead do this, which refreshes state
+    // Navigator.pushAndRemoveUntil(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => ResponsivePage(title: '', selectedIndex: 2,)),
+    //       (Route<dynamic> route) => false,
+    // );
   }
 }
