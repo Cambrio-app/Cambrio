@@ -1,5 +1,6 @@
 import 'package:adaptive_navigation/adaptive_navigation.dart';
 import 'package:cambrio/pages/search_page.dart';
+import 'package:cambrio/pages/settings.dart';
 import 'package:cambrio/widgets/book_grid_view.dart';
 import 'package:cambrio/pages/edit_chapter.dart';
 import 'package:cambrio/pages/edit_book.dart';
@@ -10,8 +11,10 @@ import 'package:cambrio/widgets/profile/profile_view.dart';
 import 'package:cambrio/pages/profile/personal_profile_page.dart';
 
 class ResponsivePage extends StatefulWidget {
-  const ResponsivePage({Key? key, required this.title}) : super(key: key);
+  ResponsivePage({Key? key, required this.title, this.selectedIndex = 0})
+      : super(key: key);
   final String title;
+  int selectedIndex;
 
   @override
   _ResponsivePageState createState() => _ResponsivePageState();
@@ -20,26 +23,27 @@ class ResponsivePage extends StatefulWidget {
 class _ResponsivePageState extends State<ResponsivePage> {
   bool _fabInRail = false;
   bool _includeBaseDestinationsInMenu = false;
-  int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      widget.selectedIndex = index;
     });
   }
 
   // *these are the pages*
   Widget bodyFunction() {
-    switch (_selectedIndex) {
+    switch (widget.selectedIndex) {
       case 0:
-        return const MyTabbedPage(); 
+        return const MyTabbedPage();
         break;
       case 1:
         return const SearchPage();
       case 2:
         return const PersonalProfilePage();
       default:
-        return const Center(child: Text("you managed to enter into the secret section of the app. prepare to fight the shadow boss"));
+        return const Center(
+            child: Text(
+                "you managed to enter into the secret section of the app. prepare to fight the shadow boss"));
         break;
     }
   }
@@ -47,7 +51,7 @@ class _ResponsivePageState extends State<ResponsivePage> {
   @override
   Widget build(BuildContext context) {
     return AdaptiveNavigationScaffold(
-      selectedIndex: _selectedIndex,
+      selectedIndex: widget.selectedIndex,
       destinations: _allDestinations,
       appBar: AdaptiveAppBar(
         title: Text(widget.title),
@@ -56,13 +60,21 @@ class _ResponsivePageState extends State<ResponsivePage> {
           IconButton(
               onPressed: () {
                 setState(() {
-                  _selectedIndex = 2;
+                  widget.selectedIndex = 2;
                 });
               },
               icon: const Icon(Icons.edit)),
+          IconButton(onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      Settings()
+              ),
+            );
+          }, icon: const Icon(Icons.settings)),
           IconButton(
-              onPressed: () {
-              },
+              onPressed: () {},
               icon: const Icon(Icons.notifications_none_rounded)),
         ],
       ),
