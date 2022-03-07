@@ -10,9 +10,8 @@ import 'package:cambrio/widgets/profile/profile_view.dart';
 import 'package:cambrio/pages/profile/personal_profile_page.dart';
 
 class ResponsivePage extends StatefulWidget {
-  ResponsivePage({Key? key, required this.title, this.selectedIndex = 0}) : super(key: key);
+  const ResponsivePage({Key? key, required this.title}) : super(key: key);
   final String title;
-  int selectedIndex;
 
   @override
   _ResponsivePageState createState() => _ResponsivePageState();
@@ -21,21 +20,17 @@ class ResponsivePage extends StatefulWidget {
 class _ResponsivePageState extends State<ResponsivePage> {
   bool _fabInRail = false;
   bool _includeBaseDestinationsInMenu = false;
+  int _selectedIndex = 0;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
   void _onItemTapped(int index) {
     setState(() {
-      widget.selectedIndex = index;
+      _selectedIndex = index;
     });
   }
 
   // *these are the pages*
   Widget bodyFunction() {
-    switch (widget.selectedIndex) {
+    switch (_selectedIndex) {
       case 0:
         return const MyTabbedPage(); 
         break;
@@ -52,7 +47,7 @@ class _ResponsivePageState extends State<ResponsivePage> {
   @override
   Widget build(BuildContext context) {
     return AdaptiveNavigationScaffold(
-      selectedIndex: widget.selectedIndex,
+      selectedIndex: _selectedIndex,
       destinations: _allDestinations,
       appBar: AdaptiveAppBar(
         title: Text(widget.title),
@@ -61,7 +56,7 @@ class _ResponsivePageState extends State<ResponsivePage> {
           IconButton(
               onPressed: () {
                 setState(() {
-                  widget.selectedIndex = 2;
+                  _selectedIndex = 2;
                 });
               },
               icon: const Icon(Icons.edit)),

@@ -36,6 +36,8 @@ dependencies:
   cloud_firestore: ^2.5.3
   shared_preferences: ^2.0.12
   image_picker: ^0.8.4+6
+  settings_ui: ^2.0.2
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -56,13 +58,15 @@ dependencies:
   firebase_auth: ^3.3.6
   epubx: ^3.0.0
   firestore_search: ^0.1.7
+  url_launcher: ^6.0.20
+  flutter_widget_from_html: ^0.8.5
 
   # because html coming from html_editor_enhanced includes entity names that xhtml in epub3 does not support
 #  html_unescape: ^2.0.0
 
 
   # for the book details page
-#  flutter_html: ^2.2.1
+  #flutter_html: ^2.2.1
 
 dev_dependencies:
   flutter_launcher_icons: "^0.9.2"
@@ -116,6 +120,8 @@ flutter:
     - assets/ex_epub/EPUB/
     - assets/ex_epub/META-INF/
     - assets/images/
+    - assets/legal/cambrioTermsOfService.html
+    - assets/legal/cambrioPrivacyPolicy.html
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
