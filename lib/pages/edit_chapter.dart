@@ -101,7 +101,7 @@ class _EditChapterState extends State<EditChapter> {
                 child: ElevatedButton(
                   style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
                   onPressed: () async {
-                    bool goAhead = await Alert().isSure(context);
+                    bool goAhead = await Alert().isSure(context, 'your chapter');
                     if (goAhead) FirebaseService().deleteChapter(book: widget.book, chapter_id: widget.chapter!.chapter_id!, order: widget.chapter!.order!);
                     Navigator.of(context).pop();
                   },

@@ -138,11 +138,11 @@ class _AppState extends State<App> {
 
   // check login state
   bool isLoggedIn() {
-    debugPrint('checking');
+    // debugPrint('checking');
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user==null){
         setState(() {
-          debugPrint('officially NOT logged in');
+          // debugPrint('officially NOT logged in');
           loggedIn = false;
         });
       }

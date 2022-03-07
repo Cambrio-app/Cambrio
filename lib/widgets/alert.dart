@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 class Alert {
-  Future<bool> isSure(context) async {
+  Future<bool> isSure(context, String deleted) async {
     bool goAhead = false;
     await showDialog<bool>(
       context: context,
@@ -20,7 +20,7 @@ class Alert {
                   height: 90,
                   fit: BoxFit.fitHeight,
                 ),
-                const Text("Clicking 'Approve' will delete your chapter."),
+                Text("Clicking 'Approve' will delete $deleted."),
               ],
             ),
           ),
@@ -34,6 +34,36 @@ class Alert {
             ),
             TextButton(
               child: const Text('Approve'),
+              onPressed: () {
+                goAhead = true;
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+    return goAhead;
+  }
+
+  Future<bool> error(context, String message) async {
+    bool goAhead = false;
+    await showDialog<bool>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Something went wrong!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text("Error: $message."),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Return'),
               onPressed: () {
                 goAhead = true;
                 Navigator.of(context).pop();

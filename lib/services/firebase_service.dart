@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 
 import '../models/user_profile.dart';
 import '../models/author_subscription.dart';
+import '../widgets/alert.dart';
 
 enum QueryTypes {
   alphabetical,
@@ -28,7 +29,8 @@ class FirebaseService {
 
   String get userId => _cachedUserId ?? FirebaseAuth.instance.currentUser!.uid;
 
-  Future<UserProfile> get currentUserProfile async => _cachedCurrentUserProfile ?? (await getProfile(uid: userId))!;
+  Future<UserProfile> get currentUserProfile async =>
+      _cachedCurrentUserProfile ?? (await getProfile(uid: userId))!;
 
   // pulls existing profile information.
   Future<UserProfile?> getProfile({required String uid}) async {
@@ -98,16 +100,16 @@ class FirebaseService {
   void editBook({required Book book}) async {
     String? _user_id = FirebaseAuth.instance.currentUser?.uid;
     // if (book.id != null) {
-      // Allows user to update all book values or create a new book if there is no book_id
-      FirebaseFirestore.instance
-          .collection('books') // collection we are adding to
-          .doc(book.id)
-          .withConverter<Book>(
-            fromFirestore: (snapshot, _) =>
-                Book.fromJson(snapshot.id, snapshot.data()!),
-            toFirestore: (book, _) => book.toJson(),
-          )
-          .set(book);
+    // Allows user to update all book values or create a new book if there is no book_id
+    FirebaseFirestore.instance
+        .collection('books') // collection we are adding to
+        .doc(book.id)
+        .withConverter<Book>(
+          fromFirestore: (snapshot, _) =>
+              Book.fromJson(snapshot.id, snapshot.data()!),
+          toFirestore: (book, _) => book.toJson(),
+        )
+        .set(book);
     // }
     // else
     //   {
@@ -125,15 +127,29 @@ class FirebaseService {
     //   }
   }
 
-  bool deleteBook({required Book book}) {
-    if (book.author_id == userId) { // double check that this is indeed the user's book
-      FirebaseFirestore.instance
+  Future<bool> deleteBook({required Book book}) async {
+    if (book.author_id == userId) {
+      // double check that this is indeed the user's book
+
+      // recursively delete all of the chapters
+      await FirebaseFirestore.instance
+          .collection('books') // collection we are adding to
+          .doc(book.id)
+          .collection('chapters')
+          .get()
+          .then((snapshot) {
+        for (DocumentSnapshot ds in snapshot.docs) {
+          ds.reference.delete();
+        }
+      });
+
+      // delete the book
+      await FirebaseFirestore.instance
           .collection('books') // collection we are adding to
           .doc(book.id)
           .delete();
       return true;
-    }
-    else {
+    } else {
       return false;
     }
   }
@@ -325,7 +341,8 @@ class FirebaseService {
       bool is_paywalled = false}) async {
     debugPrint(order.toString());
     String? _user_id = FirebaseAuth.instance.currentUser?.uid;
-    if (_user_id != null) { // just making sure we aren't dealing with a ghost
+    if (_user_id != null) {
+      // just making sure we aren't dealing with a ghost
       // Adds user inputted title to the Firestore database
       await FirebaseFirestore.instance
           .collection('books') // collection we are adding to
@@ -341,15 +358,17 @@ class FirebaseService {
         'is_paywalled': is_paywalled,
       });
 
-      await reorderChapters(book_id: book_id,chapter_id: chapter_id,order: order);
-
+      await reorderChapters(
+          book_id: book_id, chapter_id: chapter_id, order: order);
     }
   }
 
-  bool deleteChapter({required Book book, required String chapter_id, required int order}) {
-    if (book.author_id == userId) { // double check that this is indeed the user's book
+  bool deleteChapter(
+      {required Book book, required String chapter_id, required int order}) {
+    if (book.author_id == userId) {
+      // double check that this is indeed the user's book
 
-      DocumentReference documentReference  = FirebaseFirestore.instance
+      DocumentReference documentReference = FirebaseFirestore.instance
           .collection('books') // collection we are adding to
           .doc(book.id)
           .collection('chapters')
@@ -360,36 +379,38 @@ class FirebaseService {
       //   .;
 
       documentReference.delete();
-        // reorder the remaining chapters
+      // reorder the remaining chapters
       reorderChapters(book_id: book.id!);
       return true;
-    }
-    else {
+    } else {
       return false;
     }
   }
 
-  Future<void> reorderChapters({required String book_id, String? chapter_id, int? order}) async {
+  Future<void> reorderChapters(
+      {required String book_id, String? chapter_id, int? order}) async {
     // do this whole operation at once.
     WriteBatch batch = FirebaseFirestore.instance.batch();
 
-    CollectionReference chapters  = FirebaseFirestore.instance
+    CollectionReference chapters = FirebaseFirestore.instance
         .collection('books') // collection we are adding to
         .doc(book_id)
         .collection('chapters')
         .withConverter<Chapter>(
-      fromFirestore: (snapshot, _) =>
-          Chapter.fromJson(snapshot.id, snapshot.data()!),
-      toFirestore: (chapter, _) => chapter.toJson(),
-    );
+          fromFirestore: (snapshot, _) =>
+              Chapter.fromJson(snapshot.id, snapshot.data()!),
+          toFirestore: (chapter, _) => chapter.toJson(),
+        );
     // pull the chapters as a list
-    List<DocumentSnapshot<Chapter>> chaptersList = (await chapters.orderBy(
-        'order', descending: false).get()).docs as List<DocumentSnapshot<Chapter>>;
+    List<DocumentSnapshot<Chapter>> chaptersList =
+        (await chapters.orderBy('order', descending: false).get()).docs
+            as List<DocumentSnapshot<Chapter>>;
 
-    if (chapter_id!=null && order!=null) { // if this is a reorder, then move the chapter, otherwise, we may just be dealing with a delete
+    if (chapter_id != null && order != null) {
+      // if this is a reorder, then move the chapter, otherwise, we may just be dealing with a delete
       // get the related chapter
-      DocumentSnapshot<Chapter> chosen = chaptersList.firstWhere((
-          chapter) => chapter.data()!.chapter_id == chapter_id);
+      DocumentSnapshot<Chapter> chosen = chaptersList
+          .firstWhere((chapter) => chapter.data()!.chapter_id == chapter_id);
       // take the chapter off the list
       chaptersList.remove(chosen);
       // put the chapter in where specified
@@ -397,8 +418,8 @@ class FirebaseService {
     }
 
     // reorder the chapters accordingly
-    for (int i=0;i < chaptersList.length; i++) {
-      batch.update(chaptersList[i].reference, {'order': i+1});
+    for (int i = 0; i < chaptersList.length; i++) {
+      batch.update(chaptersList[i].reference, {'order': i + 1});
     }
 
     return batch.commit();
@@ -500,5 +521,41 @@ class FirebaseService {
       transaction.update(bookSnap.reference, {'likes': newLikesCount});
       return newLikesCount;
     });
+  }
+
+  Future<void> logOut(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.of(context).pop();
+  }
+
+  Future<void> deleteAccount(BuildContext context) async {
+    bool isSure = await Alert()
+        .isSure(context, 'your entire account and every book in it.');
+    if (isSure) {
+      try {
+        // delete all of the user's books
+        await FirebaseFirestore.instance
+            .collection('books') // collection we are deleting from
+            .where('author_id', isEqualTo: userId)
+            .withConverter<Book>(
+              fromFirestore: (snapshot, _) =>
+                  Book.fromJson(snapshot.id, snapshot.data()!),
+              toFirestore: (book, _) => book.toJson(),
+            )
+            .get()
+            .then((snapshot) {
+          for (DocumentSnapshot<Book> ds in snapshot.docs) {
+            deleteBook(book: ds.data()!);
+          }
+        });
+
+        // delete the user's account
+        await FirebaseAuth.instance.currentUser!.delete();
+        Navigator.of(context).pop();
+      } catch (e) {
+        Alert().error(
+            context, 'We had some issues deleting your books or account');
+      }
+    }
   }
 }

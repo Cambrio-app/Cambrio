@@ -1,3 +1,5 @@
+import 'package:cambrio/services/firebase_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:flutter/material.dart';
@@ -51,11 +53,17 @@ class Settings extends StatelessWidget {
             title: Text("Account"),
             tiles: <SettingsTile>[
               SettingsTile(
+                onPressed: (context) async {
+                  FirebaseService().logOut(context);
+                  },
                 leading: Icon(Icons.account_box_outlined),
                 title: Text("Log Out", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
 
               ),
               SettingsTile(
+                onPressed: (context) async {
+                  FirebaseService().deleteAccount(context);
+                },
                 leading: Icon(Icons.cancel_outlined),
                 title: Text("Deactivate Account", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
 
