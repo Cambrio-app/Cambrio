@@ -24,7 +24,7 @@ class EditChapter extends StatefulWidget {
 class _EditChapterState extends State<EditChapter> {
   HtmlEditorController controller = HtmlEditorController(processOutputHtml: true, processNewLineAsBr: true, );
   late final _chapter_name_controller = TextEditingController(text: widget.chapter?.chapter_name);
-  late final _chapter_order_controller = TextEditingController(text: '${widget.chapter?.order ?? (widget.num_chapters ?? 0 +1)}');
+  late final _chapter_order_controller = TextEditingController(text: '${widget.chapter?.order ?? ((widget.num_chapters ?? 0) +1)}');
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +102,7 @@ class _EditChapterState extends State<EditChapter> {
                   style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
                   onPressed: () async {
                     bool goAhead = await Alert().isSure(context);
-                    if (goAhead) FirebaseService().deleteChapter(book: widget.book, chapter_id: widget.chapter!.chapter_id!);
+                    if (goAhead) FirebaseService().deleteChapter(book: widget.book, chapter_id: widget.chapter!.chapter_id!, order: widget.chapter!.order!);
                     Navigator.of(context).pop();
                   },
                   child: const Text('Delete Chapter'),

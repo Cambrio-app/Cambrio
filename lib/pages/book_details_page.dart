@@ -390,7 +390,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => EditChapter(
-                                  book: widget.bookSnap!.data()!,
+                                  book: widget.bookSnap.data()!,
                                   chapter: chapters[i],
                                   num_chapters: chapters.length)),
                         ).then((value) async {

@@ -325,9 +325,9 @@ class FirebaseService {
       bool is_paywalled = false}) async {
     debugPrint(order.toString());
     String? _user_id = FirebaseAuth.instance.currentUser?.uid;
-    if (_user_id != null) {
+    if (_user_id != null) { // just making sure we aren't dealing with a ghost
       // Adds user inputted title to the Firestore database
-      FirebaseFirestore.instance
+      await FirebaseFirestore.instance
           .collection('books') // collection we are adding to
           .doc(book_id)
           .collection('chapters')
@@ -340,22 +340,68 @@ class FirebaseService {
         'order': order,
         'is_paywalled': is_paywalled,
       });
+
+      await reorderChapters(book_id: book_id,chapter_id: chapter_id,order: order);
+
     }
   }
 
-  bool deleteChapter({required Book book, required String chapter_id}) {
+  bool deleteChapter({required Book book, required String chapter_id, required int order}) {
     if (book.author_id == userId) { // double check that this is indeed the user's book
-      FirebaseFirestore.instance
+
+      DocumentReference documentReference  = FirebaseFirestore.instance
           .collection('books') // collection we are adding to
           .doc(book.id)
           .collection('chapters')
-          .doc(chapter_id)
-          .delete();
+          .doc(chapter_id);
+      // FirebaseFirestore.instance
+      //   .collection('books/${book.id}/chapters')
+      //   .where('order', isGreaterThan: order)
+      //   .;
+
+      documentReference.delete();
+        // reorder the remaining chapters
+      reorderChapters(book_id: book.id!);
       return true;
     }
     else {
       return false;
     }
+  }
+
+  Future<void> reorderChapters({required String book_id, String? chapter_id, int? order}) async {
+    // do this whole operation at once.
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+
+    CollectionReference chapters  = FirebaseFirestore.instance
+        .collection('books') // collection we are adding to
+        .doc(book_id)
+        .collection('chapters')
+        .withConverter<Chapter>(
+      fromFirestore: (snapshot, _) =>
+          Chapter.fromJson(snapshot.id, snapshot.data()!),
+      toFirestore: (chapter, _) => chapter.toJson(),
+    );
+    // pull the chapters as a list
+    List<DocumentSnapshot<Chapter>> chaptersList = (await chapters.orderBy(
+        'order', descending: false).get()).docs as List<DocumentSnapshot<Chapter>>;
+
+    if (chapter_id!=null && order!=null) { // if this is a reorder, then move the chapter, otherwise, we may just be dealing with a delete
+      // get the related chapter
+      DocumentSnapshot<Chapter> chosen = chaptersList.firstWhere((
+          chapter) => chapter.data()!.chapter_id == chapter_id);
+      // take the chapter off the list
+      chaptersList.remove(chosen);
+      // put the chapter in where specified
+      chaptersList.insert(order - 1, chosen);
+    }
+
+    // reorder the chapters accordingly
+    for (int i=0;i < chaptersList.length; i++) {
+      batch.update(chaptersList[i].reference, {'order': i+1});
+    }
+
+    return batch.commit();
   }
 
   void editSubscription({required String author_id}) async {
