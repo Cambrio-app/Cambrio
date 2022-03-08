@@ -24,8 +24,10 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
         physics: BouncingScrollPhysics(),
         children: [
           const SizedBox(height: 20),
-          ProfileWidget(
-            imagePath: widget.profile.image_url,
+          Center(
+            child: ProfileWidget(
+              imagePath: widget.profile.image_url,
+            ),
           ),
           const SizedBox(
             height: 20,
@@ -40,7 +42,7 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
           const SizedBox(
             height: 20,
           ),
-          NumbersWidget(subs: widget.profile.num_subs ?? -1, likes: widget.profile.num_likes ?? 0),
+          NumbersWidget(profile_id: widget.profile.user_id, subs: widget.profile.num_subs ?? -1, likes: widget.profile.num_likes ?? 0),
           const SizedBox(
             height: 20,
           ),

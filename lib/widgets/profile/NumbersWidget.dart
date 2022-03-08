@@ -5,8 +5,10 @@ class NumbersWidget extends StatelessWidget {
   int subs;
   int likes;
 
+  String? profile_id;
 
-  NumbersWidget({Key? key, required this.subs, required this.likes});
+
+  NumbersWidget({Key? key, this.profile_id, required this.subs, required this.likes});
 
   @override
   Widget build(BuildContext context) => Row(
@@ -22,7 +24,7 @@ class NumbersWidget extends StatelessWidget {
     child: MaterialButton(
        padding: EdgeInsets.symmetric(vertical: 4),
           onPressed: () {
-            FirebaseService().checkStats();
+            FirebaseService().checkStats(profile_id: profile_id);
           },
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           child: Column(

@@ -593,7 +593,7 @@ class FirebaseService {
       // update profile to reflect changed value
       FirebaseFirestore.instance
           .collection('user_profiles')
-          .doc(userId)
+          .doc(profile_id ?? userId)
           .update({'num_likes': total});
 
       Query subsQuery = FirebaseFirestore.instance
@@ -608,7 +608,7 @@ class FirebaseService {
       }
       FirebaseFirestore.instance
           .collection('user_profiles')
-          .doc(userId)
+          .doc(profile_id ?? userId)
           .update({'num_subs': totalSubs});
     // }
     // catch (e) {
