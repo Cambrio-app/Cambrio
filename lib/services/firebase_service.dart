@@ -6,6 +6,8 @@ import 'package:cambrio/models/like.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:image_picker/image_picker.dart';
 
 import '../models/user_profile.dart';
 import '../models/author_subscription.dart';
@@ -78,10 +80,24 @@ class FirebaseService {
   }
 
   // modify or create a new profile for the user.
-  void editProfile(
-      {String? full_name, String? handle, String? bio, String? url_pic}) async {
+  void editProfile(BuildContext context,
+      {String? full_name, String? handle, String? bio, String? url_pic, XFile? image}) async {
     String? _user_id = FirebaseAuth.instance.currentUser?.uid;
     if (_user_id != null) {
+      // upload user image
+      if (image!=null) {
+        try {
+          firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
+              .ref('$userId.png');
+          await ref.putData(await image.readAsBytes());
+          // get the url of the uploaded photo
+          url_pic = await ref.getDownloadURL();
+        } catch (e) {
+          Alert().error(context, "We had a problem uploading your picture: ${e.toString()}");
+          // e.g, e.code == 'canceled'
+        }
+      }
+
       // Adds user inputted title to the Firestore database
       FirebaseFirestore.instance
           .collection('user_profiles') // collection we are adding to
@@ -91,7 +107,7 @@ class FirebaseService {
         'full_name': full_name,
         'handle': handle,
         'bio': bio,
-        'url_pic': url_pic,
+        'image_url': url_pic,
       });
     }
   }

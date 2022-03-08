@@ -24,7 +24,7 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
       user_id: 'idk',
       bio: 'loading',
       handle: 'loading',
-      imageURL: null,
+      image_url: null,
       full_name: 'loading');
 
   @override
@@ -41,7 +41,7 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
               user_id: 'idk',
               bio: 'loading',
               handle: 'loading',
-              imageURL: null,
+              image_url: null,
               full_name: 'loading');
         }
         return Scaffold(
@@ -60,7 +60,7 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
                       children: [
                         Flexible(
                           child: ProfileWidget(
-                            imagePath: profile.imageURL,
+                            imagePath: profile.image_url,
                           ),
                         ),
 

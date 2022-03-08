@@ -60,6 +60,7 @@ dependencies:
   firestore_search: ^0.1.7
   url_launcher: ^6.0.20
   flutter_widget_from_html: ^0.8.5
+  firebase_storage: ^10.2.9
 
   # because html coming from html_editor_enhanced includes entity names that xhtml in epub3 does not support
 #  html_unescape: ^2.0.0

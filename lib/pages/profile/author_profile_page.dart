@@ -25,7 +25,7 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
         children: [
           const SizedBox(height: 20),
           ProfileWidget(
-            imagePath: widget.profile.imageURL,
+            imagePath: widget.profile.image_url,
           ),
           const SizedBox(
             height: 20,

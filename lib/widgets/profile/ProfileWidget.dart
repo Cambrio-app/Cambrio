@@ -22,7 +22,7 @@ class ProfileWidget extends StatelessWidget {
     return ClipOval(
       child: Material(
         child: Image.network(
-          "https://firebasestorage.googleapis.com/v0/b/cambio-46fdc.appspot.com/o/gif-kermityping.gif?alt=media&token=cf28f63b-c8c1-407f-9b2c-277a4d24327a",
+          imagePath ?? "https://firebasestorage.googleapis.com/v0/b/cambio-46fdc.appspot.com/o/gif-kermityping.gif?alt=media&token=cf28f63b-c8c1-407f-9b2c-277a4d24327a",
           width: 90,
           height: 90,
           fit: BoxFit.cover,

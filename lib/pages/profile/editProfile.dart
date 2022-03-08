@@ -85,7 +85,7 @@ class _EditProfileState extends State<EditProfile> {
               child:ClipRRect(
                       borderRadius: BorderRadius.circular(70),
                       child: Image.file(
-                      File(image!.path), fit: BoxFit.fitHeight,
+                      File(image!.path), fit: BoxFit.cover,
                       width: 100,
                         height: 100,
                       ),
@@ -143,11 +143,12 @@ class _EditProfileState extends State<EditProfile> {
                   minWidth: 200,
                   color: const Color(0xff778DFC),
                 onPressed: () {
-                    FirebaseService().editProfile(
+                    FirebaseService().editProfile(context,
                         full_name: _nameController.text,
                         handle: _handleController.text,
                         bio: _bioController.text,
                         url_pic: image?.path,
+                        image: image,
                     );
                     // setState(() {
                     //   UserConstant.name = _nameController.text;

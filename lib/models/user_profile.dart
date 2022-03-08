@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 @immutable
 class UserProfile{
   final String user_id;
-  final String? imageURL;
+  final String? image_url;
   final String? full_name;
   final String? handle;
   final String? bio;
@@ -14,7 +14,7 @@ class UserProfile{
 
   const UserProfile({
     required this.user_id,
-    required this.imageURL,
+    required this.image_url,
     required this.full_name,
     required this.handle,
     required this.bio,
@@ -25,7 +25,7 @@ class UserProfile{
   UserProfile.fromJson(String id, Map<String, Object?> json)
       : this(
     user_id: id,
-    imageURL: json['imageURL'] as String?,
+    image_url: json['image_url'] as String?,
     full_name: json['full_name'] as String?,
     bio: json['bio'] as String?,
     handle: json['handle'] as String?,
@@ -33,7 +33,7 @@ class UserProfile{
 
   Map<String, Object?> toJson() {
     return {
-      'imageURL': imageURL,
+      'image_url': image_url,
       'full_name': full_name,
       'bio': bio,
       'handle': handle,
