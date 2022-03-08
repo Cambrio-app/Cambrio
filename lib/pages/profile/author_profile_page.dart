@@ -19,6 +19,7 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: ListView(
         physics: BouncingScrollPhysics(),
         children: [
