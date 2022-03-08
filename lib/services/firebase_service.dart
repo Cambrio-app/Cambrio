@@ -34,6 +34,26 @@ class FirebaseService {
   Future<UserProfile> get currentUserProfile async =>
       _cachedCurrentUserProfile ?? (await getProfile(uid: userId))!;
 
+  Future<String?> uploadImage(context,
+      {required XFile image, required String name}) async {
+    debugPrint('uploading image ......');
+    String? image_url;
+    try {
+      firebase_storage.Reference ref =
+          firebase_storage.FirebaseStorage.instance.ref('$name.png');
+
+      await ref.putData(await image.readAsBytes());
+      // get the url of the uploaded photo
+      image_url = await ref.getDownloadURL();
+      debugPrint('Image Uploaded');
+    } catch (e) {
+      Alert().error(
+          context, "We had a problem uploading your picture: ${e.toString()}");
+      // e.g, e.code == 'canceled'
+    }
+    return image_url;
+  }
+
   // pulls existing profile information.
   Future<UserProfile?> getProfile({required String uid}) async {
     debugPrint(uid);
@@ -81,19 +101,24 @@ class FirebaseService {
 
   // modify or create a new profile for the user.
   void editProfile(BuildContext context,
-      {String? full_name, String? handle, String? bio, String? url_pic, XFile? image}) async {
+      {String? full_name,
+      String? handle,
+      String? bio,
+      String? url_pic,
+      XFile? image}) async {
     String? _user_id = FirebaseAuth.instance.currentUser?.uid;
     if (_user_id != null) {
       // upload user image
-      if (image!=null) {
+      if (image != null) {
         try {
-          firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
-              .ref('$userId.png');
+          firebase_storage.Reference ref =
+              firebase_storage.FirebaseStorage.instance.ref('$userId.png');
           await ref.putData(await image.readAsBytes());
           // get the url of the uploaded photo
           url_pic = await ref.getDownloadURL();
         } catch (e) {
-          Alert().error(context, "We had a problem uploading your picture: ${e.toString()}");
+          Alert().error(context,
+              "We had a problem uploading your picture: ${e.toString()}");
           // e.g, e.code == 'canceled'
         }
       }
@@ -113,34 +138,47 @@ class FirebaseService {
   }
 
   // modify or create a new book for the user.
-  void editBook({required Book book}) async {
-    String? _user_id = FirebaseAuth.instance.currentUser?.uid;
-    // if (book.id != null) {
-    // Allows user to update all book values or create a new book if there is no book_id
-    FirebaseFirestore.instance
-        .collection('books') // collection we are adding to
-        .doc(book.id)
-        .withConverter<Book>(
-          fromFirestore: (snapshot, _) =>
-              Book.fromJson(snapshot.id, snapshot.data()!),
-          toFirestore: (book, _) => book.toJson(),
-        )
-        .set(book);
-    // }
-    // else
-    //   {
-    //     Book actual = FieldValue.serverTimestamp();
-    //     // Allows user to update all book values or create a new book if there is no book_id
-    //     FirebaseFirestore.instance
-    //         .collection('books') // collection we are adding to
-    //         // .doc(book.id)
-    //         .withConverter<Book>(
-    //       fromFirestore: (snapshot, _) =>
-    //           Book.fromJson(snapshot.id, snapshot.data()!),
-    //       toFirestore: (book, _) => book.toJson(),
-    //     )
-    //         .add(book);
-    //   }
+  Future<void> editBook(BuildContext context,
+      {required Book book, XFile? image}) async {
+    CollectionReference booksCollection = FirebaseFirestore.instance
+        .collection('books');
+
+    if ((book.id != null)) {
+      // go ahead and upload the image if the book already exists on the database
+      if ((image != null)) {
+        book = book.copyWith(
+            image_url: await uploadImage(context, image: image, name: book.id!));
+      }
+      debugPrint("current url, now: ${book.image_url}");
+      // Allows user to update all book values or create a new book if there is no book_id
+      booksCollection // collection we are adding to
+          .doc(book.id)
+          .withConverter<Book>(
+            fromFirestore: (snapshot, _) =>
+                Book.fromJson(snapshot.id, snapshot.data()!),
+            toFirestore: (book, _) => book.toJson(),
+          )
+          .set(book);
+      // book.image_url = await uploadImage(context, image: image, name: book.id!);
+    } else {
+      DocumentReference ref = await booksCollection// collection we are adding to
+          .withConverter<Book>(
+            fromFirestore: (snapshot, _) =>
+                Book.fromJson(snapshot.id, snapshot.data()!),
+            toFirestore: (book, _) => book.toJson(),
+          )
+          .add(book);
+
+      // if this is a new book, upload the image after we know its id.
+      if (image != null) {
+        booksCollection // collection we are adding to
+            .doc(ref.id)
+            .update({
+          'image_url':
+              (await uploadImage(context, image: image, name: ref.id))
+        });
+      }
+    }
   }
 
   Future<bool> deleteBook({required Book book}) async {

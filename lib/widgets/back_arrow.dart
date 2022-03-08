@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -17,8 +16,13 @@ class BackArrow extends StatelessWidget {
             child: Align(
               alignment: AlignmentDirectional.topStart,
               child: Padding(
-                padding: EdgeInsets.fromLTRB(10,50,20,20),
-                child: FloatingActionButton(backgroundColor: Colors.white.withOpacity(1), child: Icon(Icons.chevron_left_outlined, size: 24, color: Colors.black),onPressed: () => Navigator.of(context).pop()),
+                padding: EdgeInsets.fromLTRB(10, 50, 20, 20),
+                child: FloatingActionButton(
+                    heroTag: 'back',
+                    backgroundColor: Colors.white.withOpacity(1),
+                    child: const Icon(Icons.chevron_left_outlined,
+                        size: 24, color: Colors.black),
+                    onPressed: () => Navigator.of(context).pop()),
               ),
             ),
           ),
@@ -26,5 +30,4 @@ class BackArrow extends StatelessWidget {
       ),
     );
   }
-  
 }
