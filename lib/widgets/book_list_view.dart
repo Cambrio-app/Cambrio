@@ -64,6 +64,7 @@ class _BookListViewState extends State<BookListView> {
                     )),
 
                 Container(
+                  alignment: Alignment.centerLeft,
                   // fit: FlexFit.loose,
                     height: 150 + 2*14*MediaQuery.of(context).textScaleFactor*1.2,
                     // color: Colors.green,
