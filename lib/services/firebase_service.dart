@@ -433,7 +433,8 @@ class FirebaseService {
       String? chapter_name,
       String? text,
       int? order,
-      bool is_paywalled = false}) async {
+      bool is_paywalled = false,
+      }) async {
     debugPrint(order.toString());
     String? _user_id = FirebaseAuth.instance.currentUser?.uid;
     if (_user_id != null) {
@@ -448,6 +449,9 @@ class FirebaseService {
           .set({
         // what we are adding
         'chapter_name': chapter_name,
+        'chapter_id': chapter_id,
+        'book_id': book_id,
+        'time_written': FieldValue.serverTimestamp(),
         'text': text,
         'order': order,
         'is_paywalled': is_paywalled,

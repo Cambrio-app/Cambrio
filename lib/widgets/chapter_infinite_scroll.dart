@@ -1,8 +1,13 @@
+import 'package:cambrio/services/ChapterQueryService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:cambrio/widgets/chapter.dart';
+
+import '../models/book.dart';
+import '../models/chapter.dart';
+import '../services/firebase_service.dart';
 
 class ChapterInfScroll extends StatefulWidget {
   final String collectionToPull;
@@ -16,7 +21,7 @@ class ChapterInfScroll extends StatefulWidget {
 class _ChapterInfScrollState extends State<ChapterInfScroll> {
   static const _pageSize = 15;
 
-  final PagingController<DocumentSnapshot?, DocumentSnapshot> _pagingController = PagingController(firstPageKey: null, invisibleItemsThreshold: 3);
+  final PagingController<DocumentSnapshot<Chapter>?, DocumentSnapshot<Chapter>> _pagingController = PagingController(firstPageKey: null, invisibleItemsThreshold: 3);
 
   @override
   void initState() {
@@ -26,18 +31,9 @@ class _ChapterInfScrollState extends State<ChapterInfScroll> {
     super.initState();
   }
 
-  Future<void> _fetchPage(DocumentSnapshot? pageKey) async {
+  Future<void> _fetchPage(DocumentSnapshot<Chapter>? pageKey) async {
     try {
-      Query _query = FirebaseFirestore.instance
-          .collection(widget.collectionToPull).orderBy("title", descending: true);
-      if (pageKey != null) {
-        _query = _query.startAfterDocument(pageKey).limit(_pageSize);
-      } else {
-        _query = _query.limit(_pageSize);
-      }
-
-      final QuerySnapshot query =  await _query.get();
-      final List<DocumentSnapshot> newItems = query.docs;
+      final List<DocumentSnapshot<Chapter>> newItems = (await ChapterQueryService().getChapterDocs(widget.collectionToPull,pageKey,_pageSize)).cast<DocumentSnapshot<Chapter>>();
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
@@ -57,14 +53,14 @@ class _ChapterInfScrollState extends State<ChapterInfScroll> {
         onRefresh: () => Future.sync(
               () => _pagingController.refresh(),
         ),
-        child: PagedListView<DocumentSnapshot?, DocumentSnapshot>( //used to be PagedGridView
+        child: PagedListView<DocumentSnapshot<Chapter>?, DocumentSnapshot<Chapter>>( //used to be PagedGridView
           scrollDirection: Axis.vertical,
           pagingController: _pagingController,
-          builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot>(
+          builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot<Chapter>>(
             // noItemsFoundIndicatorBuilder: (context) => const Text('No more items!'),
             noMoreItemsIndicatorBuilder: (_) => const Text('no more!',textAlign: TextAlign.center,),
-            itemBuilder: (context, item, index) => Chapter(
-              title: (item.data() as Map<String,dynamic>)["title"],
+            itemBuilder: (context, item, index) => ChapterWidget(
+              chapter: item.data()!,
             ),
           ),
         ),

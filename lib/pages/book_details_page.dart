@@ -24,8 +24,9 @@ import '../models/chapter.dart';
 
 class BookDetailsPage extends StatefulWidget {
   DocumentSnapshot<Book> bookSnap;
+  bool open;
 
-  BookDetailsPage({Key? key, required this.bookSnap}) : super(key: key);
+  BookDetailsPage({Key? key, required this.bookSnap, this.open = false}) : super(key: key);
 
   @override
   _BookDetailsPageState createState() => _BookDetailsPageState();
@@ -38,7 +39,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
         chapter_name: 'loading',
         text:
             '<span style="padding-top:40px"><pre>\n\n... loading ...\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nloadiing\n\n\n\n\n\n\n\n\n</pre></span>',
-        order: 0)
+        order: 0, book_id: 'none', time_written: null)
   ];
   int selected = 0;
   bool clicked = false;
@@ -359,7 +360,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
           ),
         ),
         expandedCrossAxisAlignment: CrossAxisAlignment.center,
-        initiallyExpanded: false,
+        initiallyExpanded: widget.open,
 
         children: () {
           List<Widget> widgets = [];

@@ -166,7 +166,7 @@ class MakeEpub {
   }
 
   void addChapter(String id, String name, String text, int order){
-    chapters.add(Chapter(chapter_id:id,chapter_name:name,text:text,order:order));
+    chapters.add(Chapter(chapter_id:id,chapter_name:name,text:text,order:order, book_id: '??', time_written: null));
   }
 
   Future<File> makeEpub(BuildContext context, {int? location}) async{
