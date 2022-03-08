@@ -64,7 +64,7 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
                           ),
                         ),
 
-                        Expanded(flex:2,child: Center(child: NumbersWidget())),
+                        Expanded(flex:2,child: Center(child: NumbersWidget(likes: profile.num_likes ?? -1, subs: profile.num_subs ?? 1,))),
                       ],
                     ),
                     const SizedBox(

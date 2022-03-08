@@ -40,7 +40,7 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
           const SizedBox(
             height: 20,
           ),
-          NumbersWidget(),
+          NumbersWidget(subs: widget.profile.num_subs ?? -1, likes: widget.profile.num_likes ?? 0),
           const SizedBox(
             height: 20,
           ),

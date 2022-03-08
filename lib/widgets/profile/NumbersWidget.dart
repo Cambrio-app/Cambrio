@@ -1,21 +1,29 @@
+import 'package:cambrio/services/firebase_service.dart';
 import 'package:flutter/material.dart';
 
 class NumbersWidget extends StatelessWidget {
+  int subs;
+  int likes;
+
+
+  NumbersWidget({Key? key, required this.subs, required this.likes});
 
   @override
   Widget build(BuildContext context) => Row(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: <Widget>[
-      _buildButton(context, '27k', 'Subscribers'),
+      _buildButton(context, compactify(subs), 'Subscribers'),
       // SizedBox(width: 7.0),
-      _buildButton(context, '1.4M', 'Likes'),
+      _buildButton(context, compactify(likes), 'Likes'),
     ],
   );
   Widget _buildButton(BuildContext context, String value, String text) =>
   Expanded(
     child: MaterialButton(
        padding: EdgeInsets.symmetric(vertical: 4),
-          onPressed: () {},
+          onPressed: () {
+            FirebaseService().checkStats();
+          },
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -35,4 +43,16 @@ class NumbersWidget extends StatelessWidget {
           ),
     ),
   );
+
+  // compactify the numbers
+  String compactify(int value) {
+    const units = <int, String>{
+      1000000000: 'B',
+      1000000: 'M',
+      1000: 'K',
+    };
+    return units.entries
+        .map((e) => '${value ~/ e.key}${e.value}')
+        .firstWhere((e) => !e.startsWith('0'), orElse: () => '$value');
+  }
 }

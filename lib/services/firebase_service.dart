@@ -101,12 +101,12 @@ class FirebaseService {
   }
 
   // modify or create a new profile for the user.
-  void editProfile(BuildContext context,
+  void editProfile(BuildContext? context,
       {String? full_name,
       String? handle,
       String? bio,
       String? url_pic,
-      XFile? image}) async {
+      XFile? image, int? num_subs, int? num_likes}) async {
     String? _user_id = FirebaseAuth.instance.currentUser?.uid;
     if (_user_id != null) {
       // upload user image
@@ -123,18 +123,17 @@ class FirebaseService {
           // e.g, e.code == 'canceled'
         }
       }
+      final profile = UserProfile(user_id: _user_id, image_url: url_pic, full_name: full_name, handle: handle, bio: bio, num_subs: num_subs, num_likes: num_likes);
 
-      // Adds user inputted title to the Firestore database
       FirebaseFirestore.instance
           .collection('user_profiles') // collection we are adding to
           .doc(_user_id)
-          .set({
-        // what we are adding
-        'full_name': full_name,
-        'handle': handle,
-        'bio': bio,
-        'image_url': url_pic,
-      });
+          .withConverter<UserProfile>(
+        fromFirestore: (snapshot, _) =>
+            UserProfile.fromJson(snapshot.id, snapshot.data()!),
+        toFirestore: (prof, _) => prof.toJson(),
+      )
+          .set(profile);
     }
   }
 
@@ -578,6 +577,47 @@ class FirebaseService {
             .get())
         .exists;
     return record;
+  }
+  Future<void> checkStats({String? profile_id}) async {
+    // try {
+      // look at all of the book likes on each book
+      List agg = (await FirebaseFirestore.instance
+          .collection('books')
+          .where('author_id', isEqualTo: profile_id ?? userId)
+          .get()).docs.toList();
+      int total = 0;
+      // add up all of the book likes found
+      for (var element in agg) {
+        total += element['likes'] as int;
+      }
+      // update profile to reflect changed value
+      FirebaseFirestore.instance
+          .collection('user_profiles')
+          .doc(userId)
+          .update({'num_likes': total});
+
+      Query subsQuery = FirebaseFirestore.instance
+          .collectionGroup('author_subscriptions')
+          .where('author_id', isEqualTo: (profile_id ?? userId));
+      List subs = (await subsQuery.get()).docs.toList();
+
+      int totalSubs = subs.length;
+      for (DocumentSnapshot element in subs) {
+        // debugPrint(element.data().toString());
+        total += 1;
+      }
+      FirebaseFirestore.instance
+          .collection('user_profiles')
+          .doc(userId)
+          .update({'num_subs': totalSubs});
+    // }
+    // catch (e) {
+    //   debugPrint(e.runtimeType.toString());
+    //   if (e.runtimeType == StateError) {
+    //     UserProfile profile = (await getProfile(uid: userId))!;
+    //     editProfile(null,url_pic: profile.image_url, bio: profile.bio,full_name: profile.full_name,handle: profile.handle);
+    //   }
+    // }
   }
 
   void likeOrUnlike(String bookId, bool isLiked) {
