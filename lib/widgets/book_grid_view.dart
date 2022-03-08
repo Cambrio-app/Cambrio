@@ -40,7 +40,7 @@ class _BookGridViewState extends State<BookGridView> {
       //
       // final QuerySnapshot query =  await _query.get();
       // final List<DocumentSnapshot> newItems = query.docs;
-      final List<QueryDocumentSnapshot<Book>> newItems = await FirebaseService().getBookDocs(widget.collectionToPull,pageKey,_pageSize);
+      final List<DocumentSnapshot<Book>> newItems = await FirebaseService().getBookDocs(widget.collectionToPull,pageKey,_pageSize);
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);

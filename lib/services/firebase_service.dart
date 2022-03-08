@@ -19,6 +19,7 @@ enum QueryTypes {
   hated,
   loved,
   subscribed,
+  saved,
   random,
   works,
 }
@@ -140,14 +141,15 @@ class FirebaseService {
   // modify or create a new book for the user.
   Future<void> editBook(BuildContext context,
       {required Book book, XFile? image}) async {
-    CollectionReference booksCollection = FirebaseFirestore.instance
-        .collection('books');
+    CollectionReference booksCollection =
+        FirebaseFirestore.instance.collection('books');
 
     if ((book.id != null)) {
       // go ahead and upload the image if the book already exists on the database
       if ((image != null)) {
         book = book.copyWith(
-            image_url: await uploadImage(context, image: image, name: book.id!));
+            image_url:
+                await uploadImage(context, image: image, name: book.id!));
       }
       debugPrint("current url, now: ${book.image_url}");
       // Allows user to update all book values or create a new book if there is no book_id
@@ -161,21 +163,21 @@ class FirebaseService {
           .set(book);
       // book.image_url = await uploadImage(context, image: image, name: book.id!);
     } else {
-      DocumentReference ref = await booksCollection// collection we are adding to
-          .withConverter<Book>(
-            fromFirestore: (snapshot, _) =>
-                Book.fromJson(snapshot.id, snapshot.data()!),
-            toFirestore: (book, _) => book.toJson(),
-          )
-          .add(book);
+      DocumentReference ref =
+          await booksCollection // collection we are adding to
+              .withConverter<Book>(
+                fromFirestore: (snapshot, _) =>
+                    Book.fromJson(snapshot.id, snapshot.data()!),
+                toFirestore: (book, _) => book.toJson(),
+              )
+              .add(book);
 
       // if this is a new book, upload the image after we know its id.
       if (image != null) {
         booksCollection // collection we are adding to
             .doc(ref.id)
             .update({
-          'image_url':
-              (await uploadImage(context, image: image, name: ref.id))
+          'image_url': (await uploadImage(context, image: image, name: ref.id))
         });
       }
     }
@@ -209,10 +211,10 @@ class FirebaseService {
   }
 
   // grab all documentsnapshots of book, for use in scrolling listview of book widgets in ui
-  Future<List<QueryDocumentSnapshot<Book>>> getBookDocs(
+  Future<List<DocumentSnapshot<Book>>> getBookDocs(
       String collectionToPull, DocumentSnapshot? lastDocument, int pageSize,
       {QueryTypes? type = QueryTypes.alphabetical}) async {
-    late Query<Book> _query;
+    late Query _query;
     switch (type) {
       case QueryTypes.alphabetical:
         _query = FirebaseFirestore.instance
@@ -279,6 +281,14 @@ class FirebaseService {
               toFirestore: (book, _) => book.toJson(),
             );
         break;
+      case QueryTypes.saved:
+        debugPrint('get saved');
+        _query = FirebaseFirestore.instance
+            .collection('user_profiles/$userId/liked_books')
+            .limit(100)
+            .orderBy('time_liked', descending: true);
+        debugPrint('queried.');
+        break;
       case QueryTypes.random:
         lastDocument ??= (await FirebaseFirestore.instance
                 .collection(collectionToPull)
@@ -317,19 +327,50 @@ class FirebaseService {
             );
         break;
     }
-    // start after the last document that the requester already has. If they don't have any, start at the first document
-    if (lastDocument != null) {
-      _query = _query.startAfterDocument(lastDocument).limit(pageSize);
+
+    late List<DocumentSnapshot<Book>> newItems;
+
+    // the original query on book references.
+    if (type != QueryTypes.saved) {
+      // start after the last document that the requester already has. If they don't have any, start at the first document
+      if (lastDocument != null) {
+        _query = _query.startAfterDocument(lastDocument).limit(pageSize);
+      } else {
+        _query = _query.limit(pageSize);
+      }
+
+      final QuerySnapshot<Book> query = await (_query as Query<Book>).get();
+      newItems = query.docs;
     } else {
-      _query = _query.limit(pageSize);
+      // this query is on document ids, not on actual document references of books
+      if (lastDocument != null) {
+        DocumentSnapshot actualLastDocument = await FirebaseFirestore.instance
+            .collection('user_profiles/$userId/liked_books')
+            .doc(lastDocument.id)
+            .get();
+        _query = _query.startAfterDocument(actualLastDocument).limit(pageSize);
+      } else {
+        _query = _query.limit(pageSize);
+      }
+      final QuerySnapshot query = await (_query).get();
+      // debugPrint(
+      //     "test: ${(await FirebaseFirestore.instance.collection('books').doc(query.docs[0].id).get()).data()}");
+      List<DocumentSnapshot<Book>> list =
+          await Future.wait(query.docs.map((element) async {
+        return FirebaseFirestore.instance
+            .collection('books')
+            .doc(element.id)
+            .withConverter<Book>(
+              fromFirestore: (snapshot, _) =>
+                  Book.fromJson(snapshot.id, snapshot.data()!),
+              toFirestore: (book, _) => book.toJson(),
+            )
+            .get();
+      }).toList());
+      list.removeWhere((element) => element.data() == null);
+      debugPrint("is it the list? ,  ${list}");
+      newItems = list;
     }
-
-    final QuerySnapshot<Book> query = await _query.get();
-    final List<QueryDocumentSnapshot<Book>> newItems = query.docs;
-
-    // List<Book> returnItems = newItems.map((doc) {
-    //   return doc.data();
-    // }).toList();
 
     return newItems;
   }

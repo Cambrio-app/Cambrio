@@ -30,7 +30,7 @@ class _BookListViewState extends State<BookListView> {
 
   Future<void> _fetchPage(DocumentSnapshot<Book>? pageKey) async {
     try {
-      final List<QueryDocumentSnapshot<Book>> newItems = await FirebaseService().getBookDocs(widget.collectionToPull,pageKey,_pageSize, type: widget.queryType);
+      final List<DocumentSnapshot<Book>> newItems = await FirebaseService().getBookDocs(widget.collectionToPull,pageKey,_pageSize, type: widget.queryType);
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
@@ -76,6 +76,8 @@ class _BookListViewState extends State<BookListView> {
                       pagingController: _pagingController,
                       builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot<Book>>(
                         noMoreItemsIndicatorBuilder: (_) => const Text('no more!',textAlign: TextAlign.center,),
+                        firstPageErrorIndicatorBuilder: (_) => const Text('first page error!',textAlign: TextAlign.center,),
+                        newPageErrorIndicatorBuilder: (_) => const Text('new page error!',textAlign: TextAlign.center,),
                         itemBuilder: (context, item, index) {
                           return BookCard(
                             bookSnap: item,
