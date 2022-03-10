@@ -74,6 +74,7 @@ final ColorScheme colorScheme = ColorScheme.fromSwatch(
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
       home:App(),
       theme: ThemeData(
 

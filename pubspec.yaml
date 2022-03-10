@@ -58,6 +58,8 @@ dependencies:
   firebase_auth: ^3.3.6
   epubx: ^3.0.0
   firestore_search: ^0.1.7
+  animate_do: ^2.1.0
+  algolia: ^1.0.4
   url_launcher: ^6.0.20
   flutter_widget_from_html: ^0.8.5
   firebase_storage: ^10.2.9
