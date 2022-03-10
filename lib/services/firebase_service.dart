@@ -57,7 +57,7 @@ class FirebaseService {
 
   // pulls existing profile information.
   Future<UserProfile?> getProfile({required String uid}) async {
-    debugPrint(uid);
+    // debugPrint(uid);
     var result = (await FirebaseFirestore.instance
             .collection('user_profiles') // collection we are adding to
             .doc(uid)
@@ -67,8 +67,8 @@ class FirebaseService {
                 toFirestore: (user, _) => user.toJson())
             .get())
         .data();
-    debugPrint(result!.full_name);
-    debugPrint('wat');
+    // debugPrint(result!.full_name);
+    // debugPrint('wat');
     return result;
   }
 
@@ -286,7 +286,7 @@ class FirebaseService {
             .collection('user_profiles/$userId/liked_books')
             .limit(100)
             .orderBy('time_liked', descending: true);
-        debugPrint('queried.');
+        // debugPrint('queried.');
         break;
       case QueryTypes.random:
         lastDocument ??= (await FirebaseFirestore.instance
@@ -367,7 +367,7 @@ class FirebaseService {
             .get();
       }).toList());
       list.removeWhere((element) => element.data() == null);
-      debugPrint("is it the list? ,  ${list}");
+      // debugPrint("is it the list? ,  ${list}");
       newItems = list;
     }
 
@@ -434,7 +434,7 @@ class FirebaseService {
       int? order,
       bool is_paywalled = false,
       }) async {
-    debugPrint(order.toString());
+    // debugPrint(order.toString());
     String? _user_id = FirebaseAuth.instance.currentUser?.uid;
     if (_user_id != null) {
       // just making sure we aren't dealing with a ghost
@@ -660,6 +660,20 @@ class FirebaseService {
       transaction.update(bookSnap.reference, {'likes': newLikesCount});
       return newLikesCount;
     });
+  }
+
+  Future<void> setBookmark({required String bookId, required String location, required String settings, required String theme}) async {
+    FirebaseFirestore.instance.collection('user_profiles')
+        .doc(userId).collection('bookmarks')
+        .doc(bookId)
+        .set({'location':location,'timestamp':FieldValue.serverTimestamp(), 'settings': settings, 'theme':theme});
+  }
+
+  Future<Map<String,dynamic>?> getBookmark({required String bookId}) async {
+    return (await FirebaseFirestore.instance.collection('user_profiles')
+        .doc(userId).collection('bookmarks')
+        .doc(bookId)
+        .get()).data();
   }
 
   Future<void> logOut(BuildContext context) async {

@@ -4,13 +4,15 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'package:share_plus/share_plus.dart';
 import 'dart:io';
-// import 'package:html/parser.dart'; // consider changing this to the dart xml package since it's actually for xml
+import 'package:html/parser.dart' as html; // consider changing this to the dart xml package since it's actually for xml
 import 'package:xml/xml.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:archive/archive_io.dart';
 import 'package:iridium_reader_widget/views/viewers/epub_screen.dart';
 
 import '../models/chapter.dart';
+
+
 
 class MakeEpub {
   String title = 'wat';
@@ -141,7 +143,7 @@ class MakeEpub {
     document.findAllElements('h2').first.innerText = 'by $authorName';
     document.findAllElements('body').first.attributes.add(XmlAttribute(XmlName('class'), 'titlepage'));
     document.findAllElements('div').first.attributes.add(XmlAttribute(XmlName('class'), 'titlepage'));
-    debugPrint(document.toXmlString());
+    // debugPrint(document.toXmlString());
     // (get the file), construct a real directory if it's not made already, Write to file
     return await _writeToFile(specificFile, document.toXmlString());
   }
@@ -153,7 +155,19 @@ class MakeEpub {
     for (var i=0;i<chapters.length;i++) {
       String specificFile = 'EPUB/chapter${i+1}.xhtml'; // +1 to make the chapters start at 1
       var document = XmlDocument.parse(await _loadAsset('assets/ex_epub/$template'));
-      String chapterText = XmlDocumentFragment.parse(chapters[i].text, entityMapping: XmlDefaultEntityMapping.html()).innerXml;
+      // String chapterText = XmlDocumentFragment.parse(chapters[i].text, entityMapping: XmlDefaultEntityMapping.html()).innerXml;
+
+      // TODO: Find a better way to get rid of or fix tags that don't self-close. This is happening because html allows, but xhtml doesn't allow tags that don't close.
+      var parse = html.parse(chapters[i].text);
+      parse.getElementsByTagName('br').forEach((element) { element.remove();});
+      parse.getElementsByTagName('col').forEach((element) { element.remove();});
+      parse.getElementsByTagName('img').forEach((element) { element.remove();});
+
+      var innerHtml2 = parse;
+      String chapterText = innerHtml2.body!.innerHtml;
+      // debugPrint(chapterText);
+      chapterText = XmlDocumentFragment.parse(chapterText, entityMapping: XmlDefaultEntityMapping.html5()).innerXml;
+      //
       document.findAllElements('body').first.innerXml = chapterText;
       // debugPrint("ya doc, fren: ${chapterText}");
       // debugPrint("ya full, fren: ${document.toXmlString(entityMapping: XmlDefaultEntityMapping.xml())}");
@@ -161,6 +175,7 @@ class MakeEpub {
       // debugPrint(specificFile);
       // (get the file), construct a real directory if it's not made already, Write to file
       returnfile = await _writeToFile(specificFile, document.toXmlString(entityMapping: XmlDefaultEntityMapping.xml()));
+      // returnfile = await _writeToFile(specificFile, chapterText);
     }
     return returnfile;
   }
@@ -169,7 +184,7 @@ class MakeEpub {
     chapters.add(Chapter(chapter_id:id,chapter_name:name,text:text,order:order, book_id: '??', time_written: null));
   }
 
-  Future<File> makeEpub(BuildContext context, {int? location}) async{
+  Future<Map<String,String>> makeEpub(BuildContext context, {int? location, Map<String,dynamic>? bookmark}) async{
     // pull up the path to where the temporary epub will go
     // final path = await _extFile;
 
@@ -201,8 +216,17 @@ class MakeEpub {
     // print(modifiedFile.path);
     // debugPrint(Directory('${(await _filePath)}/goodbook').listSync().toString());
     // Share.shareFiles([zippedFile.path]);
-    Navigator.push(context, MaterialPageRoute(builder: (context) => EpubScreen.fromPath(filePath: filepath, location: location!=null ? '{"cfi":" ","idref":"ch${location+1}"}':null,)));
-    return zippedFile;
+    // Stream<PaginationInfo> locationStream;
+    Map<String,String> lastLocation = (await Navigator.push(context, MaterialPageRoute(builder: (context) =>
+        EpubScreen.fromPath(
+            filePath: filepath,
+            location: bookmark?['location'],
+            settings: bookmark?['settings'],
+            theme: bookmark?['theme'],
+        )
+    ))) as Map<String,String>;
+
+    return lastLocation;
   }
 
   // this version is for if it's necessary to use the html parser instead of the xml parser.

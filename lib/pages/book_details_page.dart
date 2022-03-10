@@ -45,10 +45,12 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
   bool clicked = false;
   late final epubber;
   late final bool isUsersBook;
+  Map<String,dynamic>? bookmark;
 
   @override
   void initState() {
     super.initState();
+    setBookmark();
     clicked = false;
     epubber = MakeEpub(
         title: widget.bookSnap.data()!.title,
@@ -58,14 +60,24 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
     isUsersBook = FirebaseService().userId == widget.bookSnap.data()?.author_id;
   }
 
+  void setBookmark() async {
+    bookmark = await FirebaseService().getBookmark(bookId: widget.bookSnap.id);
+    debugPrint('bookmark retreived: $bookmark');
+  }
+
   @override
   Widget build(BuildContext context) {
+
     if (clicked == true) {
-      Future.delayed(const Duration(milliseconds: 100), () {
-        epubber.makeEpub(context);
+      Future.delayed(const Duration(milliseconds: 100), () async {
+        // debugPrint("using bookmark: $bookmark");
+        Map<String,dynamic> newBookmark = (await epubber.makeEpub(context, bookmark: bookmark));
+        // debugPrint("your last page: $newBookmark");
+        FirebaseService().setBookmark(bookId: widget.bookSnap.id, location: newBookmark['location']!, settings: newBookmark['settings']!, theme: newBookmark['theme']!, );
+        // update local bookmark
+        bookmark = newBookmark;
       });
     }
-
     return BackArrow(
       child: Scaffold(
           floatingActionButton:

@@ -78,21 +78,21 @@ class ChapterQueryService {
               Chapter.fromJson(snapshot.id, snapshot.data()!),
           toFirestore: (book, _) => book.toJson(),
         );
-    debugPrint("queried.");
-    debugPrint(' ${(await _query.get()).docs}');
+    // debugPrint("queried.");
+    // debugPrint(' ${(await _query.get()).docs}');
     // start after the last document that the requester already has. If they don't have any, start at the first document
     if (lastDocument != null) {
-      debugPrint('itsnull');
+      // debugPrint('itsnull');
       _query = _query.startAfterDocument(lastDocument).limit(pageSize);
     } else {
-      debugPrint('notnull');
+      // debugPrint('notnull');
       _query = _query.limit(pageSize);
     }
 
     final QuerySnapshot<Chapter> query = await (_query as Query<Chapter>).get();
-    debugPrint('woah: ${query.size}');
+    // debugPrint('woah: ${query.size}');
     newItems = query.docs;
-    debugPrint(newItems.toString());
+    // debugPrint(newItems.toString());
 
     // if (lastDocument != null) {
     //   DocumentSnapshot<Chapter> actualLastDocument = await FirebaseFirestore.instance

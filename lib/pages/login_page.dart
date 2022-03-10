@@ -31,7 +31,7 @@ class LoginScreen extends StatelessWidget {
   }
 
   Future<String?> _signupUser(SignupData data) async {
-    debugPrint('Signup Name: ${data.name}, Password: ${data.password}');
+    // debugPrint('Signup Name: ${data.name}, Password: ${data.password}');
 
     final User? user = (await _auth.createUserWithEmailAndPassword(
       email: data.name ?? '',
