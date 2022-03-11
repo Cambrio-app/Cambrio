@@ -8,7 +8,7 @@ import '../models/book.dart';
 import '../models/chapter.dart';
 import '../models/user_profile.dart';
 import '../services/make_epub.dart';
-import 'edit_book.dart';
+import '../pages/edit_book.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({

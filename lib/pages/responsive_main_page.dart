@@ -1,6 +1,6 @@
 import 'package:adaptive_navigation/adaptive_navigation.dart';
 import 'package:cambrio/pages/searchPage.dart';
-import 'package:cambrio/pages/search_page.dart';
+import 'package:cambrio/unused_rn/search_page.dart';
 import 'package:cambrio/pages/settings.dart';
 import 'package:cambrio/widgets/book_grid_view.dart';
 import 'package:cambrio/pages/edit_chapter.dart';

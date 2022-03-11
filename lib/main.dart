@@ -3,6 +3,7 @@ import 'package:cambrio/pages/responsive_main_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 
 import 'unused_rn/main_page.dart';
 
@@ -129,6 +130,21 @@ class _AppState extends State<App> {
       setState(() {
         _initialized = true;
       });
+
+      debugPrint('goooo');
+      // set defaults for remote config values, like auto_search
+      FirebaseRemoteConfig.instance.setDefaults(<String, dynamic>{
+        'welcome_message': 'default welcome message',
+        'auto_search': true,
+      });
+
+      FirebaseRemoteConfig rc = FirebaseRemoteConfig.instance;
+      await rc.setConfigSettings(RemoteConfigSettings(
+        fetchTimeout: const Duration(seconds: 10),
+        minimumFetchInterval: const Duration(hours: 3),
+      ));
+      bool updated = await rc.fetchAndActivate();
+      // debugPrint('updated?: $updated auto_search???: ${rc.getBool('auto_search').toString()}');
     } catch(e) {
       // Set `_error` state to true if Firebase initialization fails
       setState(() {
