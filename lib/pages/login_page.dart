@@ -72,13 +72,13 @@ class LoginScreen extends StatelessWidget {
       },
       onRecoverPassword: _recoverPassword,
       loginProviders: [
-        LoginProvider(
-          icon: FontAwesomeIcons.google,
-          label: 'Google',
-          callback: () async {
-            return null;
-          },
-        ),
+        // LoginProvider(
+        //   icon: FontAwesomeIcons.google,
+        //   label: 'Google',
+        //   callback: () async {
+        //     return null;
+        //   },
+        // ),
       ],
 
 
