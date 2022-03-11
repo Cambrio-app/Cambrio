@@ -106,7 +106,9 @@ class FirebaseService {
       String? handle,
       String? bio,
       String? url_pic,
-      XFile? image, int? num_subs, int? num_likes}) async {
+      XFile? image,
+      int? num_subs,
+      int? num_likes}) async {
     String? _user_id = FirebaseAuth.instance.currentUser?.uid;
     if (_user_id != null) {
       // upload user image
@@ -123,16 +125,23 @@ class FirebaseService {
           // e.g, e.code == 'canceled'
         }
       }
-      final profile = UserProfile(user_id: _user_id, image_url: url_pic, full_name: full_name, handle: handle, bio: bio, num_subs: num_subs, num_likes: num_likes);
+      final profile = UserProfile(
+          user_id: _user_id,
+          image_url: url_pic,
+          full_name: full_name,
+          handle: handle,
+          bio: bio,
+          num_subs: num_subs,
+          num_likes: num_likes);
 
       FirebaseFirestore.instance
           .collection('user_profiles') // collection we are adding to
           .doc(_user_id)
           .withConverter<UserProfile>(
-        fromFirestore: (snapshot, _) =>
-            UserProfile.fromJson(snapshot.id, snapshot.data()!),
-        toFirestore: (prof, _) => prof.toJson(),
-      )
+            fromFirestore: (snapshot, _) =>
+                UserProfile.fromJson(snapshot.id, snapshot.data()!),
+            toFirestore: (prof, _) => prof.toJson(),
+          )
           .set(profile);
     }
   }
@@ -207,6 +216,18 @@ class FirebaseService {
     } else {
       return false;
     }
+  }
+
+  Future<DocumentSnapshot<Book>> getBook({required String book_id}) {
+    return FirebaseFirestore.instance
+        .collection('books')
+        .doc(book_id)
+        .withConverter<Book>(
+          fromFirestore: (snapshot, _) =>
+              Book.fromJson(snapshot.id, snapshot.data()!),
+          toFirestore: (book, _) => book.toJson(),
+        )
+        .get();
   }
 
   // grab all documentsnapshots of book, for use in scrolling listview of book widgets in ui
@@ -426,14 +447,14 @@ class FirebaseService {
     return returnItems;
   }
 
-  void editChapter(
-      {required String book_id,
-      String? chapter_id,
-      String? chapter_name,
-      String? text,
-      int? order,
-      bool is_paywalled = false,
-      }) async {
+  void editChapter({
+    required String book_id,
+    String? chapter_id,
+    String? chapter_name,
+    String? text,
+    int? order,
+    bool is_paywalled = false,
+  }) async {
     // debugPrint(order.toString());
     String? _user_id = FirebaseAuth.instance.currentUser?.uid;
     if (_user_id != null) {
@@ -578,38 +599,41 @@ class FirebaseService {
         .exists;
     return record;
   }
+
   Future<void> checkStats({String? profile_id}) async {
     // try {
-      // look at all of the book likes on each book
-      List agg = (await FirebaseFirestore.instance
-          .collection('books')
-          .where('author_id', isEqualTo: profile_id ?? userId)
-          .get()).docs.toList();
-      int total = 0;
-      // add up all of the book likes found
-      for (var element in agg) {
-        total += element['likes'] as int;
-      }
-      // update profile to reflect changed value
-      FirebaseFirestore.instance
-          .collection('user_profiles')
-          .doc(profile_id ?? userId)
-          .update({'num_likes': total});
+    // look at all of the book likes on each book
+    List agg = (await FirebaseFirestore.instance
+            .collection('books')
+            .where('author_id', isEqualTo: profile_id ?? userId)
+            .get())
+        .docs
+        .toList();
+    int total = 0;
+    // add up all of the book likes found
+    for (var element in agg) {
+      total += element['likes'] as int;
+    }
+    // update profile to reflect changed value
+    FirebaseFirestore.instance
+        .collection('user_profiles')
+        .doc(profile_id ?? userId)
+        .update({'num_likes': total});
 
-      Query subsQuery = FirebaseFirestore.instance
-          .collectionGroup('author_subscriptions')
-          .where('author_id', isEqualTo: (profile_id ?? userId));
-      List subs = (await subsQuery.get()).docs.toList();
+    Query subsQuery = FirebaseFirestore.instance
+        .collectionGroup('author_subscriptions')
+        .where('author_id', isEqualTo: (profile_id ?? userId));
+    List subs = (await subsQuery.get()).docs.toList();
 
-      int totalSubs = subs.length;
-      for (DocumentSnapshot element in subs) {
-        // debugPrint(element.data().toString());
-        total += 1;
-      }
-      FirebaseFirestore.instance
-          .collection('user_profiles')
-          .doc(profile_id ?? userId)
-          .update({'num_subs': totalSubs});
+    int totalSubs = subs.length;
+    for (DocumentSnapshot element in subs) {
+      // debugPrint(element.data().toString());
+      total += 1;
+    }
+    FirebaseFirestore.instance
+        .collection('user_profiles')
+        .doc(profile_id ?? userId)
+        .update({'num_subs': totalSubs});
     // }
     // catch (e) {
     //   debugPrint(e.runtimeType.toString());
@@ -662,18 +686,32 @@ class FirebaseService {
     });
   }
 
-  Future<void> setBookmark({required String bookId, required String location, required String settings, required String theme}) async {
-    FirebaseFirestore.instance.collection('user_profiles')
-        .doc(userId).collection('bookmarks')
+  Future<void> setBookmark(
+      {required String bookId,
+      required String location,
+      required String settings,
+      required String theme}) async {
+    FirebaseFirestore.instance
+        .collection('user_profiles')
+        .doc(userId)
+        .collection('bookmarks')
         .doc(bookId)
-        .set({'location':location,'timestamp':FieldValue.serverTimestamp(), 'settings': settings, 'theme':theme});
+        .set({
+      'location': location,
+      'timestamp': FieldValue.serverTimestamp(),
+      'settings': settings,
+      'theme': theme
+    });
   }
 
-  Future<Map<String,dynamic>?> getBookmark({required String bookId}) async {
-    return (await FirebaseFirestore.instance.collection('user_profiles')
-        .doc(userId).collection('bookmarks')
-        .doc(bookId)
-        .get()).data();
+  Future<Map<String, dynamic>?> getBookmark({required String bookId}) async {
+    return (await FirebaseFirestore.instance
+            .collection('user_profiles')
+            .doc(userId)
+            .collection('bookmarks')
+            .doc(bookId)
+            .get())
+        .data();
   }
 
   Future<void> logOut(BuildContext context) async {

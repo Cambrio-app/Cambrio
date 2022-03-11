@@ -1,6 +1,11 @@
+import 'package:cambrio/pages/book_details_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:algolia/algolia.dart';
+
+import '../models/book.dart';
+import '../services/firebase_service.dart';
 
 class SearchingPage extends StatefulWidget {
   const SearchingPage({ Key? key }) : super(key: key);
@@ -19,7 +24,7 @@ class _SearchingPageState extends State<SearchingPage> {
 
   List<AlgoliaObjectSnapshot> _results = [];
   bool _searching = false;
-  Algolia algolia = Algolia.init(applicationId: 'YOUR_APP_ID',apiKey: 'YOUR_API_KEY',);
+  Algolia algolia = Algolia.init(applicationId: '6M9DHL86F0',apiKey: '0a7b0ad97e703eac96130ec37b94b267',);
   _search() async {
     setState(() {_searching = true;});
 
@@ -115,6 +120,16 @@ class _SearchingPageState extends State<SearchingPage> {
                               ),
                               title: Text(snap.data["author_name"]),
                               subtitle: Text(snap.data["title"]),
+                              onTap: () async {
+                                DocumentSnapshot<Book> bookSnap = await FirebaseService().getBook(book_id: snap.objectID);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          BookDetailsPage(bookSnap: bookSnap)
+                                  ),
+                                );
+                              },
                             );
                           },
                         ),

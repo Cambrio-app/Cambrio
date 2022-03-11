@@ -1,0 +1,20 @@
+  LOCATION=us-west3\
+  PROJECT_ID=cambio-46fdc\
+  ALGOLIA_APP_ID=6M9DHL86F0\
+  ALGOLIA_API_KEY=25396150d95c4f3acae89a6842efee81\
+  ALGOLIA_INDEX_NAME=books\
+  COLLECTION_PATH=books\
+  GOOGLE_APPLICATION_CREDENTIALS=/home/jaden/Desktop/cambrio/cambio-46fdc-firebase-adminsdk-rifoa-11444d8fcb.json\
+  npx firestore-algolia-search
+
+
+  export GOOGLE_APPLICATION_CREDENTIALS="/home/jaden/Desktop/cambrio/private_key.pepk"
+
+
+firebase deploy --only functions
+
+firebase emulators:start --import ./2022-03-10T21\:56\:18_27661/
+
+npm run lint
+
+npm run build:watch

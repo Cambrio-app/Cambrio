@@ -1,0 +1,46 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents/user_profiles
+ {
+    // allow list;
+    match /{userId} {
+      // only users can update their own profile or see its info
+      allow write, delete: if request.auth != null && request.auth.uid == userId;
+      // only authenticated users can create profiles
+      allow create: if request.auth != null;
+      // anybody's app can compute the updated likes and subs aggregations
+      allow update: if request.auth!=null && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["num_subs", "num_likes"]);
+      // anyone can look for this author and see this profile
+      allow read; 
+      match /{subcollection}/{document=**} {
+      		allow read;
+      		// anyone can add to or see or list this author
+          // allow get: if true;
+          // allow list: if isListQueryValid();
+          // only this author can edit their subscription lists and so on.
+          allow write, read: if request.auth != null && request.auth.uid == userId;
+        }
+    }
+  }
+  // anybody's device can perform collectionGroup queries over chapters and subscriptions to get their favorite author's latest works.
+  match /databases/{database}/documents {
+  	match /{path=**}/chapters/{chapters} {
+      allow read: if request.auth != null;
+    }
+    match /{path=**}/author_subscriptions/{author_subscriptions} {
+      allow read: if request.auth != null;
+    }
+  }
+  match /databases/{database}/documents/books {
+
+    match /{bookId}/{document=**} { 
+      // anyone can read any book. 
+      allow read;
+      // only the author can add or modify their own book
+      allow update, delete: if request.auth != null && request.auth.uid == get(/databases/$(database)/documents/books/$(bookId)).data.author_id;
+      allow create: if request.auth != null;
+      // anybody can like or unlike a book, and only once
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(["likes"]) && (request.resource.data.likes-resource.data.likes <= 1 && request.resource.data.likes-resource.data.likes >= -1);
+    }
+  }
+}
