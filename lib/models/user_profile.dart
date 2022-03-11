@@ -43,8 +43,8 @@ class UserProfile{
       'full_name': full_name,
       'bio': bio,
       'handle': handle,
-      'num_likes': num_likes ?? 0,
-      'num_subs': num_subs ?? 0,
+      'num_likes': num_likes,
+      'num_subs': num_subs,
     };
   }
 }

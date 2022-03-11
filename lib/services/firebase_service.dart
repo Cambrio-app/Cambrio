@@ -100,8 +100,25 @@ class FirebaseService {
         .exists;
   }
 
+  Future<bool> isHandleTaken(String handle) async {
+    UserProfile profile = (await FirebaseFirestore.instance
+            .collection('user_profiles')
+            .limit(2)
+            .withConverter<UserProfile>(
+              fromFirestore: (snapshot, _) =>
+                  UserProfile.fromJson(snapshot.id, snapshot.data()!),
+              toFirestore: (prof, _) => prof.toJson(),
+            )
+            .where('handle', isEqualTo: handle)
+            .get())
+        .docs
+        .first
+        .data();
+    return profile.user_id != userId;
+  }
+
   // modify or create a new profile for the user.
-  void editProfile(BuildContext? context,
+  Future<bool> editProfile(BuildContext? context,
       {String? full_name,
       String? handle,
       String? bio,
@@ -110,9 +127,12 @@ class FirebaseService {
       int? num_subs,
       int? num_likes}) async {
     String? _user_id = FirebaseAuth.instance.currentUser?.uid;
+
+    // upload image
     if (_user_id != null) {
       // upload user image
       if (image != null) {
+        debugPrint('updating image');
         try {
           firebase_storage.Reference ref =
               firebase_storage.FirebaseStorage.instance.ref('$userId.png');
@@ -125,6 +145,8 @@ class FirebaseService {
           // e.g, e.code == 'canceled'
         }
       }
+
+      // create profile
       final profile = UserProfile(
           user_id: _user_id,
           image_url: url_pic,
@@ -134,16 +156,46 @@ class FirebaseService {
           num_subs: num_subs,
           num_likes: num_likes);
 
-      FirebaseFirestore.instance
+      debugPrint(profile.toJson().toString());
+      // reference current/future profile
+      DocumentReference<UserProfile> userRef = FirebaseFirestore.instance
           .collection('user_profiles') // collection we are adding to
-          .doc(_user_id)
+          .doc(userId)
           .withConverter<UserProfile>(
             fromFirestore: (snapshot, _) =>
                 UserProfile.fromJson(snapshot.id, snapshot.data()!),
             toFirestore: (prof, _) => prof.toJson(),
-          )
-          .set(profile);
+          );
+      DocumentReference handleRef = FirebaseFirestore.instance
+          .collection('handles')
+          .doc(handle);
+
+      // check for handle, upload profile
+      bool result = await FirebaseFirestore.instance.runTransaction((transaction) async {
+        DocumentSnapshot existingHandle = await transaction
+            .get(handleRef);
+        String? existingHandleUser = existingHandle.exists ? existingHandle['user_id'] : null;
+        debugPrint(existingHandleUser);
+        bool isHandleTaken = (existingHandleUser != userId) && (existingHandleUser!=null);
+        debugPrint(isHandleTaken.toString());
+        if (isHandleTaken) {
+          return false;
+        } else {
+          transaction.set(userRef, profile, SetOptions(merge:true));
+          transaction.set(FirebaseFirestore.instance.collection('handles').doc(handle), {'user_id': userId});
+          return true;
+        }
+      })
+      .then((value) {
+        debugPrint('it worked?? ${value.toString()}');
+        return value;})
+      .onError((error, stackTrace) {
+        debugPrint("${error.toString()} and ${stackTrace.toString()}");
+        return false;
+      });
+      return result;
     }
+    return false;
   }
 
   // modify or create a new book for the user.
@@ -168,7 +220,7 @@ class FirebaseService {
                 Book.fromJson(snapshot.id, snapshot.data()!),
             toFirestore: (book, _) => book.toJson(),
           )
-          .set(book);
+          .set(book, SetOptions(merge:true));
       // book.image_url = await uploadImage(context, image: image, name: book.id!);
     } else {
       DocumentReference ref =
@@ -475,7 +527,7 @@ class FirebaseService {
         'text': text,
         'order': order,
         'is_paywalled': is_paywalled,
-      });
+      }, SetOptions(merge:true));
 
       await reorderChapters(
           book_id: book_id, chapter_id: chapter_id, order: order);

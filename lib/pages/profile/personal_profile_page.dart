@@ -89,6 +89,7 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
                                       name: profile.full_name!,
                                       bio: profile.bio!,
                                       handle: profile.handle!,
+                                      profile: profile,
                                     )),
                           );
                         }),
