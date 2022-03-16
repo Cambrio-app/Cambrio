@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+// Import the generated file
+import 'firebase_options.dart';
 
 import 'unused_rn/main_page.dart';
 
@@ -126,14 +128,16 @@ class _AppState extends State<App> {
   void initializeFlutterFire() async {
     try {
       // Wait for Firebase to initialize and set `_initialized` state to true
-      await Firebase.initializeApp();
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
       setState(() {
         _initialized = true;
       });
 
       debugPrint('goooo');
       // set defaults for remote config values, like auto_search
-      FirebaseRemoteConfig.instance.setDefaults(<String, dynamic>{
+      await FirebaseRemoteConfig.instance.setDefaults(<String, dynamic>{
         'welcome_message': 'default welcome message',
         'auto_search': true,
       });
@@ -148,6 +152,7 @@ class _AppState extends State<App> {
     } catch(e) {
       // Set `_error` state to true if Firebase initialization fails
       setState(() {
+        debugPrint(e.toString());
         _error = true;
       });
     }
@@ -183,6 +188,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     // Show error message if initialization failed
     if(_error) {
+      debugPrint(_error.toString());
       return const SomethingWentWrong();
     }
 
