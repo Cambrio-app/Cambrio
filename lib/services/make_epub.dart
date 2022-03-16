@@ -12,7 +12,7 @@ import 'package:iridium_reader_widget/views/viewers/epub_screen.dart';
 
 import '../models/chapter.dart';
 
-
+import 'dart:convert' show utf8;
 
 class MakeEpub {
   String title = 'wat';
@@ -29,7 +29,7 @@ class MakeEpub {
 
   Future get _filePath async {
     // Application documents directory: /data/user/0/{package_name}/{app_name}
-    final applicationDirectory = await getApplicationDocumentsDirectory();
+    // final applicationDirectory = await getApplicationDocumentsDirectory();
     // External storage directory: /storage/emulated/0
     // final externalDirectory = await getExternalStorageDirectory();
     // Application temporary directory: /data/user/0/{package_name}/cache
@@ -37,16 +37,17 @@ class MakeEpub {
     return applicationDirectory.path;
   }
 
-  Future<File> _writeToFile(String file, String fileContents) async {
+  Future<ArchiveFile> _writeToFile(String file, String fileContents) async {
     // make or access the path to your new epub
-    final path = (await Directory('${(await _filePath)}/$bookId').create()).path;
+    // final path = (await Directory('${(await _filePath)}/$bookId').create()).path;
     // Directory('$path/EPUB').create();
     // Directory('$path/META-INF').create();
     // debugPrint('$path');
     
     // access the file, create the directory if needed, and write to that file.
-    return (await File('$path/$file').create(recursive: true)).writeAsString(fileContents);
-    
+    // return (await File('$path/$file').create(recursive: true)).writeAsString(fileContents);
+    InputStreamBase content = InputStream(utf8.encode(fileContents));
+    return ArchiveFile.stream(file, content.length, content);
   }
 
   Future<String> _loadAsset(String path) async {
@@ -168,13 +169,14 @@ class MakeEpub {
       // debugPrint(chapterText);
       chapterText = XmlDocumentFragment.parse(chapterText, entityMapping: XmlDefaultEntityMapping.html5()).innerXml;
       //
-      document.findAllElements('body').first.innerXml = chapterText;
+      document.findAllElements('div').first.innerXml = chapterText;
       // debugPrint("ya doc, fren: ${chapterText}");
       // debugPrint("ya full, fren: ${document.toXmlString(entityMapping: XmlDefaultEntityMapping.xml())}");
 
       // debugPrint(specificFile);
       // (get the file), construct a real directory if it's not made already, Write to file
       returnfile = await _writeToFile(specificFile, document.toXmlString(entityMapping: XmlDefaultEntityMapping.xml()));
+      result.add(returnfile);
       // returnfile = await _writeToFile(specificFile, chapterText);
     }
     return returnfile;
@@ -219,7 +221,7 @@ class MakeEpub {
     // Stream<PaginationInfo> locationStream;
     Map<String,String> lastLocation = (await Navigator.push(context, MaterialPageRoute(builder: (context) =>
         EpubScreen.fromPath(
-            filePath: filepath,
+            filePath: file.path,
             location: bookmark?['location'],
             settings: bookmark?['settings'],
             theme: bookmark?['theme'],
