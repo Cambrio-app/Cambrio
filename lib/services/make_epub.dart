@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'package:share_plus/share_plus.dart';
-import 'dart:io';
+// import 'dart:io';
+import 'package:universal_io/io.dart';
+
 import 'package:html/parser.dart' as html; // consider changing this to the dart xml package since it's actually for xml
 import 'package:xml/xml.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:archive/archive_io.dart';
+import 'package:archive/archive.dart';
 import 'package:iridium_reader_widget/views/viewers/epub_screen.dart';
 
 import '../models/chapter.dart';
@@ -33,8 +35,8 @@ class MakeEpub {
     // External storage directory: /storage/emulated/0
     // final externalDirectory = await getExternalStorageDirectory();
     // Application temporary directory: /data/user/0/{package_name}/cache
-    // final tempDirectory = await getTemporaryDirectory();
-    return applicationDirectory.path;
+    final tempDirectory = await Directory.systemTemp;
+    return tempDirectory.path;
   }
 
   Future<ArchiveFile> _writeToFile(String file, String fileContents) async {
@@ -55,7 +57,7 @@ class MakeEpub {
     return await rootBundle.loadString(path);
   }
 
-  Future<File> _generateOpf() async {
+  Future<ArchiveFile> _generateOpf() async {
     const String specificFile = 'EPUB/package.opf';
     var document = XmlDocument.parse(await _loadAsset('assets/ex_epub/$specificFile'));
     document.findAllElements('dc:identifier').first.innerText = bookId;
@@ -90,7 +92,7 @@ class MakeEpub {
     return await _writeToFile(specificFile, document.toXmlString());
   }
 
-  Future<File> _generateNav() async {
+  Future<ArchiveFile> _generateNav() async {
     const String specificFile = 'EPUB/nav.xhtml';
     var document = XmlDocument.parse(await _loadAsset('assets/ex_epub/$specificFile'));
     document.findAllElements('title').first.innerText = '$title Table of Contents';
@@ -114,14 +116,14 @@ class MakeEpub {
     return await _writeToFile(specificFile, document.toXmlString());
   }
 
-  Future<File> _generateContainer() async {
+  Future<ArchiveFile> _generateContainer() async {
     const String specificFile = 'META-INF/container.xml';
     var document = XmlDocument.parse(await _loadAsset('assets/ex_epub/$specificFile'));
     // (get the file), construct a real directory if it's not made already, Write to file
     return await _writeToFile(specificFile, document.toXmlString());
   }
 
-  Future<File> _generateCss() async {
+  Future<ArchiveFile> _generateCss() async {
     const String specificFile = 'EPUB/epubbooks.css';
     var pureText = await _loadAsset('assets/ex_epub/$specificFile');
     // debugPrint(pureText);
@@ -130,14 +132,14 @@ class MakeEpub {
     return await _writeToFile(specificFile, pureText);
   }
 
-  Future<File> _generateMimetype() async {
+  Future<ArchiveFile> _generateMimetype() async {
     const String specificFile = 'mimetype';
     var pureText = await _loadAsset('assets/ex_epub/$specificFile');
     // (get the file), construct a real directory if it's not made already, Write to file
     return await _writeToFile(specificFile, pureText);
   }
 
-  Future<File> _generateTitlePage() async {
+  Future<ArchiveFile> _generateTitlePage() async {
     const String specificFile = 'EPUB/titlepage.xhtml';
     var document = XmlDocument.parse(await _loadAsset('assets/ex_epub/$specificFile'));
     document.findAllElements('h1').first.innerText = title;
@@ -149,10 +151,12 @@ class MakeEpub {
     return await _writeToFile(specificFile, document.toXmlString());
   }
 
-  Future<File> _generateChapters() async {
+  Future<List<ArchiveFile>> _generateChapters() async {
     // TODO: add pagelist, so that pages display properly in ereaders
+
+    List<ArchiveFile> result = [];
     String template = 'EPUB/titlepage.xhtml';
-    var returnfile = File('assets/ex_epub/$template');
+    var returnfile = ArchiveFile.string('assets/ex_epub/$template', 'this page should never show');
     for (var i=0;i<chapters.length;i++) {
       String specificFile = 'EPUB/chapter${i+1}.xhtml'; // +1 to make the chapters start at 1
       var document = XmlDocument.parse(await _loadAsset('assets/ex_epub/$template'));
@@ -179,7 +183,7 @@ class MakeEpub {
       result.add(returnfile);
       // returnfile = await _writeToFile(specificFile, chapterText);
     }
-    return returnfile;
+    return result;
   }
 
   void addChapter(String id, String name, String text, int order){
@@ -191,33 +195,38 @@ class MakeEpub {
     // final path = await _extFile;
 
     chapters = await FirebaseService().getChapters(bookId);
-    // debugPrint(chapters.length.toString());
-    // chapters.forEach((ch) {
-    //   addChapter(ch.chapter_id, ch.chapter_name, );
-    // });
     // for web, it may be possible to simply pass the files directly from each of these functions, and we can avoid needing dart:io.
-    await _generateOpf();
-    await _generateNav();
-    await _generateContainer();
-    await _generateMimetype();
-    await _generateTitlePage();
-    await _generateChapters();
-    await _generateCss();
+    Archive archive = Archive();
+    archive.addFile(await _generateOpf());
+    archive.addFile(await _generateNav());
+    archive.addFile(await _generateContainer());
+    archive.addFile(await _generateMimetype());
+    archive.addFile(await _generateTitlePage());
+    for (ArchiveFile archiveFile in await _generateChapters()) {
+      archive.addFile(archiveFile);
+    }
+    archive.addFile(await _generateCss());
+
+    var encoder = ZipEncoder();
+    List<int> zipped = encoder.encode(archive) ?? [];
     // debugPrint('${(await _generateCss()).path} and whatever');
     // Zip a directory to out.zip using the zipDirectory convenience method
-    var encoder = ZipFileEncoder();
-    encoder.zipDirectory(Directory('${(await _filePath)}/$bookId'), filename: '${(await _filePath)}/$bookId.epub');
+
+    File('${(await _filePath)}/$bookId.epub').writeAsBytesSync(zipped);
+    File file = File('${(await _filePath)}/$bookId.epub');
+    // encoder.zipDirectory(Directory('${(await _filePath)}/$bookId'), filename: '${(await _filePath)}/$bookId.epub');
+
     // await for (var entity in
     // Directory('${(await _filePath)}').list(recursive: true, followLinks: false)) {
     //   print(entity.path);
     // }
-    String filepath = '${(await _filePath)}/$bookId.epub';
-    File zippedFile = File(filepath);
+    // String filepath = '${(await _filePath)}/$bookId.epub';
+    // File zippedFile = File(filepath);
     //share the file
     // debugPrint(await modifiedFile.readAsString());
     // print(modifiedFile.path);
     // debugPrint(Directory('${(await _filePath)}/goodbook').listSync().toString());
-    // Share.shareFiles([zippedFile.path]);
+    // Share.shareFiles([file.path]);  // method that is very useful for testing, and perhaps essential for future feature.
     // Stream<PaginationInfo> locationStream;
     Map<String,String> lastLocation = (await Navigator.push(context, MaterialPageRoute(builder: (context) =>
         EpubScreen.fromPath(
