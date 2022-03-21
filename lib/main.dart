@@ -126,6 +126,7 @@ class _AppState extends State<App> {
 
   // Define an async function to initialize FlutterFire
   void initializeFlutterFire() async {
+    // await Future.delayed(Duration(seconds: 20));
     try {
       // Wait for Firebase to initialize and set `_initialized` state to true
       await Firebase.initializeApp(
@@ -211,7 +212,7 @@ class Loading extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return const Text('loading', textDirection: TextDirection.ltr);
+    return const Material(child: Center(child: Text('loading', textDirection: TextDirection.ltr)));
   }
 }
 
