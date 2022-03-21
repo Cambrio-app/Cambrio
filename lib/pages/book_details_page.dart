@@ -6,6 +6,7 @@ import 'package:cambrio/pages/edit_book.dart';
 import 'package:cambrio/pages/edit_chapter.dart';
 import 'package:cambrio/pages/profile/author_profile_page.dart';
 import 'package:cambrio/services/firebase_service.dart';
+import 'package:cambrio/widgets/alert.dart';
 import 'package:cambrio/widgets/back_arrow.dart';
 import 'package:cambrio/widgets/shadow_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,20 +14,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-// import 'package:html/parser.dart' as htmlparser;
-// import 'package:html/dom.dart' as dom;
-// import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:html/parser.dart' as htmlparser;
+import 'package:html/dom.dart' as dom;
+import 'package:flutter_html/flutter_html.dart';
 import '../models/user_profile.dart';
 import '../services/make_epub.dart';
 
 import '../models/book.dart';
 import '../models/chapter.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class BookDetailsPage extends StatefulWidget {
   DocumentSnapshot<Book> bookSnap;
   bool open;
 
-  BookDetailsPage({Key? key, required this.bookSnap, this.open = false}) : super(key: key);
+  BookDetailsPage({Key? key, required this.bookSnap, this.open = false})
+      : super(key: key);
 
   @override
   _BookDetailsPageState createState() => _BookDetailsPageState();
@@ -39,14 +43,16 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
         chapter_name: 'loading',
         text:
             '<span style="padding-top:40px"><pre>\n\n... loading ...\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nloadiing\n\n\n\n\n\n\n\n\n</pre></span>',
-        order: 0, book_id: 'none', time_written: null)
+        order: 0,
+        book_id: 'none',
+        time_written: null)
   ];
-  int selected = 0;
+  int? selected = null;
   bool clicked = false;
   late final epubber;
   late final bool isUsersBook;
-  Map<String,dynamic>? bookmark;
-
+  Map<String, dynamic>? bookmark;
+  ScrollController? scroll_controller;
   @override
   void initState() {
     super.initState();
@@ -58,6 +64,10 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
         authorId: widget.bookSnap.data()!.author_id ?? 'wat',
         bookId: widget.bookSnap.id);
     isUsersBook = FirebaseService().userId == widget.bookSnap.data()?.author_id;
+    // SchedulerBinding.instance!.addPostFrameCallback((_) {
+    //   double offset = MediaQuery.of(context).size.height * 0.35;
+    //   scroll_controller = ScrollController(initialScrollOffset:offset);
+    // });
   }
 
   void setBookmark() async {
@@ -67,35 +77,48 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    // initialize late because it uses context
+    scroll_controller ??= ScrollController(
+        initialScrollOffset:
+        MediaQuery.of(context).size.height * 0.35);
 
-    if (clicked == true) {
+    // debugPrint('selected: $selected');
+    if (clicked == true && !kIsWeb) {
       Future.delayed(const Duration(milliseconds: 100), () async {
         // debugPrint("using bookmark: $bookmark");
-        Map<String,dynamic> newBookmark = (await epubber.makeEpub(context, bookmark: bookmark));
+        // open a book an retrieve the bookmark from it after.
+        Map<String, dynamic> newBookmark =
+            (await epubber.makeEpub(context, bookmark: bookmark));
         // debugPrint("your last page: $newBookmark");
-        FirebaseService().setBookmark(bookId: widget.bookSnap.id, location: newBookmark['location']!, settings: newBookmark['settings']!, theme: newBookmark['theme']!, );
+        FirebaseService().setBookmark(
+          bookId: widget.bookSnap.id,
+          location: newBookmark['location']!,
+          settings: newBookmark['settings']!,
+          theme: newBookmark['theme']!,
+        );
         // update local bookmark
         bookmark = newBookmark;
       });
     }
     return BackArrow(
       child: Scaffold(
-          floatingActionButton:
-              isUsersBook
-                  ? FloatingActionButton(
-                      heroTag: 'add',
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      child: const Icon(Icons.add),
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                EditChapter(book: widget.bookSnap.data()!, num_chapters: chapters.length,)),
-                      ).then((value) {
-                         setState(() {});
-                      }),
-                    )
-                  : null,
+          floatingActionButton: isUsersBook
+              ? FloatingActionButton(
+                  heroTag: 'add',
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  child: const Icon(Icons.add),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditChapter(
+                              book: widget.bookSnap.data()!,
+                              num_chapters: chapters.length,
+                            )),
+                  ).then((value) {
+                    setState(() {});
+                  }),
+                )
+              : null,
           body: FutureBuilder<List<Chapter>>(
               future: FirebaseService().getChapters(widget.bookSnap.id),
               builder: (context, snapshot) {
@@ -104,12 +127,21 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                 }
                 return ListView(
                   physics: BouncingScrollPhysics(),
-                  controller: ScrollController(
-                      initialScrollOffset:
-                          MediaQuery.of(context).size.height * 0.35),
+                  controller: scroll_controller,
                   children: [
                     GestureDetector(
                       onTap: () {
+                        if (kIsWeb) {
+                          Alert()
+                              .error(context,
+                                  'The immersive reader is only available on the mobile app. Sorry!')
+                              .then((value) {
+                            setState(() {
+                              selected = 0;
+                              scroll_controller!.jumpTo(800);
+                            });
+                          });
+                        }
                         setState(() {
                           clicked = true;
                         });
@@ -161,18 +193,19 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                                           bookSnap: widget.bookSnap,
                                         )),
                               ).then((value) async {
-                                DocumentSnapshot<Book> newSnap = await widget.bookSnap.reference.get();
-                                setState((){
+                                DocumentSnapshot<Book> newSnap =
+                                    await widget.bookSnap.reference.get();
+                                setState(() {
                                   widget.bookSnap = newSnap;
                                 });
-                                });
+                              });
                             }),
                       ),
                     Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Container(child: ExpandableWidget(context)),
                     ),
-                    buildDescription(),
+                    buildDescription(context),
                   ],
                 );
               })),
@@ -283,14 +316,20 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
         ],
       );
 
-  Widget buildDescription() => SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 4,
-              ),
+  Widget buildDescription(BuildContext context) {
+    debugPrint('selected: $selected');
+    return SingleChildScrollView(
+      child: Container(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            if (kIsWeb) const Text(
+                'Download the Cambrio app for a better reading experience!'),
+            const SizedBox(
+              height: 4,
+            ),
+
+            if (selected == null)
               Text(
                 widget.bookSnap.data()?.description ?? 'no description',
                 style: const TextStyle(
@@ -300,22 +339,28 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                 ),
                 softWrap: true,
               ),
-              // Html(data:chapters[selected].text),
-              const SizedBox(
-                height: 40,
-              ),
-              // Text(
-              //   chapters[selected].text,
-              //   style: const TextStyle(
-              //     fontSize: 15,
-              //     fontWeight: FontWeight.normal,
-              //     fontFamily: "Montserrat-Semibold",
-              //   ),
-              // )
-            ],
-          ),
+
+            if (selected != null)
+              Html(
+                  key: ValueKey<int?>(selected),
+                  data: chapters[selected!].text),
+
+            const SizedBox(
+              height: 40,
+            ),
+            // Text(
+            //   chapters[selected].text,
+            //   style: const TextStyle(
+            //     fontSize: 15,
+            //     fontWeight: FontWeight.normal,
+            //     fontFamily: "Montserrat-Semibold",
+            //   ),
+            // )
+          ],
         ),
-      );
+      ),
+    );
+  }
 
   // Widget TableOfContentDropDownButton() => Container(
   //       color: Colors.black,
@@ -361,7 +406,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ExpansionTile(
-        // key: Key(selected.toString()),
+        key: Key(selected.toString()),
         title: const Text(
           "Table of Contents",
           style: TextStyle(
@@ -373,8 +418,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
         ),
         expandedCrossAxisAlignment: CrossAxisAlignment.center,
         initiallyExpanded: widget.open,
-
-        children: () {
+        children: (BuildContext context) {
           List<Widget> widgets = [];
           for (int i = 0; i < chapters.length; i++) {
             widgets.add(const Divider());
@@ -392,10 +436,10 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                       ),
                     ),
                     onTap: () {
-                      epubber.makeEpub(context, location: i);
-                      // setState(() {
-                      //   selected = i;
-                      // });
+                      // epubber.makeEpub(context, location: i);
+                      setState(() {
+                        selected = i;
+                      });
                     },
                   ),
                 ),
@@ -411,9 +455,10 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                                   chapter: chapters[i],
                                   num_chapters: chapters.length)),
                         ).then((value) async {
-                          DocumentSnapshot<Book> newSnap = await widget.bookSnap.reference.get();
+                          DocumentSnapshot<Book> newSnap =
+                              await widget.bookSnap.reference.get();
 
-                          setState((){
+                          setState(() {
                             widget.bookSnap = newSnap;
                             // chapters = [
                             //   const Chapter(
@@ -431,7 +476,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
             ));
           }
           return widgets;
-        }.call(),
+        }.call(context),
       ),
     );
   }

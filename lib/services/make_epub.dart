@@ -16,6 +16,8 @@ import '../models/chapter.dart';
 
 import 'dart:convert' show utf8;
 
+import '../pages/read_book/read_book.dart';
+
 class MakeEpub {
   String title = 'wat';
   late List<Chapter> chapters;
@@ -228,14 +230,7 @@ class MakeEpub {
     // debugPrint(Directory('${(await _filePath)}/goodbook').listSync().toString());
     // Share.shareFiles([file.path]);  // method that is very useful for testing, and perhaps essential for future feature.
     // Stream<PaginationInfo> locationStream;
-    Map<String,String> lastLocation = (await Navigator.push(context, MaterialPageRoute(builder: (context) =>
-        EpubScreen.fromPath(
-            filePath: file.path,
-            location: bookmark?['location'],
-            settings: bookmark?['settings'],
-            theme: bookmark?['theme'],
-        )
-    ))) as Map<String,String>;
+    Map<String,String> lastLocation = await ReadBook.instance.readBook(context, file: file);
 
     return lastLocation;
   }
