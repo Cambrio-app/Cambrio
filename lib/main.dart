@@ -1,9 +1,14 @@
+import 'dart:async';
+import 'dart:isolate';
+
 import 'package:cambrio/pages/login_page.dart';
 import 'package:cambrio/pages/responsive_main_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 // Import the generated file
 import 'firebase_options.dart';
 
@@ -75,10 +80,12 @@ final ColorScheme colorScheme = ColorScheme.fromSwatch(
 // final ColorScheme colorScheme = ColorScheme.fromSwatch(primarySwatch: Colors.grey);
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-      home:App(),
+  runZonedGuarded<Future<void>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    runApp(MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: App(),
       theme: ThemeData(
 
         colorScheme: colorScheme,
@@ -101,16 +108,18 @@ void main() {
         cardTheme: CardTheme(
           color: colorScheme.surface,
           shape: const Border(
-              top:BorderSide(width: 1.50, color: Colors.white),
-              left:BorderSide(width: 1.50, color: Colors.white),
-              bottom:BorderSide(width: 5.0, color: Colors.white),
-              right:BorderSide(width: 5.0, color: Colors.white)
+              top: BorderSide(width: 1.50, color: Colors.white),
+              left: BorderSide(width: 1.50, color: Colors.white),
+              bottom: BorderSide(width: 5.0, color: Colors.white),
+              right: BorderSide(width: 5.0, color: Colors.white)
           ),
           shadowColor: Colors.transparent,
         ),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(elevation: 0),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+            elevation: 0),
       ),
-  ));
+    ));
+  }, (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack));
 }
 
 class App extends StatefulWidget {
@@ -137,6 +146,17 @@ class _AppState extends State<App> {
       });
 
       debugPrint('goooo');
+
+      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+      if (!kIsWeb) {
+        Isolate.current.addErrorListener(RawReceivePort((pair) async {
+        final List<dynamic> errorAndStacktrace = pair;
+        await FirebaseCrashlytics.instance.recordError(
+          errorAndStacktrace.first,
+          errorAndStacktrace.last,
+        );
+      }).sendPort);
+      }
       // set defaults for remote config values, like auto_search
       await FirebaseRemoteConfig.instance.setDefaults(<String, dynamic>{
         'welcome_message': 'default welcome message',
