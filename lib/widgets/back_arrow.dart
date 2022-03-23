@@ -16,7 +16,7 @@ class BackArrow extends StatelessWidget {
             child: Align(
               alignment: AlignmentDirectional.topStart,
               child: Padding(
-                padding: EdgeInsets.fromLTRB(10, 50, 20, 20),
+                padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
                 child: FloatingActionButton(
                     heroTag: 'back',
                     backgroundColor: Colors.white.withOpacity(1),

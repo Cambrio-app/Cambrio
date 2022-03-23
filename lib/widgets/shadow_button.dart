@@ -20,8 +20,8 @@ class ShadowButton extends StatelessWidget {
         constraints: BoxConstraints(
           minHeight: MediaQuery.of(context).size.height * 0.03,
           maxHeight: MediaQuery.of(context).size.height * 0.04,
-          minWidth: MediaQuery.of(context).size.width,
-          // maxWidth: MediaQuery.of(context).size.width,
+          // minWidth: MediaQuery.of(context).size.width,
+          maxWidth: 600,
       ),
         // height: MediaQuery.of(context).size.height * 0.04,
         padding: const EdgeInsets.only(top: 0, bottom: 0, right: 0),

@@ -30,80 +30,90 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
   @override
   Widget build(BuildContext context) {
     // UserProfile? profile = await FirebaseService().getProfile(uid: FirebaseAuth.instance.currentUser!.uid);
-    return FutureBuilder<UserProfile?>(
-      future: FirebaseService()
-          .getProfile(uid: FirebaseAuth.instance.currentUser!.uid),
-      builder: (BuildContext context, AsyncSnapshot<UserProfile?> snapshot) {
-        if (snapshot.hasData && snapshot.data != null) {
-          profile = snapshot.data!;
-        } else {
-          profile = const UserProfile(
-              user_id: 'idk',
-              bio: 'loading',
-              handle: 'loading',
-              image_url: null,
-              full_name: 'loading');
-        }
-        return Scaffold(
-          body: Column(
-            mainAxisSize: MainAxisSize.max,
-            // crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20,0,10,10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          // maxHeight: 300,
+          // minHeight: 200,
+            maxWidth: 1000,
+            minWidth: 200
+        ),
+        child: FutureBuilder<UserProfile?>(
+          future: FirebaseService()
+              .getProfile(uid: FirebaseAuth.instance.currentUser!.uid),
+          builder: (BuildContext context, AsyncSnapshot<UserProfile?> snapshot) {
+            if (snapshot.hasData && snapshot.data != null) {
+              profile = snapshot.data!;
+            } else {
+              profile = const UserProfile(
+                  user_id: 'idk',
+                  bio: 'loading',
+                  handle: 'loading',
+                  image_url: null,
+                  full_name: 'loading');
+            }
+            return Scaffold(
+              body: Column(
+                mainAxisSize: MainAxisSize.max,
+                // crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20,0,10,10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Flexible(
-                          child: ProfileWidget(
-                            imagePath: profile.image_url,
-                          ),
-                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Flexible(
+                              child: ProfileWidget(
+                                imagePath: profile.image_url,
+                              ),
+                            ),
 
-                        Expanded(flex:2,child: Center(child: NumbersWidget(profile_id: profile.user_id,likes: profile.num_likes ?? -1, subs: profile.num_subs ?? 1,))),
+                            Expanded(flex:2,child: Center(child: NumbersWidget(profile_id: profile.user_id,likes: profile.num_likes ?? -1, subs: profile.num_subs ?? 1,))),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        buildName(profile.full_name ?? 'no full_name chosen',
+                            profile.handle ?? "no handle minted"),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        buildBio(profile.bio ?? "tell them what you're about"),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        ShadowButton(
+                            text: "Edit Profile",
+                            onclick: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditProfile(
+                                          name: profile.full_name!,
+                                          bio: profile.bio!,
+                                          handle: profile.handle!,
+                                          profile: profile,
+                                        )),
+                              );
+                            }),
                       ],
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    buildName(profile.full_name ?? 'no full_name chosen',
-                        profile.handle ?? "no handle minted"),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    buildBio(profile.bio ?? "tell them what you're about"),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    ShadowButton(
-                        text: "Edit Profile",
-                        onclick: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EditProfile(
-                                      name: profile.full_name!,
-                                      bio: profile.bio!,
-                                      handle: profile.handle!,
-                                      profile: profile,
-                                    )),
-                          );
-                        }),
-                  ],
-                ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Expanded(child: TabBarToggle(profile: profile)),
+                ],
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              Expanded(child: TabBarToggle(profile: profile)),
-            ],
-          ),
-        );
-      },
+            );
+          },
+        ),
+      ),
     );
   }
 

@@ -118,121 +118,135 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
         bookmark = newBookmark;
       });
     }
-    return BackArrow(
-      child: Scaffold(
-          floatingActionButton: isUsersBook
-              ? FloatingActionButton(
-                  heroTag: 'add',
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  child: const Icon(Icons.add),
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => EditChapter(
-                              book: widget.bookSnap.data()!,
-                              num_chapters: chapters.length,
-                            )),
-                  ).then((value) {
-                    setState(() {});
-                  }),
-                )
-              : null,
-          body: FutureBuilder<List<Chapter>>(
-              future: FirebaseService().getChapters(widget.bookSnap.id),
-              builder: (context, snapshot) {
-                if (snapshot.hasData && snapshot.data != null) {
-                  chapters = snapshot.data!;
-                }
-                return ListView(
-                  physics: BouncingScrollPhysics(),
-                  controller: scroll_controller,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-
-                        // report to analytics that the user clicked the cover
-                        FirebaseAnalytics.instance.logEvent(
-                          name: "click_cover",
-                        );
-
-                        if (kIsWeb) {
-                          Alert()
-                              .error(context,
-                                  'The immersive reader is only available on the mobile app. Sorry!')
-                              .then((value) {
-                            setState(() {
-                              selected = 0;
-                              scroll_controller!.jumpTo(800);
-                            });
-                          });
-                        }
-                        setState(() {
-                          clicked = true;
-                        });
-                      },
-                      child: Center(
-                        child: AnimatedContainer(
-                          width: clicked
-                              ? MediaQuery.of(context).size.width * 0.9
-                              : MediaQuery.of(context).size.width,
-                          height: clicked
-                              ? MediaQuery.of(context).size.height * 0.6
-                              : MediaQuery.of(context).size.height * 0.7,
-                          // color: clicked ? Colors.red : Colors.blue,
-                          alignment: clicked
-                              ? Alignment.center
-                              : AlignmentDirectional.topCenter,
-                          duration: const Duration(milliseconds: 1000),
-                          curve:
-                              (clicked) ? Curves.slowMiddle : Curves.elasticOut,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                            image: NetworkImage(widget.bookSnap
-                                    .data()
-                                    ?.image_url ??
-                                'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7674aee8-a93d-4e4a-8a60-456b3770bbba/d7jk6bp-9e915b66-3e89-4e4f-99bc-b43dd8245355.jpg/v1/fill/w_746,h_1071,q_70,strp/vintage_ornamental_book_cover_by_boldfrontiers_d7jk6bp-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTI5MSIsInBhdGgiOiJcL2ZcLzc2NzRhZWU4LWE5M2QtNGU0YS04YTYwLTQ1NmIzNzcwYmJiYVwvZDdqazZicC05ZTkxNWI2Ni0zZTg5LTRlNGYtOTliYy1iNDNkZDgyNDUzNTUuanBnIiwid2lkdGgiOiI8PTkwMCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.mwO9qA8W8-XIF_ifzkAI6YD54OBknB9slDFYY08mzyY'),
-                            fit: BoxFit.cover,
-                          )),
-                          onEnd: () {
-                            setState(() {
-                              clicked = false;
-                            });
-                          },
-                        ),
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+            // maxHeight: 300,
+            // minHeight: 200,
+            maxWidth: 1000,
+            minWidth: 200
+        ),
+        child: BackArrow(
+          child: Scaffold(
+            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+              floatingActionButton: isUsersBook
+                  ? Padding(
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
+                    child: FloatingActionButton(
+                        heroTag: 'add',
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        child: const Icon(Icons.add),
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditChapter(
+                                    book: widget.bookSnap.data()!,
+                                    num_chapters: chapters.length,
+                                  )),
+                        ).then((value) {
+                          setState(() {});
+                        }),
                       ),
-                    ),
-                    buildName(context),
-                    // only show this widget if the book in question is written by this user.
-                    if (isUsersBook)
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                        child: ShadowButton(
-                            icon: Icons.edit,
-                            text: 'Edit Book Details',
-                            onclick: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => EditBook(
-                                          bookSnap: widget.bookSnap,
-                                        )),
-                              ).then((value) async {
-                                DocumentSnapshot<Book> newSnap =
-                                    await widget.bookSnap.reference.get();
+                  )
+                  : null,
+              body: FutureBuilder<List<Chapter>>(
+                  future: FirebaseService().getChapters(widget.bookSnap.id),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData && snapshot.data != null) {
+                      chapters = snapshot.data!;
+                    }
+                    return ListView(
+                      physics: BouncingScrollPhysics(),
+                      controller: scroll_controller,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+
+                            // report to analytics that the user clicked the cover
+                            FirebaseAnalytics.instance.logEvent(
+                              name: "click_cover",
+                            );
+
+                            if (kIsWeb) {
+                              Alert()
+                                  .error(context,
+                                      'The immersive reader is only available on the mobile app. Sorry!')
+                                  .then((value) {
                                 setState(() {
-                                  widget.bookSnap = newSnap;
+                                  selected = 0;
+                                  scroll_controller!.jumpTo(800);
                                 });
                               });
-                            }),
-                      ),
-                    Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child: Container(child: ExpandableWidget(context)),
-                    ),
-                    buildDescription(context),
-                  ],
-                );
-              })),
+                            }
+                            setState(() {
+                              clicked = true;
+                            });
+                          },
+                          child: Center(
+                            child: AnimatedContainer(
+                              width: clicked
+                                  ? MediaQuery.of(context).size.width * 0.9
+                                  : MediaQuery.of(context).size.width,
+                              height: clicked
+                                  ? MediaQuery.of(context).size.height * 0.6
+                                  : MediaQuery.of(context).size.height * 0.7,
+                              // color: clicked ? Colors.red : Colors.blue,
+                              alignment: clicked
+                                  ? Alignment.center
+                                  : AlignmentDirectional.topCenter,
+                              duration: const Duration(milliseconds: 1000),
+                              curve:
+                                  (clicked) ? Curves.slowMiddle : Curves.elasticOut,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                image: NetworkImage(widget.bookSnap
+                                        .data()
+                                        ?.image_url ??
+                                    'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/7674aee8-a93d-4e4a-8a60-456b3770bbba/d7jk6bp-9e915b66-3e89-4e4f-99bc-b43dd8245355.jpg/v1/fill/w_746,h_1071,q_70,strp/vintage_ornamental_book_cover_by_boldfrontiers_d7jk6bp-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTI5MSIsInBhdGgiOiJcL2ZcLzc2NzRhZWU4LWE5M2QtNGU0YS04YTYwLTQ1NmIzNzcwYmJiYVwvZDdqazZicC05ZTkxNWI2Ni0zZTg5LTRlNGYtOTliYy1iNDNkZDgyNDUzNTUuanBnIiwid2lkdGgiOiI8PTkwMCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.mwO9qA8W8-XIF_ifzkAI6YD54OBknB9slDFYY08mzyY'),
+                                fit: BoxFit.fitHeight,
+                              )),
+                              onEnd: () {
+                                setState(() {
+                                  clicked = false;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        buildName(context),
+                        // only show this widget if the book in question is written by this user.
+                        if (isUsersBook)
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                            child: ShadowButton(
+                                icon: Icons.edit,
+                                text: 'Edit Book Details',
+                                onclick: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => EditBook(
+                                              bookSnap: widget.bookSnap,
+                                            )),
+                                  ).then((value) async {
+                                    DocumentSnapshot<Book> newSnap =
+                                        await widget.bookSnap.reference.get();
+                                    setState(() {
+                                      widget.bookSnap = newSnap;
+                                    });
+                                  });
+                                }),
+                          ),
+                        Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: Container(child: ExpandableWidget(context)),
+                        ),
+                        buildDescription(context),
+                      ],
+                    );
+                  })),
+        ),
+      ),
     );
   }
 
