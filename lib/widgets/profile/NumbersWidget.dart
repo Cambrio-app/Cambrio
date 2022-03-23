@@ -1,14 +1,15 @@
 import 'package:cambrio/services/firebase_service.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 
 class NumbersWidget extends StatelessWidget {
   int subs;
   int likes;
 
-  String? profile_id;
+  String profile_id;
 
 
-  NumbersWidget({Key? key, this.profile_id, required this.subs, required this.likes});
+  NumbersWidget({Key? key, required this.profile_id, required this.subs, required this.likes});
 
   @override
   Widget build(BuildContext context) => Row(
@@ -24,6 +25,11 @@ class NumbersWidget extends StatelessWidget {
     child: MaterialButton(
        padding: EdgeInsets.symmetric(vertical: 4),
           onPressed: () {
+            FirebaseAnalytics.instance
+                .logSelectContent(
+              contentType: 'refresh_subs/likes',
+              itemId: profile_id,
+            );
             FirebaseService().checkStats(profile_id: profile_id);
           },
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

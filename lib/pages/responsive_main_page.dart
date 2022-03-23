@@ -5,6 +5,7 @@ import 'package:cambrio/pages/settings.dart';
 import 'package:cambrio/widgets/book_grid_view.dart';
 import 'package:cambrio/pages/edit_chapter.dart';
 import 'package:cambrio/pages/edit_book.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:cambrio/widgets/book_list_view.dart';
 import 'package:cambrio/widgets/home_tab_view.dart';
@@ -35,11 +36,23 @@ class _ResponsivePageState extends State<ResponsivePage> {
   Widget bodyFunction() {
     switch (widget.selectedIndex) {
       case 0:
+        FirebaseAnalytics.instance
+            .setCurrentScreen(
+            screenName: 'Home'
+        );
         return const MyTabbedPage();
         break;
       case 1:
+        FirebaseAnalytics.instance
+            .setCurrentScreen(
+            screenName: 'Explore/Search'
+        );
         return const SearchingPage();
       case 2:
+        FirebaseAnalytics.instance
+            .setCurrentScreen(
+            screenName: 'Personal Profile'
+        );
         return const PersonalProfilePage();
       default:
         return const Center(
@@ -60,6 +73,10 @@ class _ResponsivePageState extends State<ResponsivePage> {
         actions: [
           IconButton(
               onPressed: () {
+                // report to analytics that the user clicked
+                FirebaseAnalytics.instance.logEvent(
+                  name: "pencil_icon",
+                );
                 setState(() {
                   widget.selectedIndex = 2;
                 });
@@ -75,7 +92,12 @@ class _ResponsivePageState extends State<ResponsivePage> {
             );
           }, icon: const Icon(Icons.settings)),
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                // report to analytics that the user clicked
+                FirebaseAnalytics.instance.logEvent(
+                  name: "notifications_icon",
+                );
+              },
               icon: const Icon(Icons.notifications_none_rounded)),
         ],
       ),

@@ -4,6 +4,7 @@ import 'package:cambrio/models/book.dart';
 import 'package:cambrio/models/chapter.dart';
 import 'package:cambrio/models/like.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -772,8 +773,10 @@ class FirebaseService {
   }
 
   Future<void> deleteAccount(BuildContext context) async {
+
     bool isSure = await Alert()
         .isSure(context, 'your entire account and every book in it.');
+    bool error = false;
     if (isSure) {
       try {
         // delete all of the user's books
@@ -798,7 +801,17 @@ class FirebaseService {
       } catch (e) {
         Alert().error(
             context, 'We had some issues deleting your books or account');
+        error = true;
       }
+
     }
+    // log this action
+    await FirebaseAnalytics.instance.logEvent(
+      name: "deactivate_account",
+      parameters: {
+        "confirmed": isSure,
+        "error": error,
+      },
+    );
   }
 }

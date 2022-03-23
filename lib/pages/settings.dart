@@ -1,4 +1,5 @@
 import 'package:cambrio/services/firebase_service.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -14,6 +15,12 @@ import 'dart:convert';
 class Settings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
+    // log the page view
+    FirebaseAnalytics.instance
+        .setCurrentScreen(
+        screenName: 'settings'
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -68,8 +75,6 @@ class Settings extends StatelessWidget {
                 title: Text("Deactivate Account", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
 
               )
-
-
             ]
           )
         ],
@@ -114,6 +119,12 @@ class WebViewLoadUI extends State<WebViewLoad>{
 
   @override
   Widget build(BuildContext context) {
+    // log the page view
+    FirebaseAnalytics.instance
+        .setCurrentScreen(
+        screenName: 'terms_of_service'
+    );
+
     return Scaffold(
       appBar: AppBar(title: Text('Terms of Service')),
       body: WebView(
@@ -132,6 +143,13 @@ class MyPrivPol extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    // log the page view
+    FirebaseAnalytics.instance
+        .setCurrentScreen(
+        screenName: 'privacy_policy'
+    );
+
     return MaterialApp(
         home: Scaffold(
             body: WebViewLoad(path: 'assets/legal/cambrioPrivacyPolicy.html')

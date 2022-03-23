@@ -1,4 +1,5 @@
 import 'package:cambrio/services/ChapterQueryService.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,6 +26,10 @@ class _ChapterInfScrollState extends State<ChapterInfScroll> {
 
   @override
   void initState() {
+    FirebaseAnalytics.instance
+        .setCurrentScreen(
+        screenName: 'Feed'
+    );
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });

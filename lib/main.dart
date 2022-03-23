@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+
 // Import the generated file
 import 'firebase_options.dart';
 
@@ -147,8 +149,9 @@ class _AppState extends State<App> {
 
       debugPrint('goooo');
 
+      // set up crashlytics
       FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-      if (!kIsWeb) {
+      if (!kIsWeb) { // only set it up on mobile; it's not available on web.
         Isolate.current.addErrorListener(RawReceivePort((pair) async {
         final List<dynamic> errorAndStacktrace = pair;
         await FirebaseCrashlytics.instance.recordError(
@@ -157,6 +160,10 @@ class _AppState extends State<App> {
         );
       }).sendPort);
       }
+
+      // set up google analytics
+      // FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+
       // set defaults for remote config values, like auto_search
       await FirebaseRemoteConfig.instance.setDefaults(<String, dynamic>{
         'welcome_message': 'default welcome message',

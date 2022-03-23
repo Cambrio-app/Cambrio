@@ -1,4 +1,5 @@
 import 'package:cambrio/pages/responsive_main_page.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,14 @@ class LoginScreen extends StatelessWidget {
       ))
           .user!;
       debugPrint('${user.email} signed in');
+
+      // report that the login was made
+      await FirebaseAnalytics.instance
+          .logLogin(
+        loginMethod: 'EmailAndPassword',
+      ).then((value) => debugPrint('hopefully, analytics ran.'));
+
+
       return null;
     } catch (e) {
       debugPrint('Failed to sign in with Email & Password');
@@ -40,6 +49,12 @@ class LoginScreen extends StatelessWidget {
     ))
         .user;
     if (user != null) {
+      // report that the signup was successful
+      await FirebaseAnalytics.instance
+          .logSignUp(
+        signUpMethod: 'EmailAndPassword'
+      );
+
       return null;
     } else {
       return 'failure';

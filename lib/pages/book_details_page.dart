@@ -10,6 +10,7 @@ import 'package:cambrio/widgets/alert.dart';
 import 'package:cambrio/widgets/back_arrow.dart';
 import 'package:cambrio/widgets/shadow_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -64,6 +65,13 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
         authorId: widget.bookSnap.data()!.author_id ?? 'wat',
         bookId: widget.bookSnap.id);
     isUsersBook = FirebaseService().userId == widget.bookSnap.data()?.author_id;
+
+    // report to analytics that the user selected this content
+    FirebaseAnalytics.instance
+        .logSelectContent(
+      contentType: 'book',
+      itemId: widget.bookSnap.id,
+    );
     // SchedulerBinding.instance!.addPostFrameCallback((_) {
     //   double offset = MediaQuery.of(context).size.height * 0.35;
     //   scroll_controller = ScrollController(initialScrollOffset:offset);
@@ -77,6 +85,13 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    // report to analytics that the user went to this page
+    FirebaseAnalytics.instance
+        .setCurrentScreen(
+        screenName: 'BookDetails'
+    );
+
     // initialize late because it uses context
     scroll_controller ??= ScrollController(
         initialScrollOffset:
@@ -86,10 +101,13 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
     if (clicked == true && !kIsWeb) {
       Future.delayed(const Duration(milliseconds: 100), () async {
         // debugPrint("using bookmark: $bookmark");
+        // also make sure that the bookmark is made if there is none.
+        Map<String, String>? mark = (selected!=null) ? {'location': '{"cfi":" ","idref":"ch${selected!+1}"}'}:null;
         // open a book an retrieve the bookmark from it after.
         Map<String, dynamic> newBookmark =
-            (await epubber.makeEpub(context, bookmark: bookmark));
-        // debugPrint("your last page: $newBookmark");
+            (await epubber.makeEpub(context, bookmark: mark ?? bookmark));
+        selected = null;
+        debugPrint("your last page: $newBookmark");
         FirebaseService().setBookmark(
           bookId: widget.bookSnap.id,
           location: newBookmark['location']!,
@@ -131,6 +149,12 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                   children: [
                     GestureDetector(
                       onTap: () {
+
+                        // report to analytics that the user clicked the cover
+                        FirebaseAnalytics.instance.logEvent(
+                          name: "click_cover",
+                        );
+
                         if (kIsWeb) {
                           Alert()
                               .error(context,
@@ -317,7 +341,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
       );
 
   Widget buildDescription(BuildContext context) {
-    debugPrint('selected: $selected');
+    // debugPrint('selected: $selected');
     return SingleChildScrollView(
       child: Container(
         padding: const EdgeInsets.all(8.0),
@@ -340,7 +364,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                 softWrap: true,
               ),
 
-            if (selected != null)
+            if (selected != null && kIsWeb)
               Html(
                   key: ValueKey<int?>(selected),
                   data: chapters[selected!].text),
@@ -436,8 +460,19 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                       ),
                     ),
                     onTap: () {
-                      // epubber.makeEpub(context, location: i);
+                      // if (!kIsWeb) epubber.makeEpub(context, location: i);
+
+                      // report to analytics that the user clicked the chapter
+                      FirebaseAnalytics.instance.logEvent(
+                        name: "click_chapter",
+                        parameters: {
+                          'index':i,
+                          'book_id':widget.bookSnap.id,
+                        },
+                      );
+
                       setState(() {
+                        clicked = true;
                         selected = i;
                       });
                     },

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cambrio/pages/profile/personal_profile_page.dart';
 import 'package:cambrio/services/firebase_service.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:cambrio/models/user_preferences.dart';
 import 'package:image_picker/image_picker.dart';
@@ -38,6 +39,12 @@ class _EditProfileState extends State<EditProfile> {
     _nameController = TextEditingController(text: widget.name);
     _handleController = TextEditingController(text: widget.handle);
     _bioController = TextEditingController(text: widget.bio);
+
+    // report to analytics that the user went to this page
+    FirebaseAnalytics.instance
+        .setCurrentScreen(
+        screenName: 'EditProfile'
+    );
   }
 
   @override

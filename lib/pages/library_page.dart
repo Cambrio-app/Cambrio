@@ -1,5 +1,6 @@
 import 'package:cambrio/services/firebase_service.dart';
 import 'package:cambrio/widgets/book_list_view.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 
 class LibraryPage extends StatelessWidget {
@@ -7,6 +8,12 @@ class LibraryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    // report to analytics that the user went to this page
+    FirebaseAnalytics.instance
+        .setCurrentScreen(
+        screenName: 'Library'
+    );
     // return Column(
     //   mainAxisSize: MainAxisSize.min,
     return ListView(

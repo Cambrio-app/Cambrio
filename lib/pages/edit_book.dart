@@ -3,6 +3,7 @@
 
 import 'package:cambrio/pages/book_details_page.dart';
 import 'package:cambrio/pages/responsive_main_page.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class EditBook extends StatefulWidget {
 
   final String title = 'Create New Book';
 
+
   @override
   State<EditBook> createState() => _EditBookState();
 }
@@ -39,6 +41,16 @@ class _EditBookState extends State<EditBook> {
       TextEditingController(text: book?.description);
   final ImagePicker _picker = ImagePicker();
   XFile? image;
+
+  @override
+  void initState() {
+    super.initState();
+    // report to analytics that the user went to this page
+    FirebaseAnalytics.instance
+        .setCurrentScreen(
+        screenName: 'EditBook'
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

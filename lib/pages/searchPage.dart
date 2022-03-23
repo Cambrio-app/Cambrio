@@ -1,5 +1,7 @@
 import 'package:cambrio/pages/book_details_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:algolia/algolia.dart';
@@ -79,8 +81,15 @@ class _SearchingPageState extends State<SearchingPage> {
               child: TextField(
                 controller: _searchText,
                 cursorColor: Colors.black,
-                onChanged: FirebaseRemoteConfig.instance.getBool('auto_search') ? (_) => _search() : null,
-                onEditingComplete: _search,
+                onChanged: FirebaseRemoteConfig.instance.getBool('auto_search')
+                    ? (_) => _search()
+                    : null,
+                onEditingComplete: () {
+
+                  // log the search
+                  FirebaseAnalytics.instance.logSearch(searchTerm: _searchText.text);
+                  _search();
+                },
                 decoration: InputDecoration(
                     prefixIcon: Icon(
                       Icons.search,
@@ -120,6 +129,9 @@ class _SearchingPageState extends State<SearchingPage> {
                     ),
                     onPressed: () {
                       FocusManager.instance.primaryFocus?.unfocus();
+
+                      // log the search
+                      FirebaseAnalytics.instance.logSearch(searchTerm: _searchText.text);
                       _search();
                     }),
               ],

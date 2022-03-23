@@ -1,6 +1,7 @@
 import 'package:cambrio/models/user_preferences.dart';
 import 'package:cambrio/widgets/profile/NumbersWidget.dart';
 import 'package:cambrio/widgets/profile/ProfileWidget.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/user_profile.dart';
@@ -18,6 +19,13 @@ class AuthorProfilePage extends StatefulWidget {
 class _AuthorProfilePageState extends State<AuthorProfilePage> {
   @override
   Widget build(BuildContext context) {
+
+    // report to analytics that the user went to this page
+    FirebaseAnalytics.instance
+        .setCurrentScreen(
+        screenName: 'AuthorProfile'
+    );
+
     return Scaffold(
       appBar: AppBar(),
       body: ListView(
@@ -108,6 +116,11 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
             text:
                 (snapshot.data ?? false) ? "Manage Subscription" : "Subscribe",
             onclick: () {
+              // report to analytics that the user went to this page
+              FirebaseAnalytics.instance
+                  .setCurrentScreen(
+                  screenName: 'Subscribe'
+              );
               showModalBottomSheet(
                   context: context,
                   builder: (context) {
@@ -152,10 +165,23 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
                   ? "Unsubscribe"
                   : "Subscribe to All Their Books",
               onclick: () {
+
                 if (snapshot.data ?? false) {
+                  // report to analytics that the user selected this content
+                  FirebaseAnalytics.instance
+                      .logSelectContent(
+                    contentType: 'unsub',
+                    itemId: widget.profile.user_id,
+                  );
                   FirebaseService()
                       .removeSubscription(author_id: widget.profile.user_id);
                 } else {
+                  // report to analytics that the user selected this content
+                  FirebaseAnalytics.instance
+                      .logSelectContent(
+                    contentType: 'sub',
+                    itemId: widget.profile.user_id,
+                  );
                   FirebaseService()
                       .editSubscription(author_id: widget.profile.user_id);
                 }

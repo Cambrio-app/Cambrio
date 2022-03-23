@@ -1,5 +1,6 @@
 import 'package:cambrio/services/firebase_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
@@ -25,6 +26,16 @@ class _EditChapterState extends State<EditChapter> {
   HtmlEditorController controller = HtmlEditorController(processOutputHtml: true, processNewLineAsBr: true, );
   late final _chapter_name_controller = TextEditingController(text: widget.chapter?.chapter_name);
   late final _chapter_order_controller = TextEditingController(text: '${widget.chapter?.order ?? ((widget.num_chapters ?? 0) +1)}');
+
+  @override
+  void initState() {
+    super.initState();
+    // report to analytics that the user went to this page
+    FirebaseAnalytics.instance
+        .setCurrentScreen(
+        screenName: 'EditChapter'
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

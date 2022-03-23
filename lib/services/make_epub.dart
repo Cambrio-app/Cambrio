@@ -230,7 +230,8 @@ class MakeEpub {
     // debugPrint(Directory('${(await _filePath)}/goodbook').listSync().toString());
     // Share.shareFiles([file.path]);  // method that is very useful for testing, and perhaps essential for future feature.
     // Stream<PaginationInfo> locationStream;
-    Map<String,String> lastLocation = await ReadBook.instance.readBook(context, file: file);
+    debugPrint('getting: $bookmark');
+    Map<String,String> lastLocation = await ReadBook.instance.readBook(context, file: file, bookmark: bookmark);
 
     return lastLocation;
   }

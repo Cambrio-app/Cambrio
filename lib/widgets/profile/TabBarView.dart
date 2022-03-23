@@ -1,4 +1,5 @@
 import 'package:cambrio/models/user_profile.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -20,8 +21,23 @@ class _TabBarToggleState extends State<TabBarToggle>
     with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
+    List<Tab> _tabs = const [
+      Tab(
+        text: "Subscriptions",
+      ),
+      Tab(text: "Your Works"),
+    ];
+
     TabController _tabController = TabController(
         initialIndex: widget.initialIndex, length: 2, vsync: this);
+    _tabController.addListener(() {
+      // log the page view
+      FirebaseAnalytics.instance
+          .logSelectContent(
+          contentType: 'book_view',
+          itemId: _tabs[_tabController.index].text!,
+      );
+    });
 
     return SizedBox(
       height: 260,
@@ -37,12 +53,7 @@ class _TabBarToggleState extends State<TabBarToggle>
                   controller: _tabController,
                   labelStyle: const TextStyle(
                       fontSize: 16, fontFamily: "Montserrat-Semibold"),
-                  tabs: const [
-                    Tab(
-                      text: "Subscriptions",
-                    ),
-                    Tab(text: "Your Works"),
-                  ])),
+                  tabs: _tabs)),
           Flexible(
               child: TabBarView(controller: _tabController, children: [
             const BookListView(
