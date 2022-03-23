@@ -1,5 +1,6 @@
 import 'package:cambrio/pages/responsive_main_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 // import 'dashboard_screen.dart';
@@ -58,6 +59,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // debugPrint(Theme.of(context).colorScheme.onBackground.toString());
+    // FirebaseCrashlytics.instance.crash();
     return FlutterLogin(
 
       title: 'Cambrio',
