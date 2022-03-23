@@ -63,11 +63,12 @@ class _SearchingPageState extends State<SearchingPage> {
               child: Row(
                 children: [
                   Text(
-                    "Discover \nYour Favorites 🔥",
+                    "Find your next read",
                     style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.w600,
                         color: Colors.grey.shade800,
+                        fontFamily: 'Unna',
                         height: 1.5),
                   )
                 ],
