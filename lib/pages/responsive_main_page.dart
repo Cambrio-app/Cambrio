@@ -1,16 +1,23 @@
+import 'dart:math';
+
 import 'package:adaptive_navigation/adaptive_navigation.dart';
 import 'package:cambrio/pages/searchPage.dart';
 import 'package:cambrio/unused_rn/search_page.dart';
 import 'package:cambrio/pages/settings.dart';
+import 'package:cambrio/widgets/alert.dart';
 import 'package:cambrio/widgets/book_grid_view.dart';
 import 'package:cambrio/pages/edit_chapter.dart';
 import 'package:cambrio/pages/edit_book.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cambrio/widgets/book_list_view.dart';
 import 'package:cambrio/widgets/home_tab_view.dart';
 import 'package:cambrio/widgets/profile/profile_view.dart';
 import 'package:cambrio/pages/profile/personal_profile_page.dart';
+
+// only for the crazy animation
 import 'package:flutter/physics.dart';
 
 class ResponsivePage extends StatefulWidget {
@@ -24,10 +31,12 @@ class ResponsivePage extends StatefulWidget {
 }
 
 class _ResponsivePageState extends State<ResponsivePage>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin { // this line only for the animation
   bool _fabInRail = false;
   bool _includeBaseDestinationsInMenu = false;
   // int _selectedIndex = 0;
+
+  // start bell animation stuff
   final GlobalKey _keyBell = GlobalKey();
   final GlobalKey _keyFall = GlobalKey();
 
@@ -40,16 +49,16 @@ class _ResponsivePageState extends State<ResponsivePage>
       widget.selectedIndex = index;
     });
   }
-
   @override
   void initState() {
+    FirebaseRemoteConfig.instance.fetchAndActivate();
     super.initState();
 
     controller = AnimationController(vsync: this, upperBound: 1000)
       ..addListener(() {
         setState(() {});
       });
-    x_controller = AnimationController(vsync: this, upperBound: 1000)
+    x_controller = AnimationController(vsync: this, upperBound: 10000)
       ..addListener(() {
         setState(() {});
       });
@@ -63,6 +72,8 @@ class _ResponsivePageState extends State<ResponsivePage>
     x_controller.dispose();
     super.dispose();
   }
+  // end bell animation stuff
+
 
   // *these are the pages*
   Widget bodyFunction() {
@@ -92,6 +103,7 @@ class _ResponsivePageState extends State<ResponsivePage>
     }
   }
 
+  // only for animation
   Offset _getPositions(GlobalKey key) {
     if (key.currentContext != null) {
       final RenderBox renderBoxRed =
@@ -106,7 +118,7 @@ class _ResponsivePageState extends State<ResponsivePage>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
+    return Stack(children: [ // stack is only for the bell animation.
       AdaptiveNavigationScaffold(
       selectedIndex: widget.selectedIndex,
       destinations: _allDestinations,
@@ -135,7 +147,9 @@ class _ResponsivePageState extends State<ResponsivePage>
             );
           }, icon: const Icon(Icons.settings)),
           IconButton(
+              key: _keyBell, // only for animation
               onPressed: () {
+                debugPrint('wrong click');
                 // report to analytics that the user clicked
                 FirebaseAnalytics.instance.logEvent(
                   name: "notifications_icon",
@@ -156,16 +170,20 @@ class _ResponsivePageState extends State<ResponsivePage>
       includeBaseDestinationsInMenu: _includeBaseDestinationsInMenu,
       onDestinationSelected: _onItemTapped,
     ),
-      Positioned(
+
+      // only for animation
+      if (FirebaseRemoteConfig.instance.getBool('fancy_bell')) Positioned(
         top: _getPositions(_keyBell).dy + controller.value,
         left: _getPositions(_keyBell).dx - x_controller.value,
         child: Material(
           color: Colors.transparent,
           child: IconButton(
             // alignment: Alignment.bottomCenter,
-              padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+              padding: const EdgeInsets.fromLTRB(0, (kIsWeb) ? 16:8, 0, 0),
               key: _keyFall,
               onPressed: () {
+                debugPrint('cliccccked');
+
                 Future.delayed(const Duration(milliseconds: 30000), () {
                   debugPrint('trying to clear');
                   setState(() {
@@ -178,6 +196,8 @@ class _ResponsivePageState extends State<ResponsivePage>
                   });
                 });
                 fall(context, _getPositions(_keyBell).dy);
+                // Alert().error(context, "whoops, we haven't built notifications yet!");
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("whoops, we haven't built notifications yet!")));
 
               },
               icon: const Icon(
@@ -187,12 +207,17 @@ class _ResponsivePageState extends State<ResponsivePage>
       ),
     ]);
   }
+
+  // bell animation; controls the x and y falling and bouncing motions.
   void fall(BuildContext context, double startingPos) {
     controller.reset();
     // x_controller.reset();
     double x_left = _getPositions(_keyBell).dx + 35;
     double y_left =
-        MediaQuery.of(context).size.height - _getPositions(_keyBell).dy-40;
+        MediaQuery
+            .of(context)
+            .size
+            .height - _getPositions(_keyBell).dy - 40;
     // double x_left = 300;
     // double y_left = 600;
 
@@ -217,62 +242,19 @@ class _ResponsivePageState extends State<ResponsivePage>
     // controller.animateTo(y_left,curve: Curves.bounceOut, duration: const Duration(milliseconds: 1500));
     if (!x_controller.isAnimating) {
       x_controller.animateTo(x_left,
-          curve: Curves.bounceOut, duration: const Duration(milliseconds: 10000));
+          curve: Curves.bounceOut,
+          duration: const Duration(milliseconds: 10000));
     }
     controller.animateWith(simulation).then((nothing) {
       // debugPrint('done. $current_velocity');
-      current_velocity = -0.8*current_velocity;
+      current_velocity = -0.8 * current_velocity;
       // debugPrint('now: $current_velocity starting at ${controller.value}');
-      fall(context, y_left-10);
+      fall(context, y_left - 10);
       // controller;
       // controller.animateWith(GravitySimulation(
       //     300, controller.value, controller.value,
       //     -0.9 * controller.velocity));
     });
-
-  Widget _body() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // const Text('''
-          // This is a custom behavior of the AdaptiveNavigationScaffold.
-          // It switches between bottom navigation and a drawer.
-          // Resize the window to switch between the navigation types.
-          // '''),
-          // const SizedBox(height: 40),
-
-          const Text('Destination Count'),
-          // const SizedBox(height: 40),
-          Switch(
-            value: _fabInRail,
-            onChanged: (value) {
-              setState(() {
-                _fabInRail = value;
-              });
-            },
-          ),
-          const Text('fabInRail'),
-          // const SizedBox(height: 40),
-          Switch(
-            value: _includeBaseDestinationsInMenu,
-            onChanged: (value) {
-              setState(() {
-                _includeBaseDestinationsInMenu = value;
-              });
-            },
-          ),
-          const Text('includeBaseDestinationsInMenu'),
-          // const SizedBox(height: 40),
-          // ElevatedButton(
-          //   child: const Text('BACK'),
-          //   onPressed: () {
-          //     Navigator.of(context).pushReplacementNamed('/');
-          //   },
-          // )
-        ],
-      ),
-    );
   }
 }
 

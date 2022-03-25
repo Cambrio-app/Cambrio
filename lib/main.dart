@@ -168,12 +168,14 @@ class _AppState extends State<App> {
       await FirebaseRemoteConfig.instance.setDefaults(<String, dynamic>{
         'welcome_message': 'default welcome message',
         'auto_search': true,
+        'fancy_bell': false,
       });
 
       FirebaseRemoteConfig rc = FirebaseRemoteConfig.instance;
       await rc.setConfigSettings(RemoteConfigSettings(
         fetchTimeout: const Duration(seconds: 10),
-        minimumFetchInterval: const Duration(hours: 3),
+        minimumFetchInterval: const Duration(seconds: 30),
+        // minimumFetchInterval: const Duration(hours: 3),
       ));
       bool updated = await rc.fetchAndActivate();
       // debugPrint('updated?: $updated auto_search???: ${rc.getBool('auto_search').toString()}');
