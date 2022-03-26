@@ -15,8 +15,8 @@ class MyTabbedPage extends StatefulWidget {
 
 class _MyTabbedPageState extends State<MyTabbedPage> with SingleTickerProviderStateMixin {
   static const List<Tab> myTabs = <Tab>[
-    Tab(text: 'Feed'),
     Tab(text: 'Library'),
+    Tab(text: 'Feed'),
   ];
 
   late TabController _tabController;
@@ -24,7 +24,7 @@ class _MyTabbedPageState extends State<MyTabbedPage> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(initialIndex: 1,vsync: this, length: myTabs.length);
+    _tabController = TabController(initialIndex: 0,vsync: this, length: myTabs.length);
   }
 
   @override
@@ -53,8 +53,8 @@ class _MyTabbedPageState extends State<MyTabbedPage> with SingleTickerProviderSt
       body: TabBarView( //IT TOLD ME TO MAKE IT CONST, I DON'T KNOW WHY OR IF THAT WAS A GOOD THING TO DO
         controller: _tabController,
         children: const <Widget> [
-          ChapterInfScroll(collectionToPull: "books"),
           LibraryPage(),
+          ChapterInfScroll(collectionToPull: "books"),
         ]
       ),
     );
