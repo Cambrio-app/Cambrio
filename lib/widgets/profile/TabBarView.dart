@@ -11,6 +11,7 @@ class TabBarToggle extends StatefulWidget {
   final int initialIndex;
   final UserProfile profile;
   const TabBarToggle({Key? key, required this.profile, this.initialIndex = 1})
+
       : super(key: key);
 
   @override

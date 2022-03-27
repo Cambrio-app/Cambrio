@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
 
+import '../models/tutorials_state.dart';
+
 
 //import 'package:example/screens/gallery_screen.dart';
 
@@ -32,6 +34,18 @@ class Settings extends StatelessWidget {
       ),
       body: SettingsList(
         sections: [
+          SettingsSection(
+            title: Text('Help'),
+              tiles: <SettingsTile>[
+                SettingsTile(
+                  leading: Icon(Icons.help_center),
+                  title: Text('Show the tutorials again.'),
+                  onPressed: (context) {
+                    TutorialsState.instance.resetSawTutorial();
+                  }
+                ),
+              ],
+          ),
           SettingsSection(
             title: Text('Legal'),
             tiles: <SettingsTile>[

@@ -4,6 +4,11 @@ import 'package:adaptive_navigation/adaptive_navigation.dart';
 import 'package:cambrio/pages/searchPage.dart';
 import 'package:cambrio/unused_rn/search_page.dart';
 import 'package:cambrio/pages/settings.dart';
+import 'package:cambrio/util/get_positions.dart';
+import 'package:cambrio/util/get_positions.dart';
+import 'package:cambrio/util/get_positions.dart';
+import 'package:cambrio/util/get_positions.dart';
+import 'package:cambrio/util/get_positions.dart';
 import 'package:cambrio/widgets/alert.dart';
 import 'package:cambrio/widgets/book_grid_view.dart';
 import 'package:cambrio/pages/edit_chapter.dart';
@@ -19,9 +24,13 @@ import 'package:cambrio/pages/profile/personal_profile_page.dart';
 
 // only for the crazy animation
 import 'package:flutter/physics.dart';
+import 'package:provider/provider.dart';
+
+import '../models/tutorials_state.dart';
+import '../models/tutorials_state.dart';
 
 class ResponsivePage extends StatefulWidget {
-  ResponsivePage({Key? key, required this.title, this.selectedIndex = 0})
+  ResponsivePage({Key? key, required this.title, this.selectedIndex = 2})
       : super(key: key);
   final String title;
   int selectedIndex;
@@ -103,78 +112,71 @@ class _ResponsivePageState extends State<ResponsivePage>
     }
   }
 
-  // only for animation
-  Offset _getPositions(GlobalKey key) {
-    if (key.currentContext != null) {
-      final RenderBox renderBoxRed =
-          key.currentContext!.findRenderObject() as RenderBox;
-      final positionRed = renderBoxRed.localToGlobal(Offset.zero);
-      // print("POSITION of bell: $positionRed ");
-      return positionRed;
-    } else {
-      return const Offset(0, 0);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+
+
     return Stack(children: [ // stack is only for the bell animation.
-      AdaptiveNavigationScaffold(
-      selectedIndex: widget.selectedIndex,
-      destinations: _allDestinations,
-      appBar: AdaptiveAppBar(
-        title: Text(widget.title),
-        elevation: 0,
-        actions: [
-          IconButton(
-              onPressed: () {
-                // report to analytics that the user clicked
-                FirebaseAnalytics.instance.logEvent(
-                  name: "pencil_icon",
-                );
-                setState(() {
-                  widget.selectedIndex = 2;
-                });
-              },
-              icon: const Icon(Icons.edit)),
-          IconButton(onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      Settings()
-              ),
-            );
-          }, icon: const Icon(Icons.settings)),
-          IconButton(
-              key: _keyBell, // only for animation
-              onPressed: () {
-                debugPrint('wrong click');
-                // report to analytics that the user clicked
-                FirebaseAnalytics.instance.logEvent(
-                  name: "notifications_icon",
-                );
-              },
-              icon: const Icon(Icons.notifications_none_rounded)),
-        ],
-      ),
-      body: bodyFunction(),
-      navigationTypeResolver: (context) {
-        if (MediaQuery.of(context).size.width > 600) {
-          return NavigationType.drawer;
-        } else {
-          return NavigationType.bottom;
-        }
-      },
-      fabInRail: _fabInRail,
-      includeBaseDestinationsInMenu: _includeBaseDestinationsInMenu,
-      onDestinationSelected: _onItemTapped,
+      ChangeNotifierProvider(
+        create: (_) => TutorialsState.instance,
+        child: AdaptiveNavigationScaffold(
+        selectedIndex: widget.selectedIndex,
+        destinations: _allDestinations,
+        appBar: AdaptiveAppBar(
+          title: Text(widget.title),
+          elevation: 0,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  // report to analytics that the user clicked
+                  FirebaseAnalytics.instance.logEvent(
+                    name: "pencil_icon",
+                  );
+                  setState(() {
+                    TutorialsState.instance.editClicked = true;
+                    widget.selectedIndex = 2;
+                  });
+                },
+                icon: const Icon(Icons.edit)),
+            IconButton(onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        Settings()
+                ),
+              );
+            }, icon: const Icon(Icons.settings)),
+            IconButton(
+                key: _keyBell, // only for animation
+                onPressed: () {
+                  debugPrint('wrong click');
+                  // report to analytics that the user clicked
+                  FirebaseAnalytics.instance.logEvent(
+                    name: "notifications_icon",
+                  );
+                },
+                icon: const Icon(Icons.notifications_none_rounded)),
+          ],
+        ),
+        body: bodyFunction(),
+        navigationTypeResolver: (context) {
+          if (MediaQuery.of(context).size.width > 600) {
+            return NavigationType.drawer;
+          } else {
+            return NavigationType.bottom;
+          }
+        },
+        fabInRail: _fabInRail,
+        includeBaseDestinationsInMenu: _includeBaseDestinationsInMenu,
+        onDestinationSelected: _onItemTapped,
     ),
+      ),
 
       // only for animation
       if (FirebaseRemoteConfig.instance.getBool('fancy_bell')) Positioned(
-        top: _getPositions(_keyBell).dy + controller.value,
-        left: _getPositions(_keyBell).dx - x_controller.value,
+        top: getPositions(_keyBell).dy + controller.value,
+        left: getPositions(_keyBell).dx - x_controller.value,
         child: Material(
           color: Colors.transparent,
           child: IconButton(
@@ -195,7 +197,7 @@ class _ResponsivePageState extends State<ResponsivePage>
                     x_controller.reset();
                   });
                 });
-                fall(context, _getPositions(_keyBell).dy);
+                fall(context, getPositions(_keyBell).dy);
                 // Alert().error(context, "whoops, we haven't built notifications yet!");
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("whoops, we haven't built notifications yet!")));
 
@@ -212,12 +214,12 @@ class _ResponsivePageState extends State<ResponsivePage>
   void fall(BuildContext context, double startingPos) {
     controller.reset();
     // x_controller.reset();
-    double x_left = _getPositions(_keyBell).dx + 35;
+    double x_left = getPositions(_keyBell).dx + 35;
     double y_left =
         MediaQuery
             .of(context)
             .size
-            .height - _getPositions(_keyBell).dy - 40;
+            .height - getPositions(_keyBell).dy - 40;
     // double x_left = 300;
     // double y_left = 600;
 

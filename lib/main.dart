@@ -14,6 +14,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 // Import the generated file
 import 'firebase_options.dart';
 
+import 'models/tutorials_state.dart';
 import 'unused_rn/main_page.dart';
 
 class White {
@@ -136,8 +137,14 @@ class _AppState extends State<App> {
   bool loggedIn = false;
 
   // Define an async function to initialize FlutterFire
-  void initializeFlutterFire() async {
+  void initializeServices() async {
     // await Future.delayed(Duration(seconds: 20));
+
+
+    // make sure that TutorialsState is _initialized
+    await TutorialsState.initInstance();
+    debugPrint('initialized tutorials state');
+    
     try {
       // Wait for Firebase to initialize and set `_initialized` state to true
       await Firebase.initializeApp(
@@ -210,7 +217,7 @@ class _AppState extends State<App> {
 
   @override
   void initState() {
-    initializeFlutterFire();
+    initializeServices();
     super.initState();
   }
 
