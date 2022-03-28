@@ -3,6 +3,8 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
+
+import '../widgets/alert.dart';
 // import 'dashboard_screen.dart';
 
 const users = {
@@ -40,6 +42,7 @@ class LoginScreen extends StatelessWidget {
   Future<String?> _signupUser(SignupData data) async {
     // debugPrint('Signup Name: ${data.name}, Password: ${data.password}');
 
+    try{
     final User? user = (await _auth.createUserWithEmailAndPassword(
       email: data.name ?? '',
       password: data.password ?? '',
@@ -49,12 +52,21 @@ class LoginScreen extends StatelessWidget {
       // report that the signup was successful
       await FirebaseAnalytics.instance
           .logSignUp(
-        signUpMethod: 'EmailAndPassword'
+          signUpMethod: 'EmailAndPassword'
       );
 
       return null;
-    } else {
-      return 'failure';
+    }
+    } catch (error, _) {
+      String? res;
+      try {
+        RegExp regex = RegExp(r'(?<=\[.*\])(.*)');
+        res = regex.firstMatch(error.toString())?.group(0);
+        debugPrint(res);
+      } catch (e) {
+        debugPrint('the error even failed');
+      }
+      return (res ?? error.toString());
     }
   }
 
@@ -119,7 +131,7 @@ class LoginScreen extends StatelessWidget {
             ),
             elevation: 5,
         ),
-        bodyStyle: TextStyle(
+        bodyStyle: const TextStyle(
           fontStyle: FontStyle.italic,
         ),
 
