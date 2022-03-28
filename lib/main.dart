@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 
 // Import the generated file
 import 'firebase_options.dart';
@@ -91,6 +90,8 @@ void main() {
       home: App(),
       theme: ThemeData(
 
+        fontFamily: 'Montserrat',
+
         colorScheme: colorScheme,
         accentColor: colorScheme.secondary,
         primaryColor: colorScheme.primary,
@@ -120,6 +121,10 @@ void main() {
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
             elevation: 0),
+
+        // buttonTheme: ButtonThemeData(
+        //   shape:
+        // ),
       ),
     ));
   }, (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack));

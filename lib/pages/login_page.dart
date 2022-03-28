@@ -75,7 +75,7 @@ class LoginScreen extends StatelessWidget {
     return FlutterLogin(
 
       title: 'Cambrio',
-      logo: const AssetImage('assets/images/app_icon.png'),
+      logo: const AssetImage('assets/images/logo_padded.png'),
       // theme: ,
       messages: LoginMessages(
         loginButton: 'Log In',
@@ -101,6 +101,7 @@ class LoginScreen extends StatelessWidget {
 
 
       theme: LoginTheme(
+        logoWidth: 1,
         titleStyle: TextStyle(fontFamily: "Unna",color: Theme.of(context).colorScheme.onSecondary),
         // switchAuthTextColor: Theme.of(context).colorScheme.onSurface,
         pageColorLight: Theme.of(context).colorScheme.secondary,
@@ -108,6 +109,18 @@ class LoginScreen extends StatelessWidget {
         cardTheme: Theme.of(context).cardTheme,
         buttonStyle: TextStyle(
           color: Theme.of(context).colorScheme.onPrimary,
+        ),
+        inputTheme: InputDecorationTheme(
+          border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.4))),
+        ),
+        buttonTheme: const LoginButtonTheme(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(3))
+            ),
+            elevation: 5,
+        ),
+        bodyStyle: TextStyle(
+          fontStyle: FontStyle.italic,
         ),
 
         // Theme.of(context).colorScheme.onSecondary,
