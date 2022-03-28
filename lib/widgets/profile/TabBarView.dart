@@ -1,7 +1,9 @@
+import 'package:cambrio/models/tutorials_state.dart';
 import 'package:cambrio/models/user_profile.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../pages/edit_book.dart';
 import '../../services/firebase_service.dart';
@@ -20,26 +22,37 @@ class TabBarToggle extends StatefulWidget {
 
 class _TabBarToggleState extends State<TabBarToggle>
     with TickerProviderStateMixin {
-  @override
-  Widget build(BuildContext context) {
-    List<Tab> _tabs = const [
-      Tab(
-        text: "Subscriptions",
-      ),
-      Tab(text: "Your Works"),
-    ];
 
-    TabController _tabController = TabController(
+  late final TabController _tabController;
+
+  final List<Tab> _tabs = const [
+    Tab(
+      text: "Subscriptions",
+    ),
+    Tab(text: "Your Works"),
+  ];
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    _tabController = TabController(
         initialIndex: widget.initialIndex, length: 2, vsync: this);
     _tabController.addListener(() {
       // log the page view
       FirebaseAnalytics.instance
           .logSelectContent(
-          contentType: 'book_view',
-          itemId: _tabs[_tabController.index].text!,
+        contentType: 'book_view',
+        itemId: _tabs[_tabController.index].text!,
       );
     });
+  }
 
+  @override
+  Widget build(BuildContext context) {
+
+    _tabController.index = context.watch<TutorialsState>().showAddBooksTutorial ? 1 : _tabController.index;
     return SizedBox(
       height: 260,
       child: Column(
