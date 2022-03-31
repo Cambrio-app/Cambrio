@@ -35,4 +35,9 @@ class TutorialsState extends ChangeNotifier {
     debugPrint('will show the tutorial again');
     notifyListeners();
   }
+
+  @override
+  void dispose() {
+    // super.dispose();
+  }
 }

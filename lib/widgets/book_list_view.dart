@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
+import 'fake_book_card_widget.dart';
+
 class BookListView extends StatefulWidget {
   final String collectionToPull;
   final String? collectionTitle;
@@ -41,7 +43,7 @@ class _BookListViewState extends State<BookListView> {
       }
 
     } catch (error) {
-      _pagingController.error = error;
+      _pagingController.error = error; // causes error: I/flutter (19591): Exception: A PagingController was used after being disposed.
     }
   }
   @override
@@ -75,7 +77,7 @@ class _BookListViewState extends State<BookListView> {
                       scrollDirection: Axis.horizontal,
                       pagingController: _pagingController,
                       builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot<Book>>(
-                        noMoreItemsIndicatorBuilder: (_) => const Text('no more!',textAlign: TextAlign.center,),
+                        noMoreItemsIndicatorBuilder: (_) => const FakeBookCard(title: 'Find more books'),
                         firstPageErrorIndicatorBuilder: (_) => const Text('first page error!',textAlign: TextAlign.center,),
                         newPageErrorIndicatorBuilder: (_) => const Text('new page error!',textAlign: TextAlign.center,),
                         itemBuilder: (context, item, index) {

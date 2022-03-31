@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:isolate';
 
+import 'package:beamer/beamer.dart';
 import 'package:cambrio/pages/login_page.dart';
 import 'package:cambrio/pages/responsive_main_page.dart';
+import 'package:cambrio/routes.dart';
+import 'package:cambrio/services/firebase_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +18,7 @@ import 'firebase_options.dart';
 
 import 'models/tutorials_state.dart';
 import 'unused_rn/main_page.dart';
+import 'web-specific/url_strategy.dart';
 
 class White {
   static const MaterialColor kToLight = MaterialColor(
@@ -81,13 +85,23 @@ final ColorScheme colorScheme = ColorScheme.fromSwatch(
 );
 // final ColorScheme colorScheme = ColorScheme.fromSwatch(primarySwatch: Colors.grey);
 
+
 void main() {
   runZonedGuarded<Future<void>>(() async {
+    // usePathUrlStrategy();
+    Beamer.setPathUrlStrategy();
     WidgetsFlutterBinding.ensureInitialized();
-
-    runApp(MaterialApp(
+    // initializeServices();
+    runApp(MaterialApp.router(
+      // initialRoute: Routes.initial,
+      // routes: Routes.routes,
+      routerDelegate: Routes().routerDelegate,
+      routeInformationParser: BeamerParser(),
+      backButtonDispatcher: BeamerBackButtonDispatcher(
+        delegate: Routes().routerDelegate,
+      ),
       debugShowCheckedModeBanner: false,
-      home: App(),
+      // home: App(),
       theme: ThemeData(
 
         fontFamily: 'Montserrat',
@@ -131,74 +145,21 @@ void main() {
 }
 
 class App extends StatefulWidget {
+  final int initialIndex;
+
+  const App({Key? key, this.initialIndex = 0}) : super(key: key);
+
   _AppState createState() => _AppState();
 }
 
 class _AppState extends State<App> {
+  FirebaseService firebaseService =  FirebaseService.instance;
   // Set default `_initialized` and `_error` state to false
   bool _initialized = false;
   bool _error = false;
   // Stream<User?> state = FirebaseAuth.instance.authStateChanges();
   bool loggedIn = false;
 
-  // Define an async function to initialize FlutterFire
-  void initializeServices() async {
-    // await Future.delayed(Duration(seconds: 20));
-
-
-    // make sure that TutorialsState is _initialized
-    await TutorialsState.initInstance();
-    debugPrint('initialized tutorials state');
-    
-    try {
-      // Wait for Firebase to initialize and set `_initialized` state to true
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
-      setState(() {
-        _initialized = true;
-      });
-
-      debugPrint('goooo');
-
-      // set up crashlytics
-      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-      if (!kIsWeb) { // only set it up on mobile; it's not available on web.
-        Isolate.current.addErrorListener(RawReceivePort((pair) async {
-        final List<dynamic> errorAndStacktrace = pair;
-        await FirebaseCrashlytics.instance.recordError(
-          errorAndStacktrace.first,
-          errorAndStacktrace.last,
-        );
-      }).sendPort);
-      }
-
-      // set up google analytics
-      // FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-
-      // set defaults for remote config values, like auto_search
-      await FirebaseRemoteConfig.instance.setDefaults(<String, dynamic>{
-        'welcome_message': 'default welcome message',
-        'auto_search': true,
-        'fancy_bell': false,
-      });
-
-      FirebaseRemoteConfig rc = FirebaseRemoteConfig.instance;
-      await rc.setConfigSettings(RemoteConfigSettings(
-        fetchTimeout: const Duration(seconds: 10),
-        minimumFetchInterval: const Duration(seconds: 30),
-        // minimumFetchInterval: const Duration(hours: 3),
-      ));
-      bool updated = await rc.fetchAndActivate();
-      // debugPrint('updated?: $updated auto_search???: ${rc.getBool('auto_search').toString()}');
-    } catch(e) {
-      // Set `_error` state to true if Firebase initialization fails
-      setState(() {
-        debugPrint(e.toString());
-        _error = true;
-      });
-    }
-  }
 
   // check login state
   bool isLoggedIn() {
@@ -222,12 +183,19 @@ class _AppState extends State<App> {
 
   @override
   void initState() {
-    initializeServices();
+    // initializeServices();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    // debugPrint('on main');
+    firebaseService.addListener(() {
+      setState(() {
+        debugPrint('got the change bru');
+        _initialized = firebaseService.initialized;
+      });
+    });
     // Show error message if initialization failed
     if(_error) {
       debugPrint(_error.toString());
@@ -235,15 +203,16 @@ class _AppState extends State<App> {
     }
 
     // Show a loader until FlutterFire is initialized
-    else if (!_initialized) {
+    else if (!firebaseService.initialized) {
+      debugPrint('loading in main');
       return const Loading();
     }
-    else if (!loggedIn && _initialized) {
+    else if (!loggedIn) {
       isLoggedIn();
       return LoginScreen();
     }
     else {
-      return ResponsivePage(title: "");
+      return ResponsivePage(title: "", selectedIndex: widget.initialIndex,);
     }
   }
 }

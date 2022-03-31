@@ -1,15 +1,23 @@
+import 'dart:isolate';
 import 'dart:math';
 
+import 'package:beamer/beamer.dart';
 import 'package:cambrio/models/book.dart';
 import 'package:cambrio/models/chapter.dart';
 import 'package:cambrio/models/like.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:image_picker/image_picker.dart';
 
+import '../firebase_options.dart';
+import '../models/tutorials_state.dart';
 import '../models/user_profile.dart';
 import '../models/author_subscription.dart';
 import '../widgets/alert.dart';
@@ -25,16 +33,90 @@ enum QueryTypes {
   works,
 }
 
-class FirebaseService {
+class FirebaseService extends ChangeNotifier {
   FirebaseService() {}
-
+  static FirebaseService instance = FirebaseService();
+  static bool _isInitialized = false;
+  static bool error = false;
   String? _cachedUserId;
   UserProfile? _cachedCurrentUserProfile;
+
+  bool get initialized {
+    // if (!_isInitialized) {
+    //   initializeServices();
+    // }
+    debugPrint('initialized? $_isInitialized');
+    return _isInitialized;
+  }
 
   String get userId => _cachedUserId ?? FirebaseAuth.instance.currentUser!.uid;
 
   Future<UserProfile> get currentUserProfile async =>
       _cachedCurrentUserProfile ?? (await getProfile(uid: userId))!;
+
+  // Define an async function to initialize FlutterFire
+  void initializeServices() async {
+    debugPrint('initializing...');
+    // await Future.delayed(Duration(seconds: 20));
+
+
+    // make sure that TutorialsState is _initialized
+    await TutorialsState.initInstance();
+    debugPrint('initialized tutorials state');
+
+    try {
+      // Wait for Firebase to initialize and set `_initialized` state to true
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      _isInitialized = true;
+      notifyListeners();
+      // setState(() {
+      //   _initialized = true;
+      // });
+
+      debugPrint('goooo');
+
+      // set up crashlytics
+      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+      if (!kIsWeb) { // only set it up on mobile; it's not available on web.
+        Isolate.current.addErrorListener(RawReceivePort((pair) async {
+          final List<dynamic> errorAndStacktrace = pair;
+          await FirebaseCrashlytics.instance.recordError(
+            errorAndStacktrace.first,
+            errorAndStacktrace.last,
+          );
+        }).sendPort);
+      }
+
+      // set up google analytics
+      // FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+
+      // set defaults for remote config values, like auto_search
+      await FirebaseRemoteConfig.instance.setDefaults(<String, dynamic>{
+        'welcome_message': 'default welcome message',
+        'auto_search': true,
+        'fancy_bell': false,
+      });
+
+      FirebaseRemoteConfig rc = FirebaseRemoteConfig.instance;
+      await rc.setConfigSettings(RemoteConfigSettings(
+        fetchTimeout: const Duration(seconds: 10),
+        minimumFetchInterval: const Duration(seconds: 30),
+        // minimumFetchInterval: const Duration(hours: 3),
+      ));
+      bool updated = await rc.fetchAndActivate();
+      // debugPrint('updated?: $updated auto_search???: ${rc.getBool('auto_search').toString()}');
+    } catch(e) {
+      // Set `_error` state to true if Firebase initialization fails
+      // setState(() {
+      //   debugPrint(e.toString());
+      //   _error = true;
+      // });
+      error = true;
+      notifyListeners();
+    }
+  }
 
   Future<String?> uploadImage(context,
       {required XFile image, required String name}) async {

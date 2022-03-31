@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:adaptive_navigation/adaptive_navigation.dart';
+import 'package:beamer/beamer.dart';
 import 'package:cambrio/pages/searchPage.dart';
 import 'package:cambrio/unused_rn/search_page.dart';
 import 'package:cambrio/pages/settings.dart';
@@ -30,7 +31,7 @@ import '../models/tutorials_state.dart';
 import '../models/tutorials_state.dart';
 
 class ResponsivePage extends StatefulWidget {
-  ResponsivePage({Key? key, required this.title, this.selectedIndex = 2})
+  ResponsivePage({Key? key, required this.title, this.selectedIndex = 0})
       : super(key: key);
   final String title;
   int selectedIndex;
@@ -92,6 +93,13 @@ class _ResponsivePageState extends State<ResponsivePage>
             .setCurrentScreen(
             screenName: 'Home'
         );
+        Beamer.of(context).update(
+          configuration: const RouteInformation(
+            location: '/home',
+          ),
+          rebuild: false,
+        );
+        // Router.navigate();
         return const MyTabbedPage();
         break;
       case 1:
@@ -99,11 +107,23 @@ class _ResponsivePageState extends State<ResponsivePage>
             .setCurrentScreen(
             screenName: 'Explore/Search'
         );
+        Beamer.of(context).update(
+          configuration: const RouteInformation(
+            location: '/explore',
+          ),
+          rebuild: false,
+        );
         return const SearchingPage();
       case 2:
         FirebaseAnalytics.instance
             .setCurrentScreen(
             screenName: 'Personal Profile'
+        );
+        Beamer.of(context).update(
+          configuration: const RouteInformation(
+            location: '/profile',
+          ),
+          rebuild: false,
         );
         return const PersonalProfilePage();
       default:
