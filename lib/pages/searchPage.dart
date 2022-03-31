@@ -53,8 +53,8 @@ class _SearchingPageState extends State<SearchingPage> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('route:');
-    debugPrint(ModalRoute.of(context)?.settings.name);
+    // debugPrint('route:');
+    // debugPrint(ModalRoute.of(context)?.settings.name);
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.all(16.0),

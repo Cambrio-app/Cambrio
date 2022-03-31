@@ -30,12 +30,12 @@ class Routes {
         replaceCurrentStack: true,
         onCheckFailed: (context, location) {
           // Beamer.of(context).beamToNamed('/loading');
-          debugPrint('uh');
+          // debugPrint('uh');
           FirebaseService service = FirebaseService.instance;
           service.addListener(() {
-            debugPrint('listener triggered');
+            // debugPrint('listener triggered');
             if (service.initialized) {
-              debugPrint('its initialized: ${location.toString()}');
+              // debugPrint('its initialized: ${location.toString()}');
               Beamer.of(context).beamToReplacement(location);
             }
           });

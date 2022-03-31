@@ -207,11 +207,11 @@ class _ResponsivePageState extends State<ResponsivePage>
                 debugPrint('cliccccked');
 
                 Future.delayed(const Duration(milliseconds: 30000), () {
-                  debugPrint('trying to clear');
+                  // debugPrint('trying to clear');
                   setState(() {
                     current_velocity = 1000;
                     controller.clearListeners();
-                    debugPrint('cleared listeners!');
+                    // debugPrint('cleared listeners!');
                     controller.stop();
                     controller.reset();
                     x_controller.reset();

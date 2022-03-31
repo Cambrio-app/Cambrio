@@ -62,7 +62,7 @@ class LoginScreen extends StatelessWidget {
       try {
         RegExp regex = RegExp(r'(?<=\[.*\])(.*)');
         res = regex.firstMatch(error.toString())?.group(0);
-        debugPrint(res);
+        // debugPrint(res);
       } catch (e) {
         debugPrint('the error even failed');
       }

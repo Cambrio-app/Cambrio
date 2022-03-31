@@ -192,7 +192,7 @@ class _AppState extends State<App> {
     // debugPrint('on main');
     firebaseService.addListener(() {
       setState(() {
-        debugPrint('got the change bru');
+        // debugPrint('got the change bru');
         _initialized = firebaseService.initialized;
       });
     });
@@ -204,7 +204,7 @@ class _AppState extends State<App> {
 
     // Show a loader until FlutterFire is initialized
     else if (!firebaseService.initialized) {
-      debugPrint('loading in main');
+      // debugPrint('loading in main');
       return const Loading();
     }
     else if (!loggedIn) {

@@ -45,7 +45,7 @@ class FirebaseService extends ChangeNotifier {
     // if (!_isInitialized) {
     //   initializeServices();
     // }
-    debugPrint('initialized? $_isInitialized');
+    // debugPrint('initialized? $_isInitialized');
     return _isInitialized;
   }
 
@@ -56,13 +56,13 @@ class FirebaseService extends ChangeNotifier {
 
   // Define an async function to initialize FlutterFire
   void initializeServices() async {
-    debugPrint('initializing...');
+    // debugPrint('initializing...');
     // await Future.delayed(Duration(seconds: 20));
 
 
     // make sure that TutorialsState is _initialized
     await TutorialsState.initInstance();
-    debugPrint('initialized tutorials state');
+    // debugPrint('initialized tutorials state');
 
     try {
       // Wait for Firebase to initialize and set `_initialized` state to true
@@ -75,7 +75,7 @@ class FirebaseService extends ChangeNotifier {
       //   _initialized = true;
       // });
 
-      debugPrint('goooo');
+      // debugPrint('goooo');
 
       // set up crashlytics
       FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
@@ -120,7 +120,7 @@ class FirebaseService extends ChangeNotifier {
 
   Future<String?> uploadImage(context,
       {required XFile image, required String name}) async {
-    debugPrint('uploading image ......');
+    // debugPrint('uploading image ......');
     String? image_url;
     try {
       firebase_storage.Reference ref =
