@@ -1,3 +1,4 @@
+import 'package:beamer/beamer.dart';
 import 'package:cambrio/models/book.dart';
 import 'package:cambrio/pages/book_details_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,7 +22,7 @@ class BookCard extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           // final MakeEpub epubber = MakeEpub(title: bookSnap.data()!.title, authorName:'mmmm', authorId:'mm', bookId:bookSnap.id);
-
+          debugPrint(Beamer.of(context).currentBeamLocation.pathPatterns.toString());
           // epubber.makeEpub(context);
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => BookDetailsPage(bookSnap: bookSnap,),

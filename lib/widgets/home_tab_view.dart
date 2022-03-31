@@ -41,10 +41,12 @@ class _MyTabbedPageState extends State<MyTabbedPage> with SingleTickerProviderSt
         child: AppBar(
           elevation: 0,
           bottom: TabBar(
+            unselectedLabelColor: Colors.grey,
+            unselectedLabelStyle: const TextStyle(fontSize: 14, fontWeight:FontWeight.normal, fontFamily: 'Montserrat', letterSpacing: 0,),
             indicatorColor: const Color(0xff000000),
             indicatorPadding: const EdgeInsets.only(left:30,right:30),
             indicatorWeight: 2,
-            labelStyle: const TextStyle(fontSize: 16, fontWeight:FontWeight.bold, fontFamily: 'Montserrat'),
+            labelStyle: const TextStyle(fontSize: 16, fontWeight:FontWeight.bold, fontFamily: 'Montserrat', letterSpacing: 1),
             controller: _tabController,
             tabs: myTabs,
           ),

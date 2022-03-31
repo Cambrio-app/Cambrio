@@ -28,7 +28,7 @@ import 'package:flutter/physics.dart';
 import 'package:provider/provider.dart';
 
 import '../models/tutorials_state.dart';
-import '../models/tutorials_state.dart';
+import '../routes.dart';
 
 class ResponsivePage extends StatefulWidget {
   ResponsivePage({Key? key, required this.title, this.selectedIndex = 0})
@@ -36,12 +36,16 @@ class ResponsivePage extends StatefulWidget {
   final String title;
   int selectedIndex;
 
+  // final _beamerKey = GlobalKey<BeamerState>();
+  // final _routerDelegate = Routes().submenudelegate;
+
   @override
   _ResponsivePageState createState() => _ResponsivePageState();
 }
 
 class _ResponsivePageState extends State<ResponsivePage>
-    with TickerProviderStateMixin { // this line only for the animation
+    with TickerProviderStateMixin {
+  // this line only for the animation
   bool _fabInRail = false;
   bool _includeBaseDestinationsInMenu = false;
   // int _selectedIndex = 0;
@@ -54,11 +58,27 @@ class _ResponsivePageState extends State<ResponsivePage>
   late AnimationController x_controller;
   double current_velocity = 1000;
 
+  final List pages = ['/home', '/explore', '/personal_profile'];
+
   void _onItemTapped(int index) {
-    setState(() {
-      widget.selectedIndex = index;
-    });
+    // setState(() {
+    //   // widget.selectedIndex = index;
+    // });
+    String route = '/home';
+    route = pages[index];
+    // widget._routerDelegate.beamToNamed(route);
+    // debugPrint('clicked to go to : $route');
+    Beamer.of(context).beamToReplacementNamed(route, stacked: false);
+
+    // Beamer.of(context).update(
+    //   configuration: RouteInformation(
+    //     location: route,
+    //   ),
+    //   rebuild: false,
+    // );
+    // setState(() {});
   }
+
   @override
   void initState() {
     FirebaseRemoteConfig.instance.fetchAndActivate();
@@ -84,50 +104,49 @@ class _ResponsivePageState extends State<ResponsivePage>
   }
   // end bell animation stuff
 
-
   // *these are the pages*
   Widget bodyFunction() {
+    // return Beamer(
+    //   key: widget._beamerKey,
+    //   routerDelegate: widget._routerDelegate,
+    // );
     switch (widget.selectedIndex) {
       case 0:
-        FirebaseAnalytics.instance
-            .setCurrentScreen(
-            screenName: 'Home'
-        );
-        Beamer.of(context).update(
-          configuration: const RouteInformation(
-            location: '/home',
-          ),
-          rebuild: false,
-        );
+        FirebaseAnalytics.instance.setCurrentScreen(screenName: 'Home');
+        // Beamer.of(context).
+        // Beamer.of(context).update(
+        //   configuration: const RouteInformation(
+        //     location: '/home',
+        //   ),
+        //   rebuild: true,
+        // );
         // Router.navigate();
         return const MyTabbedPage();
         break;
       case 1:
         FirebaseAnalytics.instance
-            .setCurrentScreen(
-            screenName: 'Explore/Search'
-        );
-        Beamer.of(context).update(
-          configuration: const RouteInformation(
-            location: '/explore',
-          ),
-          rebuild: false,
-        );
+            .setCurrentScreen(screenName: 'Explore/Search');
+        // Beamer.of(context).update(
+        //   configuration: const RouteInformation(
+        //     location: '/explore',
+        //   ),
+        //   rebuild: false,
+        // );
         return const SearchingPage();
       case 2:
         FirebaseAnalytics.instance
-            .setCurrentScreen(
-            screenName: 'Personal Profile'
-        );
-        Beamer.of(context).update(
-          configuration: const RouteInformation(
-            location: '/profile',
-          ),
-          rebuild: false,
-        );
+            .setCurrentScreen(screenName: 'Personal Profile');
+        // Beamer.of(context).update(
+        //   configuration: const RouteInformation(
+        //     location: '/profile',
+        //   ),
+        //   rebuild: false,
+        // );
         return const PersonalProfilePage();
       default:
-        return const Center(child: Text("you managed to enter into the secret section of the app. prepare to fight the shadow boss"));
+        return const Center(
+            child: Text(
+                "you managed to enter into the secret section of the app. prepare to fight the shadow boss"));
         break;
     }
   }
@@ -135,98 +154,108 @@ class _ResponsivePageState extends State<ResponsivePage>
   @override
   Widget build(BuildContext context) {
 
+    // List pathList = widget._routerDelegate.currentConfiguration.location;
+    String path = Beamer.of(context).configuration.location ?? '/home';
+    // debugPrint('path: $path');
+    int updatedIndex = pages.indexOf(path);
+    widget.selectedIndex = (updatedIndex == -1) ? 0: updatedIndex;
+    // debugPrint('selected index: ${widget.selectedIndex}');
+    // widget.selectedIndex = (Beamer.of(context).currentBeamLocation.data as int?) ?? 0;
 
-    return Stack(children: [ // stack is only for the bell animation.
+
+    return Stack(children: [
+      // stack is only for the bell animation.
       ChangeNotifierProvider(
         create: (_) => TutorialsState.instance,
         child: AdaptiveNavigationScaffold(
-        selectedIndex: widget.selectedIndex,
-        destinations: _allDestinations,
-        appBar: AdaptiveAppBar(
-          title: Text(widget.title),
-          elevation: 0,
-          actions: [
-            IconButton(
-                onPressed: () {
-                  // report to analytics that the user clicked
-                  FirebaseAnalytics.instance.logEvent(
-                    name: "pencil_icon",
-                  );
-                  setState(() {
-                    TutorialsState.instance.editClicked = true;
-                    widget.selectedIndex = 2;
-                  });
-                },
-                icon: const Icon(Icons.edit)),
-            IconButton(onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        Settings()
-                ),
-              );
-            }, icon: const Icon(Icons.settings)),
-            IconButton(
-                key: _keyBell, // only for animation
-                onPressed: () {
-                  debugPrint('wrong click');
-                  // report to analytics that the user clicked
-                  FirebaseAnalytics.instance.logEvent(
-                    name: "notifications_icon",
-                  );
-                },
-                icon: const Icon(Icons.notifications_none_rounded)),
-          ],
+          selectedIndex: widget.selectedIndex,
+          destinations: _allDestinations,
+          appBar: AdaptiveAppBar(
+            title: Text(widget.title),
+            elevation: 0,
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    // report to analytics that the user clicked
+                    FirebaseAnalytics.instance.logEvent(
+                      name: "pencil_icon",
+                    );
+                    setState(() {
+                      TutorialsState.instance.editClicked = true;
+                      widget.selectedIndex = 2;
+                    });
+                  },
+                  icon: const Icon(Icons.edit)),
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Settings()),
+                    );
+                  },
+                  icon: const Icon(Icons.settings)),
+              IconButton(
+                  key: _keyBell, // only for animation
+                  onPressed: () {
+                    debugPrint('wrong click');
+                    // report to analytics that the user clicked
+                    FirebaseAnalytics.instance.logEvent(
+                      name: "notifications_icon",
+                    );
+                  },
+                  icon: const Icon(Icons.notifications_none_rounded)),
+            ],
+          ),
+          body: bodyFunction(),
+          navigationTypeResolver: (context) {
+            if (MediaQuery.of(context).size.width > 600) {
+              return NavigationType.drawer;
+            } else {
+              return NavigationType.bottom;
+            }
+          },
+          fabInRail: _fabInRail,
+          includeBaseDestinationsInMenu: _includeBaseDestinationsInMenu,
+          onDestinationSelected: _onItemTapped,
         ),
-        body: bodyFunction(),
-        navigationTypeResolver: (context) {
-          if (MediaQuery.of(context).size.width > 600) {
-            return NavigationType.drawer;
-          } else {
-            return NavigationType.bottom;
-          }
-        },
-        fabInRail: _fabInRail,
-        includeBaseDestinationsInMenu: _includeBaseDestinationsInMenu,
-        onDestinationSelected: _onItemTapped,
-    ),
       ),
 
       // only for animation
-      if (FirebaseRemoteConfig.instance.getBool('fancy_bell')) Positioned(
-        top: getPositions(_keyBell).dy + controller.value,
-        left: getPositions(_keyBell).dx - x_controller.value,
-        child: Material(
-          color: Colors.transparent,
-          child: IconButton(
-            // alignment: Alignment.bottomCenter,
-              padding: const EdgeInsets.fromLTRB(0, (kIsWeb) ? 16:8, 0, 0),
-              key: _keyFall,
-              onPressed: () {
-                debugPrint('cliccccked');
+      if (FirebaseRemoteConfig.instance.getBool('fancy_bell'))
+        Positioned(
+          top: getPositions(_keyBell).dy + controller.value,
+          left: getPositions(_keyBell).dx - x_controller.value,
+          child: Material(
+            color: Colors.transparent,
+            child: IconButton(
+                // alignment: Alignment.bottomCenter,
+                padding: const EdgeInsets.fromLTRB(0, (kIsWeb) ? 16 : 8, 0, 0),
+                key: _keyFall,
+                onPressed: () {
+                  debugPrint('cliccccked');
 
-                Future.delayed(const Duration(milliseconds: 30000), () {
-                  // debugPrint('trying to clear');
-                  setState(() {
-                    current_velocity = 1000;
-                    controller.clearListeners();
-                    // debugPrint('cleared listeners!');
-                    controller.stop();
-                    controller.reset();
-                    x_controller.reset();
+                  Future.delayed(const Duration(milliseconds: 30000), () {
+                    // debugPrint('trying to clear');
+                    setState(() {
+                      current_velocity = 1000;
+                      controller.clearListeners();
+                      // debugPrint('cleared listeners!');
+                      controller.stop();
+                      controller.reset();
+                      x_controller.reset();
+                    });
                   });
-                });
-                fall(context, getPositions(_keyBell).dy);
-                // Alert().error(context, "whoops, we haven't built notifications yet!");
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("whoops, we haven't built notifications yet!")));
-
-              },
-              icon: const Icon(
-                Icons.notifications_none_rounded,
-              )),
+                  fall(context, getPositions(_keyBell).dy);
+                  // Alert().error(context, "whoops, we haven't built notifications yet!");
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content:
+                          Text("whoops, we haven't built notifications yet!")));
+                },
+                icon: const Icon(
+                  Icons.notifications_none_rounded,
+                )),
+          ),
         ),
-      ),
     ]);
   }
 
@@ -236,10 +265,7 @@ class _ResponsivePageState extends State<ResponsivePage>
     // x_controller.reset();
     double x_left = getPositions(_keyBell).dx + 35;
     double y_left =
-        MediaQuery
-            .of(context)
-            .size
-            .height - getPositions(_keyBell).dy - 40;
+        MediaQuery.of(context).size.height - getPositions(_keyBell).dy - 40;
     // double x_left = 300;
     // double y_left = 600;
 

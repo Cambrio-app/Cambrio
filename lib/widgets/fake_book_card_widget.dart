@@ -20,7 +20,13 @@ class FakeBookCard extends StatelessWidget {
       constraints: BoxConstraints.loose(Size(125,150 + 2*14*MediaQuery.of(context).textScaleFactor*1.2)),
       child: GestureDetector(
         onTap: () {
-          Beamer.of(context).beamToNamed('/explore');
+          Beamer.of(context).beamToReplacementNamed('/explore', stacked: false);
+          // Beamer.of(context).update(
+          //   configuration: const RouteInformation(
+          //     location: '/explore'
+          //   ),
+          //   rebuild: true,
+          // );
         },
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
