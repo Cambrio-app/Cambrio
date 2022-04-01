@@ -62,7 +62,7 @@ class _BookListViewState extends State<BookListView> {
                     child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(widget.collectionTitle!,
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25)
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24)
                         )
                     )),
 

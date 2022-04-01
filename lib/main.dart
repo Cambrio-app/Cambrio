@@ -116,6 +116,7 @@ void main() {
         // primaryColorBrightness: Brightness.light,
         appBarTheme: AppBarTheme(
           color: colorScheme.secondary,
+          shape: const Border(bottom: BorderSide(color: Colors.black54, width: 0.35)),
           // toolbarTextStyle: TextStyle(color:colorScheme.primary),
           iconTheme: IconThemeData(color: colorScheme.onSecondary),
           // shape: const Border(bottom: BorderSide(width: 1.0, color: Colors.black),),
@@ -134,7 +135,11 @@ void main() {
           shadowColor: Colors.transparent,
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-            elevation: 0),
+            // unselectedLabelStyle: TextStyle(color: Colors.black),
+            unselectedItemColor: Colors.black,
+            selectedIconTheme: IconThemeData(size: 30),
+            elevation: 0,
+        ),
 
         // buttonTheme: ButtonThemeData(
         //   shape:

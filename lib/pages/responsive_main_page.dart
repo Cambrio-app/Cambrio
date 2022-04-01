@@ -196,7 +196,12 @@ class _ResponsivePageState extends State<ResponsivePage>
                   icon: const Icon(Icons.notifications_none_rounded)),
             ],
           ),
-          body: bodyFunction(),
+          body: Column(
+            children: [
+              Expanded(child: bodyFunction()),
+              const Divider(color: Colors.black54, thickness: 0.35),
+            ],
+          ),
           navigationTypeResolver: (context) {
             if (MediaQuery.of(context).size.width > 600) {
               return NavigationType.drawer;

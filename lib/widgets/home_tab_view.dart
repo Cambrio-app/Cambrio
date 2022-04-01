@@ -39,6 +39,7 @@ class _MyTabbedPageState extends State<MyTabbedPage> with SingleTickerProviderSt
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50.0),
         child: AppBar(
+          shape: const Border.fromBorderSide(BorderSide.none),
           elevation: 0,
           bottom: TabBar(
             unselectedLabelColor: Colors.grey,

@@ -41,7 +41,7 @@ class FakeBookCard extends StatelessWidget {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                    // borderRadius: BorderRadius.all(20),
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withOpacity(0.1),
                    //  image: DecorationImage(
                    //    image: NetworkImage('https://firebasestorage.googleapis.com/v0/b/cambio-46fdc.appspot.com/o/cambrio-cover2-01.png?alt=media&token=64240a30-a53e-4a1f-8630-de1bac56975a'),
                    //    fit: BoxFit.cover,
