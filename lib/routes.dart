@@ -97,7 +97,6 @@ class Routes {
         },
         '/explore': (context, state, data) {
           // state.
-          debugPrint('i just want to explore');
           return BeamPage(
             type: BeamPageType.noTransition,
             key: const ValueKey('explore'),

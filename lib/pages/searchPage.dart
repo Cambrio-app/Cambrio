@@ -10,14 +10,14 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import '../models/book.dart';
 import '../services/firebase_service.dart';
 
-class SearchingPage extends StatefulWidget {
-  const SearchingPage({Key? key}) : super(key: key);
+class SearchPage extends StatefulWidget {
+  const SearchPage({Key? key}) : super(key: key);
 
   @override
-  State<SearchingPage> createState() => _SearchingPageState();
+  State<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchingPageState extends State<SearchingPage> {
+class _SearchPageState extends State<SearchPage> {
   TextEditingController _searchText = TextEditingController(text: "");
   /*
   The _results array will hold the data returned by Algolia and we will use this to generate a ListView.
@@ -30,25 +30,26 @@ class _SearchingPageState extends State<SearchingPage> {
     applicationId: '6M9DHL86F0',
     apiKey: '0a7b0ad97e703eac96130ec37b94b267',
   );
-  _search() async {
+  _search({int delay = 0}) async {
     setState(() {
       _searching = true;
     });
+    if (delay>0) await Future.delayed(Duration(milliseconds: delay));
     AlgoliaQuery query = algolia.instance.index(
         'books'); //Interesting how .instance is now working, yesterday it was not working :/
 
     query = query.search(_searchText.text);
 
     _results = (await query.getObjects()).hits;
-    setState(() {
+    if(mounted) {setState(() {
       _searching = false;
-    });
+    });}
   }
 
   @override
   void initState() {
     super.initState();
-    FirebaseRemoteConfig.instance.fetchAndActivate();
+    // FirebaseRemoteConfig.instance.fetchAndActivate();
   }
 
   @override
@@ -85,10 +86,10 @@ class _SearchingPageState extends State<SearchingPage> {
                 controller: _searchText,
                 cursorColor: Colors.black,
                 onChanged: FirebaseRemoteConfig.instance.getBool('auto_search')
-                    ? (_) => _search()
+                    ? (_) => _search(delay: FirebaseRemoteConfig.instance.getInt('search_delay'))
                     : null,
                 onEditingComplete: () {
-
+                  FocusManager.instance.primaryFocus?.unfocus();
                   // log the search
                   FirebaseAnalytics.instance.logSearch(searchTerm: _searchText.text);
                   _search();
@@ -106,46 +107,33 @@ class _SearchingPageState extends State<SearchingPage> {
             const SizedBox(
               height: 16,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                //IMPORTANT TO NOTE
-
-                /*
-                HANDLING HTTP CALLS
-
-                Algolia being a REST API, for each character search
-                it will call HTTPs request to the Algolia+firebase server
-                on the backend, which means less response time and more calls.
-
-                To solve this what i did is to tell the user to search after he/she
-                is finished with the searching word.
-
-                This will reduce the Character search time and will also reduce the number of calls made to the server.
-                */
-
-                FlatButton(
-                    color: Colors.black,
-                    child: Text(
-                      "Search",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    onPressed: () {
-                      FocusManager.instance.primaryFocus?.unfocus();
-
-                      // log the search
-                      FirebaseAnalytics.instance.logSearch(searchTerm: _searchText.text);
-                      _search();
-                    }),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   children: const <Widget>[
+            //     //IMPORTANT TO NOTE
+            //
+            //     /*
+            //     HANDLING HTTP CALLS
+            //
+            //     Algolia being a REST API, for each character search
+            //     it will call HTTPs request to the Algolia+firebase server
+            //     on the backend, which means less response time and more calls.
+            //
+            //     To solve this what i did is to tell the user to search after he/she
+            //     is finished with the searching word.
+            //
+            //     This will reduce the Character search time and will also reduce the number of calls made to the server.
+            //     */
+            //
+            //   ],
+            // ),
             Expanded(
               child: _searching == true
-                  ? Center(
+                  ? const Center(
                       child: Text("Searching, please wait..."),
                     )
-                  : _results.length == 0
-                      ? Center(
+                  : _results.isEmpty
+                      ? const Center(
                           child: Text("No results found."),
                         )
                       : ListView.builder(

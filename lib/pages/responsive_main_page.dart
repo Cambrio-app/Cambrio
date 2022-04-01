@@ -3,24 +3,13 @@ import 'dart:math';
 import 'package:adaptive_navigation/adaptive_navigation.dart';
 import 'package:beamer/beamer.dart';
 import 'package:cambrio/pages/searchPage.dart';
-import 'package:cambrio/unused_rn/search_page.dart';
 import 'package:cambrio/pages/settings.dart';
 import 'package:cambrio/util/get_positions.dart';
-import 'package:cambrio/util/get_positions.dart';
-import 'package:cambrio/util/get_positions.dart';
-import 'package:cambrio/util/get_positions.dart';
-import 'package:cambrio/util/get_positions.dart';
-import 'package:cambrio/widgets/alert.dart';
-import 'package:cambrio/widgets/book_grid_view.dart';
-import 'package:cambrio/pages/edit_chapter.dart';
-import 'package:cambrio/pages/edit_book.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:cambrio/widgets/book_list_view.dart';
 import 'package:cambrio/widgets/home_tab_view.dart';
-import 'package:cambrio/widgets/profile/profile_view.dart';
 import 'package:cambrio/pages/profile/personal_profile_page.dart';
 
 // only for the crazy animation
@@ -81,7 +70,7 @@ class _ResponsivePageState extends State<ResponsivePage>
 
   @override
   void initState() {
-    FirebaseRemoteConfig.instance.fetchAndActivate();
+    // FirebaseRemoteConfig.instance.fetchAndActivate();
     super.initState();
 
     controller = AnimationController(vsync: this, upperBound: 1000)
@@ -132,7 +121,7 @@ class _ResponsivePageState extends State<ResponsivePage>
         //   ),
         //   rebuild: false,
         // );
-        return const SearchingPage();
+        return const SearchPage();
       case 2:
         FirebaseAnalytics.instance
             .setCurrentScreen(screenName: 'Personal Profile');
@@ -307,7 +296,7 @@ class _ResponsivePageState extends State<ResponsivePage>
 }
 
 const _allDestinations = [
-  AdaptiveScaffoldDestination(title: 'Home', icon: Icons.home),
+  AdaptiveScaffoldDestination(title: 'Books', icon: Icons.home),
   AdaptiveScaffoldDestination(title: 'Explore', icon: Icons.search),
   AdaptiveScaffoldDestination(title: 'Profile', icon: Icons.portrait)
 ];

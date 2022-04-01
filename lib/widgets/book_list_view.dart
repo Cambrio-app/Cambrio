@@ -43,7 +43,8 @@ class _BookListViewState extends State<BookListView> {
       }
 
     } catch (error) {
-      _pagingController.error = error; // causes error: I/flutter (19591): Exception: A PagingController was used after being disposed.
+      // debugPrint('(dispose error in book_list_view)');
+      if(mounted) _pagingController.error = error;
     }
   }
   @override

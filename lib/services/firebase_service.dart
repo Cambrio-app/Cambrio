@@ -96,17 +96,19 @@ class FirebaseService extends ChangeNotifier {
       await FirebaseRemoteConfig.instance.setDefaults(<String, dynamic>{
         'welcome_message': 'default welcome message',
         'auto_search': true,
+        'search_delay': 1000,
         'fancy_bell': false,
       });
 
       FirebaseRemoteConfig rc = FirebaseRemoteConfig.instance;
       await rc.setConfigSettings(RemoteConfigSettings(
-        fetchTimeout: const Duration(seconds: 10),
-        minimumFetchInterval: const Duration(seconds: 30),
-        // minimumFetchInterval: const Duration(hours: 3),
+        fetchTimeout: const Duration(seconds: 60),
+        // minimumFetchInterval: const Duration(seconds: 30),
+        minimumFetchInterval: const Duration(hours: 3),
       ));
       bool updated = await rc.fetchAndActivate();
       // debugPrint('updated?: $updated auto_search???: ${rc.getBool('auto_search').toString()}');
+
     } catch(e) {
       // Set `_error` state to true if Firebase initialization fails
       // setState(() {
@@ -437,7 +439,7 @@ class FirebaseService extends ChangeNotifier {
             );
         break;
       case QueryTypes.saved:
-        debugPrint('get saved');
+        // debugPrint('get saved');
         _query = FirebaseFirestore.instance
             .collection('user_profiles/$userId/liked_books')
             .limit(100)
