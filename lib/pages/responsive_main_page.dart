@@ -171,7 +171,8 @@ class _ResponsivePageState extends State<ResponsivePage>
                     );
                     setState(() {
                       TutorialsState.instance.editClicked = true;
-                      widget.selectedIndex = 2;
+                      // widget.selectedIndex = 2;
+                      Beamer.of(context).beamToReplacementNamed('/personal_profile', stacked: false);
                     });
                   },
                   icon: const Icon(Icons.edit)),
