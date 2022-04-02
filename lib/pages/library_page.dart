@@ -21,6 +21,7 @@ class LibraryPage extends StatelessWidget {
       shrinkWrap: true,
       physics: const BouncingScrollPhysics(),
       children: const [
+        SizedBox(height:10),
         // BookListView(collectionToPull: 'books', collectionTitle: "Books We Know You'll Hate", queryType: QueryTypes.hated),
         BookListView(collectionToPull: 'books', collectionTitle: "Subscriptions", queryType: QueryTypes.subscribed),
         BookListView(collectionToPull: 'books', collectionTitle: "Liked Books", queryType: QueryTypes.saved),

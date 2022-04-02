@@ -81,7 +81,7 @@ class _EditBookState extends State<EditBook> {
                           "Book Cover",
                           style: TextStyle(
                               color: Color(0xFF778DFC),
-                              fontFamily: "Montserrat-Semibold"),
+                              fontFamily: "Montserrat"),
                         ),
                       ),
                       image == null

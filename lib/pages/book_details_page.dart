@@ -50,25 +50,29 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
   ];
   int? selected = null;
   bool clicked = false;
-  late final epubber;
+  MakeEpub? epubber;
   late final bool isUsersBook;
-  Map<String, dynamic>? bookmark;
+  late Map<String, dynamic> bookmark;
   ScrollController? scroll_controller;
   @override
   void initState() {
     super.initState();
-    setBookmark();
     clicked = false;
-    epubber = MakeEpub(
+    bookmark = {'location': '{"cfi":" ","idref":"ch${selected ?? 0 + 1}"}'};
+    setBookmark().then((_) {
+      epubber = MakeEpub(
         title: widget.bookSnap.data()!.title,
         authorName: widget.bookSnap.data()!.author_name,
         authorId: widget.bookSnap.data()!.author_id ?? 'wat',
-        bookId: widget.bookSnap.id);
+        bookId: widget.bookSnap.id,
+        bookmark: bookmark,
+      );
+    });
+
     isUsersBook = FirebaseService().userId == widget.bookSnap.data()?.author_id;
 
     // report to analytics that the user selected this content
-    FirebaseAnalytics.instance
-        .logSelectContent(
+    FirebaseAnalytics.instance.logSelectContent(
       contentType: 'book',
       itemId: widget.bookSnap.id,
     );
@@ -78,61 +82,64 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
     // });
   }
 
-  void setBookmark() async {
-    bookmark = await FirebaseService().getBookmark(bookId: widget.bookSnap.id);
+  Future<Map<String, dynamic>> setBookmark() async {
+    Map<String, dynamic>? newBookmark =
+        await FirebaseService().getBookmark(bookId: widget.bookSnap.id);
+    if (newBookmark != null) bookmark = newBookmark;
     debugPrint('bookmark retreived: $bookmark');
+    return bookmark;
+  }
+
+  Future<void> goToEpub() async {
+    clicked = true;
+
+    if (clicked == true && !kIsWeb) {
+      Future.delayed(const Duration(milliseconds: 100), () async {
+        // open a book an retrieve the bookmark from it after.
+        Map<String, String>? newBookmark = (await epubber?.openEpub(context, bookmark: bookmark));
+        clicked = false;
+
+        if (newBookmark != null) {
+          selected = null;
+          debugPrint("your last page: $newBookmark");
+          FirebaseService().setBookmark(
+            bookId: widget.bookSnap.id,
+            location: newBookmark['location']!,
+            settings: newBookmark['settings']!,
+            theme: newBookmark['theme']!,
+          );
+          // update local bookmark
+          bookmark = newBookmark;
+        }
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-
     // report to analytics that the user went to this page
-    FirebaseAnalytics.instance
-        .setCurrentScreen(
-        screenName: 'BookDetails'
-    );
+    FirebaseAnalytics.instance.setCurrentScreen(screenName: 'BookDetails');
 
     // initialize late because it uses context
     scroll_controller ??= ScrollController(
-        initialScrollOffset:
-        MediaQuery.of(context).size.height * 0.35);
+        initialScrollOffset: MediaQuery.of(context).size.height * 0.35);
 
-    // debugPrint('selected: $selected');
-    if (clicked == true && !kIsWeb) {
-      Future.delayed(const Duration(milliseconds: 100), () async {
-        // debugPrint("using bookmark: $bookmark");
-        // also make sure that the bookmark is made if there is none.
-        Map<String, String>? mark = (selected!=null) ? {'location': '{"cfi":" ","idref":"ch${selected!+1}"}'}:null;
-        // open a book an retrieve the bookmark from it after.
-        Map<String, dynamic> newBookmark =
-            (await epubber.makeEpub(context, bookmark: mark ?? bookmark));
-        selected = null;
-        debugPrint("your last page: $newBookmark");
-        FirebaseService().setBookmark(
-          bookId: widget.bookSnap.id,
-          location: newBookmark['location']!,
-          settings: newBookmark['settings']!,
-          theme: newBookmark['theme']!,
-        );
-        // update local bookmark
-        bookmark = newBookmark;
-      });
-    }
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(
             // maxHeight: 300,
             // minHeight: 200,
             maxWidth: 1000,
-            minWidth: 200
-        ),
+            minWidth: 200),
         child: BackArrow(
           child: Scaffold(
-            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.endFloat,
               floatingActionButton: isUsersBook
                   ? Padding(
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
-                    child: FloatingActionButton(
+                      padding: EdgeInsets.all(
+                          MediaQuery.of(context).size.width * 0.02),
+                      child: FloatingActionButton(
                         heroTag: 'add',
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         child: const Icon(Icons.add),
@@ -147,7 +154,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                           setState(() {});
                         }),
                       ),
-                  )
+                    )
                   : null,
               body: FutureBuilder<List<Chapter>>(
                   future: FirebaseService().getChapters(widget.bookSnap.id),
@@ -161,7 +168,6 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                       children: [
                         GestureDetector(
                           onTap: () {
-
                             // report to analytics that the user clicked the cover
                             FirebaseAnalytics.instance.logEvent(
                               name: "click_cover",
@@ -179,7 +185,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                               });
                             }
                             setState(() {
-                              clicked = true;
+                              goToEpub();
                             });
                           },
                           child: Center(
@@ -194,9 +200,10 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                               alignment: clicked
                                   ? Alignment.center
                                   : AlignmentDirectional.topCenter,
-                              duration: const Duration(milliseconds: 1000),
-                              curve:
-                                  (clicked) ? Curves.slowMiddle : Curves.elasticOut,
+                              duration: const Duration(milliseconds: 1500),
+                              curve: (clicked)
+                                  ? Curves.easeOutExpo
+                                  : Curves.easeOutExpo.flipped,
                               decoration: BoxDecoration(
                                   image: DecorationImage(
                                 image: NetworkImage(widget.bookSnap
@@ -238,7 +245,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                                 }),
                           ),
                         Padding(
-                          padding: const EdgeInsets.all(18.0),
+                          padding: const EdgeInsets.fromLTRB(18, 15, 18, 0),
                           child: Container(child: ExpandableWidget(context)),
                         ),
                         buildDescription(context),
@@ -263,7 +270,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
                   setState(() {
-                    clicked = true;
+                    goToEpub();
                   });
                 },
               style: const TextStyle(
@@ -317,7 +324,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                         fontSize: 15,
                         fontWeight: FontWeight.normal,
                         color: Colors.black,
-                        fontFamily: "Montserrat-Semibold",
+                        fontFamily: "Montserrat",
                       ),
                     ),
                   ],
@@ -358,11 +365,12 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
     // debugPrint('selected: $selected');
     return SingleChildScrollView(
       child: Container(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.fromLTRB(20, 15, 20, 20),
         child: Column(
           children: [
-            if (kIsWeb) const Text(
-                'Download the Cambrio app for a better reading experience!'),
+            if (kIsWeb)
+              const Text(
+                  'Download the Cambrio app for a better reading experience!'),
             const SizedBox(
               height: 4,
             ),
@@ -373,7 +381,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.normal,
-                  fontFamily: "Montserrat-Semibold",
+                  fontFamily: "Montserrat",
                 ),
                 softWrap: true,
               ),
@@ -391,7 +399,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
             //   style: const TextStyle(
             //     fontSize: 15,
             //     fontWeight: FontWeight.normal,
-            //     fontFamily: "Montserrat-Semibold",
+            //     fontFamily: "Montserrat",
             //   ),
             // )
           ],
@@ -426,7 +434,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
   //               style: TextStyle(
   //                 fontWeight: FontWeight.w600,
   //                 fontSize: 14,
-  //                 fontFamily: "Montserrat-Semibold",
+  //                 fontFamily: "Montserrat",
   //               ),
   //             ),
   //             Spacer(),
@@ -441,19 +449,24 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
   //     );
 
   Widget ExpandableWidget(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.symmetric(
+            horizontal:
+                BorderSide(width: 0.75, color: Colors.black.withOpacity(0.55))),
+      ),
       child: ExpansionTile(
         key: Key(selected.toString()),
         title: const Text(
           "Table of Contents",
           style: TextStyle(
             fontSize: 15,
-            fontWeight: FontWeight.normal,
+            fontWeight: FontWeight.w600,
             color: Colors.black,
-            fontFamily: "Montserrat-Semibold",
+            fontFamily: "Montserrat",
           ),
         ),
+        iconColor: Colors.black.withOpacity(0.55),
         expandedCrossAxisAlignment: CrossAxisAlignment.center,
         initiallyExpanded: widget.open,
         children: (BuildContext context) {
@@ -470,7 +483,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                         fontSize: 15,
                         fontWeight: FontWeight.normal,
                         color: Colors.black,
-                        fontFamily: "Montserrat-Semibold",
+                        fontFamily: "Montserrat",
                       ),
                     ),
                     onTap: () {
@@ -480,13 +493,13 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                       FirebaseAnalytics.instance.logEvent(
                         name: "click_chapter",
                         parameters: {
-                          'index':i,
-                          'book_id':widget.bookSnap.id,
+                          'index': i,
+                          'book_id': widget.bookSnap.id,
                         },
                       );
 
                       setState(() {
-                        clicked = true;
+                        goToEpub();
                         selected = i;
                       });
                     },

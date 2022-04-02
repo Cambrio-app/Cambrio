@@ -15,8 +15,8 @@ class MyTabbedPage extends StatefulWidget {
 
 class _MyTabbedPageState extends State<MyTabbedPage> with SingleTickerProviderStateMixin {
   static const List<Tab> myTabs = <Tab>[
-    Tab(text: 'Library'),
-    Tab(text: 'Feed'),
+    Tab(text: 'LIBRARY'),
+    Tab(text: 'FEED'),
   ];
 
   late TabController _tabController;
@@ -43,11 +43,11 @@ class _MyTabbedPageState extends State<MyTabbedPage> with SingleTickerProviderSt
           elevation: 0,
           bottom: TabBar(
             unselectedLabelColor: Colors.grey,
-            unselectedLabelStyle: const TextStyle(fontSize: 14, fontWeight:FontWeight.normal, fontFamily: 'Montserrat', letterSpacing: 0,),
+            unselectedLabelStyle: const TextStyle(fontSize: 14, fontWeight:FontWeight.w400, fontFamily: 'Montserrat', letterSpacing: 0,),
             indicatorColor: const Color(0xff000000),
             indicatorPadding: const EdgeInsets.only(left:30,right:30),
             indicatorWeight: 2,
-            labelStyle: const TextStyle(fontSize: 16, fontWeight:FontWeight.bold, fontFamily: 'Montserrat', letterSpacing: 1),
+            labelStyle: const TextStyle(fontSize: 16, fontWeight:FontWeight.w700, fontFamily: 'Montserrat', letterSpacing: 0.5),
             controller: _tabController,
             tabs: myTabs,
           ),

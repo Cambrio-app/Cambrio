@@ -2,6 +2,8 @@ import 'package:cambrio/services/firebase_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 
+import '../../util/numbers_display.dart';
+
 class NumbersWidget extends StatelessWidget {
   int subs;
   int likes;
@@ -51,16 +53,4 @@ class NumbersWidget extends StatelessWidget {
           ),
     ),
   );
-
-  // compactify the numbers
-  String compactify(int value) {
-    const units = <int, String>{
-      1000000000: 'B',
-      1000000: 'M',
-      1000: 'K',
-    };
-    return units.entries
-        .map((e) => '${value ~/ e.key}${e.value}')
-        .firstWhere((e) => !e.startsWith('0'), orElse: () => '$value');
-  }
 }

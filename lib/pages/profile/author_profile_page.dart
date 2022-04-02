@@ -96,7 +96,7 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
               fontSize: 15,
               fontWeight: FontWeight.normal,
               color: Colors.grey,
-              fontFamily: "Montserrat-Semibold",
+              fontFamily: "Montserrat",
             ),
           ),
         ],
@@ -109,7 +109,7 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              fontFamily: "Montserrat-Semibold",
+              fontFamily: "Montserrat",
             ),
             maxLines: 4,
             softWrap: true,

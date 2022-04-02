@@ -302,7 +302,7 @@ class _ResponsivePageState extends State<ResponsivePage>
 }
 
 const _allDestinations = [
-  AdaptiveScaffoldDestination(title: 'Books', icon: Icons.home),
+  AdaptiveScaffoldDestination(title: 'Books', icon: Icons.menu_book),
   AdaptiveScaffoldDestination(title: 'Explore', icon: Icons.search),
   AdaptiveScaffoldDestination(title: 'Profile', icon: Icons.portrait)
 ];

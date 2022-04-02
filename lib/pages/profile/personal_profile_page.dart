@@ -163,12 +163,20 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
         crossAxisAlignment: CrossAxisAlignment.baseline,
         textBaseline: TextBaseline.alphabetic,
         children: [
-          Text(
-            name,
-            style: const TextStyle(
-              fontSize: 35,
-              fontWeight: FontWeight.normal,
-              fontFamily: "Unna",
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 0.65*MediaQuery.of(context).size.width),
+            child: Text(
+              name
+                  .characters
+                  .replaceAll(Characters(''), Characters('\u{200B}'))
+                  .toString(),
+              style: const TextStyle(
+                fontSize: 35,
+                fontWeight: FontWeight.normal,
+                fontFamily: "Unna",
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
             ),
           ),
           const SizedBox(
@@ -180,7 +188,7 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
               fontSize: 18,
               fontWeight: FontWeight.normal,
               color: Colors.grey,
-              fontFamily: "Montserrat-Semibold",
+              fontFamily: "Montserrat",
             ),
           ),
         ],
@@ -193,7 +201,7 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            fontFamily: "Montserrat-Semibold",
+            fontFamily: "Montserrat",
           ),
           maxLines: 4,
           softWrap: true,

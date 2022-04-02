@@ -109,9 +109,12 @@ flutter:
     - family: Montserrat
       fonts:
         - asset: assets/fonts/Montserrat/static/Montserrat-Regular.ttf
-          weight: 300
+          weight: 400
         - asset: assets/fonts/Montserrat/static/Montserrat-SemiBold.ttf
-          weight: 500
+          weight: 600
+        - asset: assets/fonts/Montserrat/static/Montserrat-Bold.ttf
+          weight: 700
+
     - family: Unna
       fonts:
         - asset: assets/fonts/Unna/Unna-Regular.ttf

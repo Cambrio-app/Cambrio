@@ -82,7 +82,7 @@ class _EditProfileState extends State<EditProfile> {
                 "Change Image",
                 style: TextStyle(
                     color: Color(0xFF778DFC),
-                    fontFamily: "Montserrat-Semibold"),
+                    fontFamily: "Montserrat"),
               ),
             ),
             image == null
@@ -121,7 +121,7 @@ class _EditProfileState extends State<EditProfile> {
               decoration: InputDecoration(
                 labelText: 'Full Name',
                 labelStyle: TextStyle(
-                  fontFamily: "Montserrat-SemiBold",
+                  fontFamily: "Montserrat",
                   fontSize: 14,
                   color: Colors.grey[600],
                 ),
@@ -136,7 +136,7 @@ class _EditProfileState extends State<EditProfile> {
               decoration: InputDecoration(
                 labelText: 'handle',
                 labelStyle: TextStyle(
-                  fontFamily: "Montserrat-SemiBold",
+                  fontFamily: "Montserrat",
                   fontSize: 14,
                   color: Colors.grey[600],
                 ),
@@ -154,7 +154,7 @@ class _EditProfileState extends State<EditProfile> {
               decoration: InputDecoration(
                 labelText: 'Bio',
                 labelStyle: TextStyle(
-                  fontFamily: "Montserrat-SemiBold",
+                  fontFamily: "Montserrat",
                   fontSize: 14,
                   color: Colors.grey[600],
                 ),
@@ -202,7 +202,7 @@ class _EditProfileState extends State<EditProfile> {
                 'Save',
                 style: TextStyle(
                   color: Colors.white,
-                  fontFamily: "Montserrat-SemiBold",
+                  fontFamily: "Montserrat",
                 ),
               ),
             )
