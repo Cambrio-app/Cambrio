@@ -110,6 +110,16 @@ class Routes {
             child: ResponsivePage(selectedIndex:2,title:''),
           );
         },
+
+        '/ereader': (context, state, data) {
+          return BeamPage(
+            type: BeamPageType.noTransition,
+            key: const ValueKey('ebook'),
+            child: data as Widget,
+          );
+        },
+
+
         // '/books/:bookId': (context, state, data) {
         //   final bookId = state.pathParameters['bookId'];
         //   final book = books.firstWhere((book) => book['id'] == bookId);

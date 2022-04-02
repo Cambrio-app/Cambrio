@@ -94,10 +94,9 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
     clicked = true;
 
     if (clicked == true && !kIsWeb) {
-      Future.delayed(const Duration(milliseconds: 100), () async {
+      Future.delayed(const Duration(milliseconds: 10), () async {
         // open a book an retrieve the bookmark from it after.
         Map<String, String>? newBookmark = (await epubber?.openEpub(context, bookmark: bookmark));
-        clicked = false;
 
         if (newBookmark != null) {
           selected = null;
@@ -191,19 +190,19 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                           child: Center(
                             child: AnimatedContainer(
                               width: clicked
-                                  ? MediaQuery.of(context).size.width * 0.9
+                                  ? MediaQuery.of(context).size.width * 0.95
                                   : MediaQuery.of(context).size.width,
                               height: clicked
-                                  ? MediaQuery.of(context).size.height * 0.6
+                                  ? MediaQuery.of(context).size.height * 0.65
                                   : MediaQuery.of(context).size.height * 0.7,
                               // color: clicked ? Colors.red : Colors.blue,
                               alignment: clicked
                                   ? Alignment.center
                                   : AlignmentDirectional.topCenter,
-                              duration: const Duration(milliseconds: 1500),
+                              duration: const Duration(milliseconds: 150),
                               curve: (clicked)
-                                  ? Curves.easeOutExpo
-                                  : Curves.easeOutExpo.flipped,
+                                  ? Curves.easeOut
+                                  : Curves.easeOut.flipped,
                               decoration: BoxDecoration(
                                   image: DecorationImage(
                                 image: NetworkImage(widget.bookSnap
