@@ -3,6 +3,7 @@ import 'package:cambrio/pages/responsive_main_page.dart';
 import 'package:cambrio/pages/searchPage.dart';
 import 'package:cambrio/services/firebase_service.dart';
 import 'package:cambrio/widgets/home_tab_view.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:beamer/beamer.dart';
 
@@ -76,6 +77,7 @@ class Routes {
     locationBuilder: RoutesLocationBuilder(
       routes: {
         '/': (context, state, data) {
+          // FirebaseAnalytics.instance.setCurrentScreen(screenName: 'Home');
           // if(FirebaseService().initialized) {
           //   return ResponsivePage(selectedIndex:0,title:'');
           // }
@@ -89,24 +91,44 @@ class Routes {
         },
 
         '/home': (context, state, data) {
+          FirebaseAnalytics.instance.setCurrentScreen(screenName: 'Home');
+
+          Beamer.of(context).updateRouteInformation(RouteInformation(location:state.uri.path));
+
           return BeamPage(
             type: BeamPageType.noTransition,
-            key: const ValueKey('home'),
+            // key: const ValueKey('home'),
             child: ResponsivePage(selectedIndex:0,title:''),
           );
         },
         '/explore': (context, state, data) {
+          // debugPrint('iwannaexplore');
+          FirebaseAnalytics.instance.setCurrentScreen(screenName: 'Explore/Search');
+
           // state.
+          Beamer.of(context).update(
+              configuration: RouteInformation(location:state.uri.path),
+            rebuild: false,
+          );
+          // Beamer.of(context).updateRouteInformation(RouteInformation(location:state.uri.path));
+          // state.selectedIndex = 1;
+          // context.widget.state
+          // (state.routeInformation.state as State<ResponsivePage>?)?.;
+          // (state.routeInformation.state as State<ResponsivePage>?)?.widget.selectedIndex = 1;
           return BeamPage(
             type: BeamPageType.noTransition,
-            key: const ValueKey('explore'),
+            // key: const ValueKey('explore'),
             child: ResponsivePage(selectedIndex:1,title:''),
           );
         },
         '/personal_profile': (context, state, data) {
+          FirebaseAnalytics.instance.setCurrentScreen(screenName: 'Personal Profile');
+
+          Beamer.of(context).updateRouteInformation(RouteInformation(location:state.uri.path));
+          // debugPrint(state.uri.path);
           return BeamPage(
             type: BeamPageType.noTransition,
-            key: const ValueKey('personal_profile'),
+            // key: const ValueKey('personal_profile'),
             child: ResponsivePage(selectedIndex:2,title:''),
           );
         },

@@ -19,7 +19,8 @@ class ChapterInfScroll extends StatefulWidget {
   _ChapterInfScrollState createState() => _ChapterInfScrollState();
 }
 
-class _ChapterInfScrollState extends State<ChapterInfScroll> {
+class _ChapterInfScrollState extends State<ChapterInfScroll> with
+    AutomaticKeepAliveClientMixin<ChapterInfScroll>{
   static const _pageSize = 15;
 
   final PagingController<DocumentSnapshot<Chapter>?, DocumentSnapshot<Chapter>> _pagingController = PagingController(firstPageKey: null, invisibleItemsThreshold: 3);
@@ -76,6 +77,9 @@ class _ChapterInfScrollState extends State<ChapterInfScroll> {
     _pagingController.dispose();
     super.dispose();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 

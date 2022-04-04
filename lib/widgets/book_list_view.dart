@@ -18,7 +18,8 @@ class BookListView extends StatefulWidget {
   _BookListViewState createState() => _BookListViewState();
 }
 
-class _BookListViewState extends State<BookListView> {
+class _BookListViewState extends State<BookListView> with
+    AutomaticKeepAliveClientMixin<BookListView>{
   static const _pageSize = 4;
   final PagingController<DocumentSnapshot<Book>?, DocumentSnapshot<Book>> _pagingController = PagingController(firstPageKey: null, invisibleItemsThreshold: 3);
 
@@ -96,4 +97,7 @@ class _BookListViewState extends State<BookListView> {
     _pagingController.dispose();
     super.dispose();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

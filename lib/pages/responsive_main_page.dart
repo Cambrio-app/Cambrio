@@ -14,6 +14,7 @@ import 'package:cambrio/pages/profile/personal_profile_page.dart';
 
 // only for the crazy animation
 import 'package:flutter/physics.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 import '../models/tutorials_state.dart';
@@ -48,6 +49,15 @@ class _ResponsivePageState extends State<ResponsivePage>
   double current_velocity = 1000;
 
   final List pages = ['/home', '/explore', '/personal_profile'];
+  late final BeamerDelegate _beamer;
+
+  urlListener() {
+  String path = _beamer.configuration.location ?? '/home';
+  // debugPrint('path: $path');
+  int updatedIndex = pages.indexOf(path);
+  widget.selectedIndex = (updatedIndex == -1) ? 0: updatedIndex;
+  setState(() {});
+  }
 
   void _onItemTapped(int index) {
     // setState(() {
@@ -57,6 +67,9 @@ class _ResponsivePageState extends State<ResponsivePage>
     route = pages[index];
     // widget._routerDelegate.beamToNamed(route);
     // debugPrint('clicked to go to : $route');
+    // setState(() {
+    //   widget.selectedIndex = index;
+    // });
     Beamer.of(context).beamToReplacementNamed(route, stacked: false);
 
     // Beamer.of(context).update(
@@ -83,12 +96,23 @@ class _ResponsivePageState extends State<ResponsivePage>
       });
 
     WidgetsBinding.instance?.addPostFrameCallback((_) => setState(() {}));
+
+    SchedulerBinding.instance?.addPostFrameCallback((_) {
+      _beamer = Beamer.of(context);
+      _beamer.addListener(urlListener);
+    });
   }
+
 
   @override
   void dispose() {
     controller.dispose();
     x_controller.dispose();
+    try {
+      _beamer.removeListener(urlListener);
+    } catch (e) {
+      debugPrint('failed to remove listener.');
+    }
     super.dispose();
   }
   // end bell animation stuff
@@ -99,58 +123,55 @@ class _ResponsivePageState extends State<ResponsivePage>
     //   key: widget._beamerKey,
     //   routerDelegate: widget._routerDelegate,
     // );
-    switch (widget.selectedIndex) {
-      case 0:
-        FirebaseAnalytics.instance.setCurrentScreen(screenName: 'Home');
-        // Beamer.of(context).
-        // Beamer.of(context).update(
-        //   configuration: const RouteInformation(
-        //     location: '/home',
-        //   ),
-        //   rebuild: true,
-        // );
-        // Router.navigate();
-        return const MyTabbedPage();
-        break;
-      case 1:
-        FirebaseAnalytics.instance
-            .setCurrentScreen(screenName: 'Explore/Search');
-        // Beamer.of(context).update(
-        //   configuration: const RouteInformation(
-        //     location: '/explore',
-        //   ),
-        //   rebuild: false,
-        // );
-        return const SearchPage();
-      case 2:
-        FirebaseAnalytics.instance
-            .setCurrentScreen(screenName: 'Personal Profile');
-        // Beamer.of(context).update(
-        //   configuration: const RouteInformation(
-        //     location: '/profile',
-        //   ),
-        //   rebuild: false,
-        // );
-        return const PersonalProfilePage();
-      default:
-        return const Center(
-            child: Text(
-                "you managed to enter into the secret section of the app. prepare to fight the shadow boss"));
-        break;
-    }
+    return IndexedStack(
+      index: widget.selectedIndex,
+      children: const [
+        MyTabbedPage(),
+        SearchPage(),
+        PersonalProfilePage(),
+      ],
+    );
+    // switch (widget.selectedIndex) {
+    //   case 0:
+    //     // Beamer.of(context).
+    //     // Beamer.of(context).update(
+    //     //   configuration: const RouteInformation(
+    //     //     location: '/home',
+    //     //   ),
+    //     //   rebuild: true,
+    //     // );
+    //     // Router.navigate();
+    //     return const MyTabbedPage();
+    //     break;
+    //   case 1:
+    //     // Beamer.of(context).update(
+    //     //   configuration: const RouteInformation(
+    //     //     location: '/explore',
+    //     //   ),
+    //     //   rebuild: false,
+    //     // );
+    //     return const SearchPage();
+    //   case 2:
+    //     // Beamer.of(context).update(
+    //     //   configuration: const RouteInformation(
+    //     //     location: '/profile',
+    //     //   ),
+    //     //   rebuild: false,
+    //     // );
+    //     return const PersonalProfilePage();
+    //   default:
+    //     return const Center(
+    //         child: Text(
+    //             "you managed to enter into the secret section of the app. prepare to fight the shadow boss"));
+    //     break;
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
-
-    // List pathList = widget._routerDelegate.currentConfiguration.location;
-    String path = Beamer.of(context).configuration.location ?? '/home';
-    // debugPrint('path: $path');
-    int updatedIndex = pages.indexOf(path);
-    widget.selectedIndex = (updatedIndex == -1) ? 0: updatedIndex;
-    // debugPrint('selected index: ${widget.selectedIndex}');
-    // widget.selectedIndex = (Beamer.of(context).currentBeamLocation.data as int?) ?? 0;
-
+    // String path = Beamer.of(context).configuration.location ?? '/home';
+    // int updatedIndex = pages.indexOf(path);
+    // widget.selectedIndex = (updatedIndex == -1) ? 0: updatedIndex;
 
     return Stack(children: [
       // stack is only for the bell animation.

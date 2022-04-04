@@ -13,52 +13,50 @@ class MyTabbedPage extends StatefulWidget {
   State<MyTabbedPage> createState() => _MyTabbedPageState();
 }
 
-class _MyTabbedPageState extends State<MyTabbedPage> with SingleTickerProviderStateMixin {
+class _MyTabbedPageState extends State<MyTabbedPage> {
   static const List<Tab> myTabs = <Tab>[
     Tab(text: 'LIBRARY'),
     Tab(text: 'FEED'),
   ];
 
-  late TabController _tabController;
-
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(initialIndex: 0,vsync: this, length: myTabs.length);
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(50.0),
-        child: AppBar(
-          shape: const Border.fromBorderSide(BorderSide.none),
-          elevation: 0,
-          bottom: TabBar(
-            unselectedLabelColor: Colors.grey,
-            unselectedLabelStyle: const TextStyle(fontSize: 14, fontWeight:FontWeight.w400, fontFamily: 'Montserrat', letterSpacing: 0,),
-            indicatorColor: const Color(0xff000000),
-            indicatorPadding: const EdgeInsets.only(left:30,right:30),
-            indicatorWeight: 2,
-            labelStyle: const TextStyle(fontSize: 16, fontWeight:FontWeight.w700, fontFamily: 'Montserrat', letterSpacing: 0.5),
-            controller: _tabController,
-            tabs: myTabs,
+    return DefaultTabController(
+      length: myTabs.length,
+      initialIndex: 0,
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(50.0),
+          child: AppBar(
+            shape: const Border.fromBorderSide(BorderSide.none),
+            elevation: 0,
+            bottom: const TabBar(
+              unselectedLabelColor: Colors.grey,
+              unselectedLabelStyle: TextStyle(fontSize: 14, fontWeight:FontWeight.w400, fontFamily: 'Montserrat', letterSpacing: 0,),
+              indicatorColor: Color(0xff000000),
+              indicatorPadding: EdgeInsets.only(left:30,right:30),
+              indicatorWeight: 2,
+              labelStyle: TextStyle(fontSize: 16, fontWeight:FontWeight.w700, fontFamily: 'Montserrat', letterSpacing: 0.5),
+              tabs: myTabs,
+            ),
           ),
         ),
-      ),
-      body: TabBarView( //IT TOLD ME TO MAKE IT CONST, I DON'T KNOW WHY OR IF THAT WAS A GOOD THING TO DO
-        controller: _tabController,
-        children: const <Widget> [
-          LibraryPage(),
-          ChapterInfScroll(collectionToPull: "books"),
-        ]
+        body: const TabBarView( //IT TOLD ME TO MAKE IT CONST, I DON'T KNOW WHY OR IF THAT WAS A GOOD THING TO DO
+          children: <Widget> [
+            LibraryPage(),
+            ChapterInfScroll(collectionToPull: "books"),
+          ]
+        ),
       ),
     );
   }
