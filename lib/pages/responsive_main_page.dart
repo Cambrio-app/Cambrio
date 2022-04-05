@@ -184,20 +184,20 @@ class _ResponsivePageState extends State<ResponsivePage>
             title: Text(widget.title),
             elevation: 0,
             actions: [
-              IconButton(
-                  onPressed: () {
-                    // report to analytics that the user clicked
-                    FirebaseAnalytics.instance.logEvent(
-                      name: "pencil_icon",
-                    );
-                    setState(() {
-                      TutorialsState.instance.editClicked = true;
-                      // widget.selectedIndex = 2;
-                      Beamer.of(context).beamToReplacementNamed('/personal_profile', stacked: false);
-                    });
-                  },
-                  icon: const Icon(Icons.edit)),
-              IconButton(
+              // IconButton(
+              //     onPressed: () {
+              //       // report to analytics that the user clicked
+              //       FirebaseAnalytics.instance.logEvent(
+              //         name: "pencil_icon",
+              //       );
+              //       setState(() {
+              //         TutorialsState.instance.editClicked = true;
+              //         // widget.selectedIndex = 2;
+              //         Beamer.of(context).beamToReplacementNamed('/personal_profile', stacked: false);
+              //       });
+              //     },
+              //     icon: const Icon(Icons.edit)),
+              if (widget.selectedIndex==2) IconButton(
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -205,7 +205,7 @@ class _ResponsivePageState extends State<ResponsivePage>
                     );
                   },
                   icon: const Icon(Icons.settings)),
-              IconButton(
+              if (widget.selectedIndex==2) IconButton(
                   key: _keyBell, // only for animation
                   onPressed: () {
                     debugPrint('wrong click');
@@ -237,7 +237,7 @@ class _ResponsivePageState extends State<ResponsivePage>
       ),
 
       // only for animation
-      if (FirebaseRemoteConfig.instance.getBool('fancy_bell'))
+      if (FirebaseRemoteConfig.instance.getBool('fancy_bell') && false)
         Positioned(
           top: getPositions(_keyBell).dy + controller.value,
           left: getPositions(_keyBell).dx - x_controller.value,

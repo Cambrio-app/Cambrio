@@ -223,7 +223,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                         // only show this widget if the book in question is written by this user.
                         if (isUsersBook)
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                            padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
                             child: ShadowButton(
                                 icon: Icons.edit,
                                 text: 'Edit Book Details',

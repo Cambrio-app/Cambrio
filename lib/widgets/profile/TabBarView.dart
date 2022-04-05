@@ -27,9 +27,9 @@ class _TabBarToggleState extends State<TabBarToggle>
 
   final List<Tab> _tabs = const [
     Tab(
-      text: "Subscriptions",
+      text: "SUBSCRIPTIONS",
     ),
-    Tab(text: "Your Works"),
+    Tab(text: "YOUR WORKS"),
   ];
 
 
@@ -61,12 +61,13 @@ class _TabBarToggleState extends State<TabBarToggle>
               height: 60,
               width: double.infinity,
               child: TabBar(
-                  indicatorColor: Colors.grey,
-                  labelColor: Colors.black,
                   unselectedLabelColor: Colors.grey,
+                  unselectedLabelStyle: TextStyle(fontSize: 14, fontWeight:FontWeight.w400, fontFamily: 'Montserrat', letterSpacing: 0,),
+                  indicatorColor: Color(0xff000000),
+                  indicatorPadding: EdgeInsets.only(left:30,right:30),
+                  indicatorWeight: 2,
+                  labelStyle: TextStyle(fontSize: 16, fontWeight:FontWeight.w700, fontFamily: 'Montserrat', letterSpacing: 0.5),
                   controller: _tabController,
-                  labelStyle: const TextStyle(
-                      fontSize: 16, fontFamily: "Montserrat-Semibold"),
                   tabs: _tabs)),
           Flexible(
               child: TabBarView(controller: _tabController, children: [
@@ -82,7 +83,7 @@ class _TabBarToggleState extends State<TabBarToggle>
                   right: 20,
                   child: FloatingActionButton(
                     backgroundColor: Theme.of(context).colorScheme.primary,
-                    child: const Icon(Icons.add),
+                    child: const Icon(Icons.add, color: Colors.white, size: 35),
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const EditBook()),

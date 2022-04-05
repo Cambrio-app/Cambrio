@@ -116,7 +116,7 @@ void main() {
         // primaryColorBrightness: Brightness.light,
         appBarTheme: AppBarTheme(
           color: colorScheme.secondary,
-          shape: const Border(bottom: BorderSide(color: Colors.black54, width: 0.35)),
+          // shape: const Border(bottom: BorderSide(color: Colors.black54, width: 0.35)),
           // toolbarTextStyle: TextStyle(color:colorScheme.primary),
           iconTheme: IconThemeData(color: colorScheme.onSecondary),
           // shape: const Border(bottom: BorderSide(width: 1.0, color: Colors.black),),
@@ -141,6 +141,21 @@ void main() {
             elevation: 0,
         ),
 
+        // textTheme: const TextTheme(
+        //
+        // ),
+        primaryTextTheme: const TextTheme(
+
+          titleMedium: TextStyle(
+            fontFamily: 'Unna',
+          ),
+          titleLarge: TextStyle(
+            fontFamily: 'Unna',
+          ),
+          titleSmall: TextStyle(
+            fontFamily: 'Unna',
+          ),
+        )
         // buttonTheme: ButtonThemeData(
         //   shape:
         // ),

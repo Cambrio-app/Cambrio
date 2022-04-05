@@ -26,7 +26,8 @@ class Settings extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings', style: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
+        elevation: 0,
+        title: Text('Settings', style: TextStyle(color: Theme.of(context).colorScheme.onSecondary, fontSize: 18)),
         // titleTextStyle: TextStyle(color: Colors.black),
       //   actions: [
       //   // IconButton(onPressed: () => Navigator.of(context).pop(), icon: const Icon(Icons.arrow_back))
@@ -35,11 +36,11 @@ class Settings extends StatelessWidget {
       body: SettingsList(
         sections: [
           SettingsSection(
-            title: Text('Help'),
+            title: Text('Help', style: Theme.of(context).textTheme.titleMedium),
               tiles: <SettingsTile>[
                 SettingsTile(
-                  leading: Icon(Icons.help_center),
-                  title: Text('Show the tutorials again.'),
+                  leading: const Icon(Icons.help_center),
+                  title: Text('Show the tutorials again.', style: Theme.of(context).textTheme.titleMedium),
                   onPressed: (context) {
                     TutorialsState.instance.resetSawTutorial();
                   }
@@ -47,11 +48,11 @@ class Settings extends StatelessWidget {
               ],
           ),
           SettingsSection(
-            title: Text('Legal'),
+            title: Text('Legal', style: Theme.of(context).textTheme.titleMedium),
             tiles: <SettingsTile>[
               SettingsTile(
-                leading: Icon(Icons.assignment_ind_outlined),
-                title: Text('Privacy Policy'),
+                leading: const Icon(Icons.assignment_ind_outlined),
+                title: Text('Privacy Policy', style: Theme.of(context).textTheme.titleMedium),
                 onPressed: (context) {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (_) => MyPrivPol(),
@@ -59,8 +60,8 @@ class Settings extends StatelessWidget {
                 },
               ),
               SettingsTile(
-                leading: Icon(Icons.assignment_outlined),
-                title: Text('Terms of Service'),
+                leading: const Icon(Icons.assignment_outlined),
+                title: Text('Terms of Service', style: Theme.of(context).textTheme.titleMedium),
                 onPressed: (context) {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (_) => MyToS(),
@@ -71,22 +72,22 @@ class Settings extends StatelessWidget {
             ],
           ),
           SettingsSection(
-            title: Text("Account"),
+            title: Text("Account", style: Theme.of(context).textTheme.titleMedium),
             tiles: <SettingsTile>[
               SettingsTile(
                 onPressed: (context) async {
                   FirebaseService().logOut(context);
                   },
-                leading: Icon(Icons.account_box_outlined),
-                title: Text("Log Out", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+                leading: const Icon(Icons.account_box_outlined),
+                title: Text("Log Out", style: TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.bold, color: Colors.black)),
 
               ),
               SettingsTile(
                 onPressed: (context) async {
                   FirebaseService().deleteAccount(context);
                 },
-                leading: Icon(Icons.cancel_outlined),
-                title: Text("Deactivate Account", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+                leading: const Icon(Icons.cancel_outlined),
+                title: Text("Deactivate Account", style: TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.bold, color: Colors.black)),
 
               )
             ]
@@ -140,7 +141,7 @@ class WebViewLoadUI extends State<WebViewLoad>{
     );
 
     return Scaffold(
-      appBar: AppBar(title: Text('Terms of Service')),
+      appBar: AppBar(title: const Text('Terms of Service')),
       body: WebView(
         initialUrl: '',
         javascriptMode: JavascriptMode.unrestricted,

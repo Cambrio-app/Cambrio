@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import '../../models/tutorials_state.dart';
 import '../../util/get_positions.dart';
 import '../edit_book.dart';
+import '../settings.dart';
 
 class PersonalProfilePage extends StatefulWidget {
   const PersonalProfilePage({Key? key}) : super(key: key);
@@ -129,20 +130,23 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
                     const SizedBox(
                       height: 20,
                     ),
-                    ShadowButton(
-                        text: "Edit Profile",
-                        onclick: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EditProfile(
-                                  name: profile.full_name!,
-                                  bio: profile.bio!,
-                                  handle: profile.handle!,
-                                  profile: profile,
-                                )),
-                          );
-                        }),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10,0,20,0),
+                      child: ShadowButton(
+                          text: "Edit Profile",
+                          onclick: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditProfile(
+                                    name: profile.full_name!,
+                                    bio: profile.bio!,
+                                    handle: profile.handle!,
+                                    profile: profile,
+                                  )),
+                            );
+                          }),
+                    ),
                   ],
                 ),
               ),
@@ -169,9 +173,9 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
               name
                   .characters
                   .replaceAll(Characters(''), Characters('\u{200B}'))
-                  .toString(),
+                  .toString(), // this makes it al kinda one string so it's elisised properly
               style: const TextStyle(
-                fontSize: 35,
+                fontSize: 28,
                 fontWeight: FontWeight.normal,
                 fontFamily: "Unna",
               ),
@@ -185,9 +189,9 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
           Text(
             "@" + handle,
             style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.normal,
-              color: Colors.grey,
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: Colors.black54,
               fontFamily: "Montserrat",
             ),
           ),
@@ -199,8 +203,8 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
         child: Text(
           bio,
           style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+            fontSize: 15,
+            fontWeight: FontWeight.normal,
             fontFamily: "Montserrat",
           ),
           maxLines: 4,

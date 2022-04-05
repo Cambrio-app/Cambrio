@@ -58,7 +58,7 @@ class _SearchPageState extends State<SearchPage> {
     // debugPrint(ModalRoute.of(context)?.settings.name);
     return Scaffold(
       body: Container(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.fromLTRB(16,0,16,16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -77,6 +77,7 @@ class _SearchPageState extends State<SearchPage> {
                 ],
               ),
             ),
+            const SizedBox(height: 10),
             Container(
               height: 46,
               decoration: BoxDecoration(

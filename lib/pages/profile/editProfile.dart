@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../models/user_profile.dart';
 import '../../widgets/alert.dart';
+import '../../widgets/shadow_button.dart';
 
 class EditProfile extends StatefulWidget {
   final String name;
@@ -17,7 +18,11 @@ class EditProfile extends StatefulWidget {
   final UserProfile profile;
 
   const EditProfile(
-      {Key? key, required this.name, required this.handle, required this.bio, required this.profile})
+      {Key? key,
+      required this.name,
+      required this.handle,
+      required this.bio,
+      required this.profile})
       : super(key: key);
 
   @override
@@ -41,15 +46,11 @@ class _EditProfileState extends State<EditProfile> {
     _bioController = TextEditingController(text: widget.bio);
 
     // report to analytics that the user went to this page
-    FirebaseAnalytics.instance
-        .setCurrentScreen(
-        screenName: 'EditProfile'
-    );
+    FirebaseAnalytics.instance.setCurrentScreen(screenName: 'EditProfile');
   }
 
   @override
   Widget build(BuildContext context) {
-
     // FirebaseService().isHandleTaken(_handleController.text).then((bool value) {
     //   setState(() {
     //     isTaken = value;
@@ -74,17 +75,7 @@ class _EditProfileState extends State<EditProfile> {
           padding: const EdgeInsets.symmetric(horizontal: 32),
           physics: const BouncingScrollPhysics(),
           children: [
-            TextButton(
-              onPressed: () async {
-                filePicker();
-              },
-              child: const Text(
-                "Change Image",
-                style: TextStyle(
-                    color: Color(0xFF778DFC),
-                    fontFamily: "Montserrat"),
-              ),
-            ),
+            const SizedBox(height: 24),
             image == null
                 ? GestureDetector(
                     onTap: () {
@@ -115,18 +106,28 @@ class _EditProfileState extends State<EditProfile> {
                         height: 100,
                       ),
                     )),
+            TextButton(
+              onPressed: () async {
+                filePicker();
+              },
+              child: const Text(
+                "Change Image",
+                style: TextStyle(
+                    color: Color(0xFF778DFC), fontFamily: "Montserrat"),
+              ),
+            ),
             const SizedBox(height: 24),
             TextField(
               controller: _nameController,
               decoration: InputDecoration(
-                labelText: 'Full Name',
+                labelText: 'Name',
                 labelStyle: TextStyle(
                   fontFamily: "Montserrat",
                   fontSize: 14,
                   color: Colors.grey[600],
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(3),
                 ),
               ),
             ),
@@ -134,20 +135,22 @@ class _EditProfileState extends State<EditProfile> {
             TextField(
               controller: _handleController,
               decoration: InputDecoration(
-                labelText: 'handle',
+                labelText: 'Username',
                 labelStyle: TextStyle(
                   fontFamily: "Montserrat",
                   fontSize: 14,
                   color: Colors.grey[600],
                 ),
                 hintText: 'Username',
-                prefixIcon: Icon(Icons.person),
+                // prefixIcon: Icon(Icons.person),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(3),
                 ),
               ),
             ),
-            if (isTaken) const Text('try a unique, creative handle.', style: TextStyle(color: Colors.red)),
+            if (isTaken)
+              const Text('try a unique, creative handle.',
+                  style: TextStyle(color: Colors.red)),
             const SizedBox(height: 24),
             TextField(
               controller: _bioController,
@@ -158,54 +161,48 @@ class _EditProfileState extends State<EditProfile> {
                   fontSize: 14,
                   color: Colors.grey[600],
                 ),
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(3),
+                ),
               ),
               maxLines: 5,
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-            MaterialButton(
-              minWidth: 200,
-              color: const Color(0xff778DFC),
-              onPressed: () async {
+            SizedBox(height: 24),
+            ShadowButton(
+                color: Theme.of(context).primaryColor,
+                text: "Save",
+                onclick: () async {
+                  bool success = await FirebaseService().editProfile(
+                    context,
+                    full_name: _nameController.text,
+                    handle: _handleController.text,
+                    bio: _bioController.text,
+                    url_pic: image?.path ?? widget.profile.image_url,
+                    image: image,
+                    num_likes: widget.profile.num_likes,
+                    num_subs: widget.profile.num_subs,
+                  );
 
-                bool success = await FirebaseService().editProfile(
-                  context,
-                  full_name: _nameController.text,
-                  handle: _handleController.text,
-                  bio: _bioController.text,
-                  url_pic: image?.path ?? widget.profile.image_url,
-                  image: image,
-                  num_likes: widget.profile.num_likes,
-                  num_subs: widget.profile.num_subs,
-                );
+                  if (!success) {
+                    setState(() {
+                      isTaken = true;
+                    });
+                    Alert().error(context,
+                        "sorry, there was a problem submitting your profile.");
+                  }
+                  // setState(() {
+                  //   UserConstant.name = _nameController.text;
+                  //   UserConstant.handle = _handleController.text;
+                  //   UserConstant.bio = _bioController.text;
+                  //   UserConstant.imagePath = image?.path;
+                  // });
+                  if (success) {
+                    Navigator.pop(
+                      context,
+                    );
+                  }
+                }),
 
-                if (!success) {
-                  setState(() {
-                    isTaken = true;
-                  });
-                  Alert().error(context,
-                    "sorry, there was a problem submitting your profile.");
-                }
-                // setState(() {
-                //   UserConstant.name = _nameController.text;
-                //   UserConstant.handle = _handleController.text;
-                //   UserConstant.bio = _bioController.text;
-                //   UserConstant.imagePath = image?.path;
-                // });
-                if (success) {
-                  Navigator.pop(
-                  context,
-                );
-                }
-              },
-              child: const Text(
-                'Save',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: "Montserrat",
-                ),
-              ),
-            )
           ]),
     );
   }

@@ -123,48 +123,51 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
       future: FirebaseService().isSubscribed(widget.profile.user_id),
       builder: (context, snapshot) {
         return Center(
-          child: ShadowButton(
-              text:
-                  (snapshot.data ?? false) ? "Manage Subscription" : "Subscribe",
-              onclick: () {
-                // report to analytics that the user went to this page
-                FirebaseAnalytics.instance
-                    .setCurrentScreen(
-                    screenName: 'Subscribe'
-                );
-                showModalBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return StatefulBuilder(builder: (BuildContext context,
-                          StateSetter setState /*You can rename this!*/) {
-                        return Container(
-                          color: const Color(0xFF737373),
-                          child: Container(
-                            height: MediaQuery.of(context).size.height * 0.55,
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                                  child: SubscribeButton(),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20,0,20,0),
+            child: ShadowButton(
+                text:
+                    (snapshot.data ?? false) ? "Manage Subscription" : "Subscribe",
+                onclick: () {
+                  // report to analytics that the user went to this page
+                  FirebaseAnalytics.instance
+                      .setCurrentScreen(
+                      screenName: 'Subscribe'
+                  );
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return StatefulBuilder(builder: (BuildContext context,
+                            StateSetter setState /*You can rename this!*/) {
+                          return Container(
+                            color: const Color(0xFF737373),
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.55,
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                                    child: SubscribeButton(),
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.fromLTRB(20, 40, 20, 0),
+                                    child: Text("Coming Soon: More ways to financially support your favorite author!"),
+                                  ),
+                                ],
+                              ),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(30),
+                                  topRight: Radius.circular(30),
                                 ),
-                                const Padding(
-                                  padding: EdgeInsets.fromLTRB(20, 40, 20, 0),
-                                  child: Text("Coming Soon: More ways to financially support your favorite author!"),
-                                ),
-                              ],
-                            ),
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(30),
-                                topRight: Radius.circular(30),
                               ),
                             ),
-                          ),
-                        );
-                      });
-                    }).then((_) => setState(() {}));
-              }),
+                          );
+                        });
+                      }).then((_) => setState(() {}));
+                }),
+          ),
         );
       });
 
