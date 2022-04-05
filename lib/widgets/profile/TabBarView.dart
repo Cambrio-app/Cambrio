@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../pages/edit_book.dart';
 import '../../services/firebase_service.dart';
+import '../book_grid_view.dart';
 import '../book_list_view.dart';
 
 class TabBarToggle extends StatefulWidget {
@@ -71,12 +72,12 @@ class _TabBarToggleState extends State<TabBarToggle>
                   tabs: _tabs)),
           Flexible(
               child: TabBarView(controller: _tabController, children: [
-            const BookListView(
+            const BookGridView(
                 collectionToPull: 'books',
                   queryType: QueryTypes.subscribed),
             Stack(
               children: [
-                const BookListView(
+                const BookGridView(
                     collectionToPull: 'books', queryType: QueryTypes.works),
                 Positioned(
                   bottom: 20,
