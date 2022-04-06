@@ -35,20 +35,19 @@ class _MyTabbedPageState extends State<MyTabbedPage> {
       length: myTabs.length,
       initialIndex: 0,
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(50.0),
-          child: AppBar(
-            shape: const Border.fromBorderSide(BorderSide.none),
-            elevation: 0,
-            bottom: const TabBar(
-              unselectedLabelColor: Colors.grey,
-              unselectedLabelStyle: TextStyle(fontSize: 14, fontWeight:FontWeight.w400, fontFamily: 'Montserrat', letterSpacing: 0,),
-              indicatorColor: Color(0xff000000),
-              indicatorPadding: EdgeInsets.only(left:30,right:30),
-              indicatorWeight: 2,
-              labelStyle: TextStyle(fontSize: 16, fontWeight:FontWeight.w700, fontFamily: 'Montserrat', letterSpacing: 0.5),
-              tabs: myTabs,
-            ),
+        appBar: AppBar(
+          shape: const Border.fromBorderSide(BorderSide.none),
+          elevation: 0,
+          backgroundColor: Colors.black.withOpacity(0.03),
+          toolbarHeight: 28,
+          bottom: const TabBar(
+            unselectedLabelColor: Colors.grey,
+            unselectedLabelStyle: TextStyle(fontSize: 14, fontWeight:FontWeight.w400, fontFamily: 'Montserrat', letterSpacing: 0,),
+            indicatorColor: Color(0xff000000),
+            indicatorPadding: EdgeInsets.only(left:30,right:30),
+            indicatorWeight: 2,
+            labelStyle: TextStyle(fontSize: 16, fontWeight:FontWeight.w700, fontFamily: 'Montserrat', letterSpacing: 0.5),
+            tabs: myTabs,
           ),
         ),
         body: const TabBarView( //IT TOLD ME TO MAKE IT CONST, I DON'T KNOW WHY OR IF THAT WAS A GOOD THING TO DO

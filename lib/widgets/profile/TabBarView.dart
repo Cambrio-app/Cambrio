@@ -72,26 +72,32 @@ class _TabBarToggleState extends State<TabBarToggle>
                   tabs: _tabs)),
           Flexible(
               child: TabBarView(controller: _tabController, children: [
-            const BookGridView(
-                collectionToPull: 'books',
-                  queryType: QueryTypes.subscribed),
-            Stack(
-              children: [
-                const BookGridView(
-                    collectionToPull: 'books', queryType: QueryTypes.works),
-                Positioned(
-                  bottom: 20,
-                  right: 20,
-                  child: FloatingActionButton(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    child: const Icon(Icons.add, color: Colors.white, size: 35),
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const EditBook()),
+            const Padding(
+              padding: EdgeInsets.all(15.0),
+              child: BookGridView(
+                  collectionToPull: 'books',
+                    queryType: QueryTypes.subscribed),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Stack(
+                children: [
+                  const BookGridView(
+                      collectionToPull: 'books', queryType: QueryTypes.works),
+                  Positioned(
+                    bottom: 20,
+                    right: 20,
+                    child: FloatingActionButton(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      child: const Icon(Icons.add, color: Colors.white, size: 35),
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const EditBook()),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ])),
         ],

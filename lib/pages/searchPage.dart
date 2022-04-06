@@ -9,6 +9,7 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 
 import '../models/book.dart';
 import '../services/firebase_service.dart';
+import '../widgets/book_grid_view.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -57,6 +58,12 @@ class _SearchPageState extends State<SearchPage> {
     // debugPrint('route:');
     // debugPrint(ModalRoute.of(context)?.settings.name);
     return Scaffold(
+      appBar: AppBar(
+        shape: const Border.fromBorderSide(BorderSide.none),
+        elevation: 0,
+        // backgroundColor: Colors.black.withOpacity(0.03),
+        toolbarHeight: 28,
+      ),
       body: Container(
         padding: const EdgeInsets.fromLTRB(16,0,16,16),
         child: Column(
@@ -96,13 +103,24 @@ class _SearchPageState extends State<SearchPage> {
                   _search();
                 },
                 decoration: InputDecoration(
+                  suffixIcon: _results.isEmpty ? null : IconButton(
+                    icon: const Icon(Icons.cancel),
+                    color: Colors.grey.shade700,
+                    onPressed: () {
+                      setState(() {
+                        _results.clear();
+                        _searchText.clear();
+                      });
+                    },
+                  ),
                     prefixIcon: Icon(
                       Icons.search,
                       color: Colors.grey.shade700,
                     ),
                     border: InputBorder.none,
                     hintText: "Search",
-                    hintStyle: TextStyle(color: Colors.grey.shade500)),
+                    hintStyle: TextStyle(color: Colors.grey.shade500)
+                ),
               ),
             ),
             const SizedBox(
@@ -135,7 +153,9 @@ class _SearchPageState extends State<SearchPage> {
                     )
                   : _results.isEmpty
                       ? const Center(
-                          child: Text("No results found."),
+                          child: BookGridView(
+                            collectionTitle: 'Recommended Books',
+                              collectionToPull: 'books', queryType: QueryTypes.alphabetical),
                         )
                       : ListView.builder(
                           itemCount: _results.length,

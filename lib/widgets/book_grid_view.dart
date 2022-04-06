@@ -65,13 +65,13 @@ class _BookGridViewState extends State<BookGridView> with
                     child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(widget.collectionTitle!,
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24)
+                            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 24, fontFamily: 'Montserrat')
                         )
                     )),
 
                 Expanded(
                   child: PagedGridView<DocumentSnapshot<Book>?, DocumentSnapshot<Book>>( //used to be PagedGridView
-                    padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                    // padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
                     showNewPageProgressIndicatorAsGridChild: false,
@@ -86,7 +86,7 @@ class _BookGridViewState extends State<BookGridView> with
                     // ),
                     gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                       crossAxisSpacing: 10,
-                      maxCrossAxisExtent: 170, //was 150
+                      maxCrossAxisExtent: 150, //was 150
                       mainAxisExtent: 150 + MediaQuery.of(context).textScaleFactor*(2 * 18 * 1.1 + 13 + 14 + 5), //was 250
                     ),
                     builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot<Book>>(

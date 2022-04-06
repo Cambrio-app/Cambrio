@@ -180,7 +180,7 @@ class _ResponsivePageState extends State<ResponsivePage>
         child: AdaptiveNavigationScaffold(
           selectedIndex: widget.selectedIndex,
           destinations: _allDestinations,
-          appBar: AdaptiveAppBar(
+          appBar: (widget.selectedIndex!=2) ? null : AdaptiveAppBar(
             title: Text(widget.title),
             elevation: 0,
             actions: [
@@ -217,11 +217,13 @@ class _ResponsivePageState extends State<ResponsivePage>
                   icon: const Icon(Icons.notifications_none_rounded)),
             ],
           ),
-          body: Column(
-            children: [
-              Expanded(child: bodyFunction()),
-              const Divider(color: Colors.black54, thickness: 0.35),
-            ],
+          body: SafeArea(
+            child: Column(
+              children: [
+                Expanded(child: bodyFunction()),
+                const Divider(color: Colors.black54, thickness: 0.35),
+              ],
+            ),
           ),
           navigationTypeResolver: (context) {
             if (MediaQuery.of(context).size.width > 600) {
