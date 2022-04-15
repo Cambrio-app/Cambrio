@@ -58,12 +58,12 @@ class _SearchPageState extends State<SearchPage> {
     // debugPrint('route:');
     // debugPrint(ModalRoute.of(context)?.settings.name);
     return Scaffold(
-      appBar: AppBar(
-        shape: const Border.fromBorderSide(BorderSide.none),
-        elevation: 0,
-        // backgroundColor: Colors.black.withOpacity(0.03),
-        toolbarHeight: 28,
-      ),
+      // appBar: AppBar(
+      //   shape: const Border.fromBorderSide(BorderSide.none),
+      //   elevation: 0,
+      //   // backgroundColor: Colors.black.withOpacity(0.03),
+      //   toolbarHeight: 28,
+      // ),
       body: Container(
         padding: const EdgeInsets.fromLTRB(16,0,16,16),
         child: Column(

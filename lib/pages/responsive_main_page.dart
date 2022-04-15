@@ -180,8 +180,11 @@ class _ResponsivePageState extends State<ResponsivePage>
         child: AdaptiveNavigationScaffold(
           selectedIndex: widget.selectedIndex,
           destinations: _allDestinations,
-          appBar: (widget.selectedIndex!=2) ? null : AdaptiveAppBar(
+
+          appBar: AdaptiveAppBar(
             title: Text(widget.title),
+            backgroundColor: (widget.selectedIndex!=0) ? Colors.white : Colors.black.withOpacity(0.03),
+            toolbarHeight: 28,
             elevation: 0,
             actions: [
               // IconButton(

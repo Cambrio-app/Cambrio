@@ -161,7 +161,13 @@ void main() {
         // ),
       ),
     ));
-  }, (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack));
+  }, (error, stack) {
+    if (!kIsWeb) {
+      FirebaseCrashlytics.instance.recordError(error, stack);
+
+    }
+    debugPrint(error.toString());
+  });
 }
 
 class App extends StatefulWidget {

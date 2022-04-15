@@ -11,6 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -70,6 +71,9 @@ class FirebaseService extends ChangeNotifier {
         options: DefaultFirebaseOptions.currentPlatform,
       );
       _isInitialized = true;
+
+      FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
+
       notifyListeners();
       // setState(() {
       //   _initialized = true;
@@ -78,8 +82,8 @@ class FirebaseService extends ChangeNotifier {
       // debugPrint('goooo');
 
       // set up crashlytics
-      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
       if (!kIsWeb) { // only set it up on mobile; it's not available on web.
+        FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
         Isolate.current.addErrorListener(RawReceivePort((pair) async {
           final List<dynamic> errorAndStacktrace = pair;
           await FirebaseCrashlytics.instance.recordError(
@@ -210,7 +214,8 @@ class FirebaseService extends ChangeNotifier {
       String? url_pic,
       XFile? image,
       int? num_subs,
-      int? num_likes}) async {
+      int? num_likes,
+      String? connected_account_id}) async {
     String? _user_id = FirebaseAuth.instance.currentUser?.uid;
 
     // upload image
@@ -234,6 +239,7 @@ class FirebaseService extends ChangeNotifier {
       // create profile
       final profile = UserProfile(
           user_id: _user_id,
+          connected_account_id: connected_account_id,
           image_url: url_pic,
           full_name: full_name,
           handle: handle,

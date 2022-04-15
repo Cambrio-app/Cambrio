@@ -149,9 +149,9 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
                                     padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
                                     child: SubscribeButton(),
                                   ),
-                                  const Padding(
-                                    padding: EdgeInsets.fromLTRB(20, 40, 20, 0),
-                                    child: Text("Coming Soon: More ways to financially support your favorite author!"),
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(20, 40, 20, 0),
+                                    child: fullSubscribeButton(),
                                   ),
                                 ],
                               ),
@@ -177,8 +177,8 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
         return Center(
           child: ShadowButton(
               text: (snapshot.data ?? false)
-                  ? "Unsubscribe"
-                  : "Subscribe to All Their Books",
+                  ? "Unsubscribe from Free Content"
+                  : "Subscribe to All Their Free Content",
               onclick: () {
 
                 if (snapshot.data ?? false) {
@@ -199,6 +199,41 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
                   );
                   FirebaseService()
                       .editSubscription(author_id: widget.profile.user_id);
+                }
+                Navigator.of(context).pop();
+              }),
+        );
+      });
+
+  Widget fullSubscribeButton() => FutureBuilder<bool>(
+      future: Future(() => false), //FirebaseService().isSubscribed(widget.profile.user_id),
+      builder: (context, snapshot) {
+        return Center(
+          child: ShadowButton(
+              text: (snapshot.data ?? false)
+                  ? "Unsubscribe from Paid Content"
+                  : "Subscribe to All Their Paid Content",
+              onclick: () {
+
+                if (snapshot.data ?? false) {
+
+                  // report to analytics that the user selected this content
+                  // FirebaseAnalytics.instance
+                  //     .logSelectContent(
+                  //   contentType: 'paid_unsub',
+                  //   itemId: widget.profile.user_id,
+                  // );
+                  // FirebaseService()
+                  //     .removeSubscription(author_id: widget.profile.user_id);
+                } else {
+                  // report to analytics that the user selected this content
+                  // FirebaseAnalytics.instance
+                  //     .logSelectContent(
+                  //   contentType: 'paid_sub',
+                  //   itemId: widget.profile.user_id,
+                  // );
+                  // FirebaseService()
+                  //     .editSubscription(author_id: widget.profile.user_id);
                 }
                 Navigator.of(context).pop();
               }),

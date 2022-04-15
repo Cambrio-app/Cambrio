@@ -39,7 +39,7 @@ class _MyTabbedPageState extends State<MyTabbedPage> {
           shape: const Border.fromBorderSide(BorderSide.none),
           elevation: 0,
           backgroundColor: Colors.black.withOpacity(0.03),
-          toolbarHeight: 28,
+          toolbarHeight: 0,
           bottom: const TabBar(
             unselectedLabelColor: Colors.grey,
             unselectedLabelStyle: TextStyle(fontSize: 14, fontWeight:FontWeight.w400, fontFamily: 'Montserrat', letterSpacing: 0,),

@@ -14,9 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/tutorials_state.dart';
-import '../../util/get_positions.dart';
-import '../edit_book.dart';
-import '../settings.dart';
 
 class PersonalProfilePage extends StatefulWidget {
   const PersonalProfilePage({Key? key}) : super(key: key);

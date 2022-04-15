@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 class UserProfile{
   final String user_id;
   final String? image_url;
+  final String? connected_account_id;
   final String? full_name;
   final String? handle;
   final String? bio;
@@ -17,9 +18,10 @@ class UserProfile{
   const UserProfile({
     required this.user_id,
     required this.image_url,
+    this.connected_account_id,
     required this.full_name,
     required this.handle,
-    required this.bio,
+    this.bio,
     this.subscriptions,
     this.num_likes,
     this.num_subs,
@@ -30,6 +32,7 @@ class UserProfile{
       : this(
     user_id: id,
     image_url: json['image_url'] as String?,
+    connected_account_id: json['connected_account_id'] as String?,
     full_name: json['full_name'] as String?,
     bio: json['bio'] as String?,
     handle: json['handle'] as String?,
@@ -40,6 +43,7 @@ class UserProfile{
   Map<String, Object?> toJson() {
     return {
       'image_url': image_url,
+      'connected_account_id': connected_account_id,
       'full_name': full_name,
       'bio': bio,
       'handle': handle,
