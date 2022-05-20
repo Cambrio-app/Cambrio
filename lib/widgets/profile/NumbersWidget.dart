@@ -25,7 +25,7 @@ class NumbersWidget extends StatelessWidget {
   Widget _buildButton(BuildContext context, String value, String text) =>
   Expanded(
     child: MaterialButton(
-       padding: EdgeInsets.symmetric(vertical: 4),
+       padding: const EdgeInsets.symmetric(vertical: 4),
           onPressed: () {
             FirebaseAnalytics.instance
                 .logSelectContent(
@@ -41,13 +41,13 @@ class NumbersWidget extends StatelessWidget {
             children: <Widget>[
               Text(
                 value,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Colors.black,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Colors.black,
                 fontFamily: 'Montserrat-Semibold'),
               ),
-              SizedBox(height: 2),
+              const SizedBox(height: 2),
               Text(
                 text,
-                style: TextStyle(fontWeight: FontWeight.bold,fontFamily: 'Montserrat-Semibold'),
+                style: const TextStyle(fontWeight: FontWeight.bold,fontFamily: 'Montserrat-Semibold'),
               ),
             ],
           ),

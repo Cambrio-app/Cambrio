@@ -1,10 +1,5 @@
 import 'package:beamer/beamer.dart';
-import 'package:cambrio/models/book.dart';
-import 'package:cambrio/pages/book_details_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../pages/edit_chapter.dart';
-import '../services/make_epub.dart';
 
 class FakeBookCard extends StatelessWidget {
   final String title;

@@ -1,6 +1,4 @@
-import 'dart:io';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ProfileWidget extends StatelessWidget {
@@ -10,7 +8,7 @@ class ProfileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Colors.black;
+    const color = Colors.black;
 
     return buildImage(
       imagePath,

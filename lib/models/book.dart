@@ -1,6 +1,5 @@
 import 'package:cambrio/models/chapter.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 @immutable
@@ -63,14 +62,14 @@ class Book {
     return Book(
       // calls function from "firebase_service.dart" file
       image_url: image_url ?? this.image_url,
-      author_id: this.author_id,
-      author_name: this.author_name,
-      description: this.description,
-      likes: this.likes,
-      title: this.title,
-      tags: this.tags,
-      chapters: this.chapters,
-      id: this.id,
+      author_id: author_id,
+      author_name: author_name,
+      description: description,
+      likes: likes,
+      title: title,
+      tags: tags,
+      chapters: chapters,
+      id: id,
     );
   }
 }

@@ -1,12 +1,10 @@
 import 'dart:io';
 
-import 'package:cambrio/pages/profile/personal_profile_page.dart';
 import 'package:cambrio/services/firebase_service.dart';
 import 'package:cambrio/services/payments_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:cambrio/models/user_preferences.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -44,7 +42,7 @@ class _EditProfileState extends State<EditProfile> {
   bool isTaken = false;
   late UserProfile currentProfile = widget.profile;
 
-  late final Future<int> _current_price;
+  late final Future<int> _current_price = PaymentsService.getPriceValue(price_lookup_key: FirebaseAuth.instance.currentUser!.uid, author_account_id: currentProfile.connected_account_id ?? '');
 
   @override
   initState() {
@@ -56,7 +54,6 @@ class _EditProfileState extends State<EditProfile> {
 
     // report to analytics that the user went to this page
     FirebaseAnalytics.instance.setCurrentScreen(screenName: 'EditProfile');
-    _current_price = PaymentsService.getPrice(price_lookup_key: FirebaseAuth.instance.currentUser!.uid, author_account_id: currentProfile.connected_account_id ?? '');
   }
 
   @override

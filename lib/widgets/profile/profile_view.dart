@@ -11,14 +11,14 @@ class ProfileApp extends StatelessWidget {
       body: Column(
         children: <Widget>[
           Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [Colors.white24, Colors.white24]
                   )
               ),
-              child: Container(
+              child: SizedBox(
                 width: double.infinity,
                 height: 320.0,
                 child: Center(
@@ -26,23 +26,23 @@ class ProfileApp extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      CircleAvatar(
+                      const CircleAvatar(
                         backgroundImage: NetworkImage(
                           "https://www.whitehouse.gov/wp-content/uploads/2021/04/P20210303AS-1901-cropped.jpg",
                         ),
                         radius: 50.0,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10.0,
                       ),
-                      Text(
+                      const Text(
                         "Joe Biden",
                         style: TextStyle(
                           fontSize: 22.0,
                           color: Colors.black,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10.0,
                       ),
                       Container(
@@ -69,7 +69,7 @@ class ProfileApp extends StatelessWidget {
                         ),
                       ),
                       Card(
-                        margin: EdgeInsets.symmetric(horizontal: 20.0,vertical: 5.0),
+                        margin: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 5.0),
                         clipBehavior: Clip.antiAlias,
                         color: Colors.white,
                         elevation: 5.0,
@@ -80,7 +80,7 @@ class ProfileApp extends StatelessWidget {
                               Expanded(
                                 child: Column(
 
-                                  children: <Widget>[
+                                  children: const <Widget>[
                                     Text(
                                       "Posts",
                                       style: TextStyle(
@@ -105,7 +105,7 @@ class ProfileApp extends StatelessWidget {
                               Expanded(
                                 child: Column(
 
-                                  children: <Widget>[
+                                  children: const <Widget>[
                                     Text(
                                       "Followers",
                                       style: TextStyle(
@@ -130,7 +130,7 @@ class ProfileApp extends StatelessWidget {
                               Expanded(
                                 child: Column(
 
-                                  children: <Widget>[
+                                  children: const <Widget>[
                                     Text(
                                       "Follows",
                                       style: TextStyle(
@@ -183,7 +183,7 @@ class ProfileApp extends StatelessWidget {
                 child: Ink(
 
                   child: Container(
-                    constraints: BoxConstraints(maxWidth: 300.0, minHeight: 50.0),
+                    constraints: const BoxConstraints(maxWidth: 300.0, minHeight: 50.0),
                     alignment: Alignment.center,
                     child: const Text("Subscribe to this author",
                       style: TextStyle(color: Colors.black, fontSize: 18.0, fontWeight:FontWeight.w500, fontFamily: "Montserrat"),
@@ -193,7 +193,7 @@ class ProfileApp extends StatelessWidget {
             ),
           ),
 
-          SizedBox(
+          const SizedBox(
             height: 20.0,
           ),
         ],

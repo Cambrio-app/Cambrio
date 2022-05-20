@@ -1,8 +1,6 @@
 import 'package:cambrio/services/firebase_service.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'dart:async';
-import 'package:share_plus/share_plus.dart';
 // import 'dart:io';
 import 'package:universal_io/io.dart';
 
@@ -11,7 +9,6 @@ import 'package:html/parser.dart'
 import 'package:xml/xml.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:archive/archive.dart';
-import 'package:iridium_reader_widget/views/viewers/epub_screen.dart';
 
 import '../models/chapter.dart';
 
@@ -49,7 +46,7 @@ class MakeEpub {
     // External storage directory: /storage/emulated/0
     // final externalDirectory = await getExternalStorageDirectory();
     // Application temporary directory: /data/user/0/{package_name}/cache
-    final tempDirectory = await Directory.systemTemp;
+    final tempDirectory = Directory.systemTemp;
     return tempDirectory.path;
   }
 
@@ -219,7 +216,7 @@ class MakeEpub {
       String chapterText = innerHtml2.body!.innerHtml;
       // debugPrint(chapterText);
       chapterText = XmlDocumentFragment.parse(chapterText,
-              entityMapping: XmlDefaultEntityMapping.html5())
+              entityMapping: const XmlDefaultEntityMapping.html5())
           .innerXml;
       //
       document.findAllElements('div').first.innerXml = chapterText;
@@ -229,7 +226,7 @@ class MakeEpub {
       // debugPrint(specificFile);
       // (get the file), construct a real directory if it's not made already, Write to file
       returnfile = await _writeToFile(specificFile,
-          document.toXmlString(entityMapping: XmlDefaultEntityMapping.xml()));
+          document.toXmlString(entityMapping: const XmlDefaultEntityMapping.xml()));
       result.add(returnfile);
       // returnfile = await _writeToFile(specificFile, chapterText);
     }

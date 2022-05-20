@@ -1,4 +1,3 @@
-import 'package:cambrio/widgets/book_grid_view.dart';
 import 'package:flutter/material.dart';
 import 'package:adaptive_navigation/adaptive_navigation.dart';
 import 'package:cambrio/widgets/book_list_view.dart';
@@ -28,13 +27,13 @@ class _MyAppState extends State<MyApp> {
         // is not restarted.
         primarySwatch: Colors.yellow,
       ),
-      home: MyHomePage(title: 'Cambrio'),
+      home: const MyHomePage(title: 'Cambrio'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 

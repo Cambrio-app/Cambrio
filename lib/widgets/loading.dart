@@ -8,9 +8,9 @@ class Load{
       barrierDismissible: false,
       barrierColor: Colors.black26,
       builder: (BuildContext context) {
-        return Center(
-          child: Container(
-                child: const CircularProgressIndicator(
+        return const Center(
+          child: SizedBox(
+                child: CircularProgressIndicator(
                     strokeWidth: 10,
                 ),
                 width: 50,

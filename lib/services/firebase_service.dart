@@ -1,7 +1,6 @@
 import 'dart:isolate';
 import 'dart:math';
 
-import 'package:beamer/beamer.dart';
 import 'package:cambrio/models/book.dart';
 import 'package:cambrio/models/chapter.dart';
 import 'package:cambrio/models/like.dart';
@@ -20,7 +19,6 @@ import 'package:image_picker/image_picker.dart';
 import '../firebase_options.dart';
 import '../models/tutorials_state.dart';
 import '../models/user_profile.dart';
-import '../models/author_subscription.dart';
 import '../widgets/alert.dart';
 
 enum QueryTypes {
@@ -35,7 +33,7 @@ enum QueryTypes {
 }
 
 class FirebaseService extends ChangeNotifier {
-  FirebaseService() {}
+  FirebaseService();
   static FirebaseService instance = FirebaseService();
   static bool _isInitialized = false;
   static bool error = false;
@@ -72,7 +70,7 @@ class FirebaseService extends ChangeNotifier {
       );
       _isInitialized = true;
 
-      FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
+      FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001); // TODO: don't use emulator when you deploy
 
       notifyListeners();
       // setState(() {
@@ -127,21 +125,21 @@ class FirebaseService extends ChangeNotifier {
   Future<String?> uploadImage(context,
       {required XFile image, required String name}) async {
     // debugPrint('uploading image ......');
-    String? image_url;
+    String? imageUrl;
     try {
       firebase_storage.Reference ref =
           firebase_storage.FirebaseStorage.instance.ref('$name.png');
 
       await ref.putData(await image.readAsBytes());
       // get the url of the uploaded photo
-      image_url = await ref.getDownloadURL();
+      imageUrl = await ref.getDownloadURL();
       debugPrint('Image Uploaded');
     } catch (e) {
       Alert().error(
           context, "We had a problem uploading your picture: ${e.toString()}");
       // e.g, e.code == 'canceled'
     }
-    return image_url;
+    return imageUrl;
   }
 
   // pulls existing profile information.
@@ -216,10 +214,10 @@ class FirebaseService extends ChangeNotifier {
       int? num_subs,
       int? num_likes,
       String? connected_account_id}) async {
-    String? _user_id = FirebaseAuth.instance.currentUser?.uid;
+    String? UserId = FirebaseAuth.instance.currentUser?.uid;
 
     // upload image
-    if (_user_id != null) {
+    if (UserId != null) {
       // upload user image
       if (image != null) {
         debugPrint('updating image');
@@ -238,7 +236,7 @@ class FirebaseService extends ChangeNotifier {
 
       // create profile
       final profile = UserProfile(
-          user_id: _user_id,
+          user_id: UserId,
           connected_account_id: connected_account_id,
           image_url: url_pic,
           full_name: full_name,
@@ -599,8 +597,8 @@ class FirebaseService extends ChangeNotifier {
     bool is_paywalled = false,
   }) async {
     // debugPrint(order.toString());
-    String? _user_id = FirebaseAuth.instance.currentUser?.uid;
-    if (_user_id != null) {
+    String? UserId = FirebaseAuth.instance.currentUser?.uid;
+    if (UserId != null) {
       // just making sure we aren't dealing with a ghost
       // Adds user inputted title to the Firestore database
       await FirebaseFirestore.instance
@@ -688,12 +686,12 @@ class FirebaseService extends ChangeNotifier {
   }
 
   void editSubscription({required String author_id}) async {
-    String? _user_id = FirebaseAuth.instance.currentUser?.uid;
-    if (_user_id != null) {
+    String? UserId = FirebaseAuth.instance.currentUser?.uid;
+    if (UserId != null) {
       // Adds the chosen author id to the user's author subscription list.
       FirebaseFirestore.instance
           .collection('user_profiles') // collection we are adding to
-          .doc(_user_id)
+          .doc(UserId)
           .collection('author_subscriptions')
           .doc(
               author_id) // if this is null, an auto-generated value will be used (a new entry will be made)

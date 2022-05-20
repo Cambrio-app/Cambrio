@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:isolate';
 
 import 'package:beamer/beamer.dart';
 import 'package:cambrio/pages/login_page.dart';
@@ -9,16 +8,10 @@ import 'package:cambrio/services/firebase_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 // Import the generated file
-import 'firebase_options.dart';
 
-import 'models/tutorials_state.dart';
-import 'unused_rn/main_page.dart';
-import 'web-specific/url_strategy.dart';
 
 class White {
   static const MaterialColor kToLight = MaterialColor(
@@ -105,9 +98,6 @@ void main() {
       theme: ThemeData(
 
         fontFamily: 'Montserrat',
-
-        colorScheme: colorScheme,
-        accentColor: colorScheme.secondary,
         primaryColor: colorScheme.primary,
         canvasColor: colorScheme.secondary,
         // bottomNavigationBarTheme: BottomNavigationBarThemeData(),
@@ -155,7 +145,7 @@ void main() {
           titleSmall: TextStyle(
             fontFamily: 'Unna',
           ),
-        )
+        ), colorScheme: colorScheme.copyWith(secondary: colorScheme.secondary)
         // buttonTheme: ButtonThemeData(
         //   shape:
         // ),
@@ -175,6 +165,7 @@ class App extends StatefulWidget {
 
   const App({Key? key, this.initialIndex = 0}) : super(key: key);
 
+  @override
   _AppState createState() => _AppState();
 }
 
@@ -182,7 +173,7 @@ class _AppState extends State<App> {
   FirebaseService firebaseService =  FirebaseService.instance;
   // Set default `_initialized` and `_error` state to false
   bool _initialized = false;
-  bool _error = false;
+  final bool _error = false;
   // Stream<User?> state = FirebaseAuth.instance.authStateChanges();
   bool loggedIn = false;
 

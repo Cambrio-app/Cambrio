@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../models/user_profile.dart';
-import '../pages/profile/editProfile.dart';
 
 class ShadowButton extends StatelessWidget {
   final Function() onclick;
@@ -33,7 +31,7 @@ class ShadowButton extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: color,
-              offset: Offset(
+              offset: const Offset(
                 3, // Move to right 3  horizontally
                 3, // Move to bottom 3 Vertically
               ),

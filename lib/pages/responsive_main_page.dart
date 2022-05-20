@@ -18,7 +18,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 import '../models/tutorials_state.dart';
-import '../routes.dart';
 
 class ResponsivePage extends StatefulWidget {
   ResponsivePage({Key? key, required this.title, this.selectedIndex = 0})
@@ -36,8 +35,8 @@ class ResponsivePage extends StatefulWidget {
 class _ResponsivePageState extends State<ResponsivePage>
     with TickerProviderStateMixin {
   // this line only for the animation
-  bool _fabInRail = false;
-  bool _includeBaseDestinationsInMenu = false;
+  final bool _fabInRail = false;
+  final bool _includeBaseDestinationsInMenu = false;
   // int _selectedIndex = 0;
 
   // start bell animation stuff
@@ -95,9 +94,9 @@ class _ResponsivePageState extends State<ResponsivePage>
         setState(() {});
       });
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) => setState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
 
-    SchedulerBinding.instance?.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       _beamer = Beamer.of(context);
       _beamer.addListener(urlListener);
     });
@@ -284,14 +283,14 @@ class _ResponsivePageState extends State<ResponsivePage>
   void fall(BuildContext context, double startingPos) {
     controller.reset();
     // x_controller.reset();
-    double x_left = getPositions(_keyBell).dx + 35;
-    double y_left =
+    double xLeft = getPositions(_keyBell).dx + 35;
+    double yLeft =
         MediaQuery.of(context).size.height - getPositions(_keyBell).dy - 40;
     // double x_left = 300;
     // double y_left = 600;
 
     controller.addListener(() {
-      if (controller.value > y_left - 40) {
+      if (controller.value > yLeft - 40) {
         // debugPrint("sped: ${controller.velocity.toString()} but curr is $current_velocity");
         // debugPrint("val: ${controller.value.toString()}");
         current_velocity = max(current_velocity, controller.velocity);
@@ -305,12 +304,12 @@ class _ResponsivePageState extends State<ResponsivePage>
     GravitySimulation simulation = GravitySimulation(
       2000.0, // acceleration
       startingPos, // starting point
-      y_left, // end point
+      yLeft, // end point
       current_velocity, // starting velocity
     );
     // controller.animateTo(y_left,curve: Curves.bounceOut, duration: const Duration(milliseconds: 1500));
     if (!x_controller.isAnimating) {
-      x_controller.animateTo(x_left,
+      x_controller.animateTo(xLeft,
           curve: Curves.bounceOut,
           duration: const Duration(milliseconds: 10000));
     }
@@ -318,7 +317,7 @@ class _ResponsivePageState extends State<ResponsivePage>
       // debugPrint('done. $current_velocity');
       current_velocity = -0.8 * current_velocity;
       // debugPrint('now: $current_velocity starting at ${controller.value}');
-      fall(context, y_left - 10);
+      fall(context, yLeft - 10);
       // controller;
       // controller.animateWith(GravitySimulation(
       //     300, controller.value, controller.value,

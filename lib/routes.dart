@@ -1,8 +1,5 @@
-import 'package:cambrio/pages/profile/personal_profile_page.dart';
 import 'package:cambrio/pages/responsive_main_page.dart';
-import 'package:cambrio/pages/searchPage.dart';
 import 'package:cambrio/services/firebase_service.dart';
-import 'package:cambrio/widgets/home_tab_view.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:beamer/beamer.dart';
@@ -12,7 +9,7 @@ import 'main.dart';
 class Routes {
   static const initial = '/';
   static Map<String, WidgetBuilder> routes = {
-    '/': (context) => App(initialIndex: 0),
+    '/': (context) => const App(initialIndex: 0),
     '/explore': (context) => ResponsivePage(title: '', selectedIndex: 1),
     '/loading': (context) => const Loading(),
   };
@@ -83,11 +80,11 @@ class Routes {
           // }
           // final initialIndex =
           // state.queryParameters['tab'] == 'articles' ? 1 : 0;
-          return App();
+          return const App();
           //   return ResponsivePage(selectedIndex:0,title:'');
         },
         '/loading': (context, state, data) {
-          return Loading();
+          return const Loading();
         },
 
         '/home': (context, state, data) {

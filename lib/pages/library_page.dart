@@ -31,7 +31,7 @@ class _LibraryPageState extends State<LibraryPage> {
           refreshes = refreshes + 1;
           key = Key('$refreshes');
         });
-        return Future.delayed(Duration(seconds:1));
+        return Future.delayed(const Duration(seconds:1));
       },
       child: ListView(
         key: key,

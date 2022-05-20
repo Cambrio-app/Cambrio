@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class BackArrow extends StatelessWidget {
@@ -16,7 +15,7 @@ class BackArrow extends StatelessWidget {
             child: Align(
               alignment: AlignmentDirectional.topStart,
               child: Padding(
-                padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
                 child: FloatingActionButton(
                     heroTag: 'back',
                     backgroundColor: Colors.white.withOpacity(1),

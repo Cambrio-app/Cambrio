@@ -1,11 +1,11 @@
-import 'package:cambrio/models/user_preferences.dart';
 import 'package:cambrio/widgets/profile/NumbersWidget.dart';
 import 'package:cambrio/widgets/profile/ProfileWidget.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import '../../models/user_profile.dart';
 import '../../services/firebase_service.dart';
+import '../../services/payments_service.dart';
 import '../../widgets/shadow_button.dart';
 
 class AuthorProfilePage extends StatefulWidget {
@@ -37,7 +37,7 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
         child: Scaffold(
           appBar: AppBar(),
           body: ListView(
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             children: [
               const SizedBox(height: 20),
               Center(
@@ -213,10 +213,15 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
               text: (snapshot.data ?? false)
                   ? "Unsubscribe from Paid Content"
                   : "Subscribe to All Their Paid Content",
-              onclick: () {
+              onclick: () async {
 
-                if (snapshot.data ?? false) {
-
+                if (snapshot.data == false) {
+                  String price = (await PaymentsService.getPrice(author_account_id: widget.profile.connected_account_id ?? '', price_lookup_key: FirebaseService.instance.userId))['id'];
+                  int priceNum = (await PaymentsService.getPrice(author_account_id: widget.profile.connected_account_id ?? '', price_lookup_key: FirebaseService.instance.userId))['unit_amount'];
+                  debugPrint('price: $priceNum cents usd');
+                  String checkoutUrl = await PaymentsService.subscribe(author_account_id: widget.profile.connected_account_id ?? '', price: price, customer_id: FirebaseService.instance.userId);
+                  debugPrint('the checkout url: $checkoutUrl');
+                  if (!await launchUrl(Uri.parse(checkoutUrl))) throw 'Could not launch ${Uri.parse(checkoutUrl)}';
                   // report to analytics that the user selected this content
                   // FirebaseAnalytics.instance
                   //     .logSelectContent(
@@ -235,7 +240,7 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
                   // FirebaseService()
                   //     .editSubscription(author_id: widget.profile.user_id);
                 }
-                Navigator.of(context).pop();
+                // Navigator.of(context).pop();
               }),
         );
       });

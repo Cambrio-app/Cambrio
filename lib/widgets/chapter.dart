@@ -1,7 +1,6 @@
 import 'package:cambrio/pages/book_details_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:cambrio/main.dart';
 
 import '../models/book.dart';
 import '../models/chapter.dart';

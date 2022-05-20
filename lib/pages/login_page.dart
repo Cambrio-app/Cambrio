@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 
-import '../widgets/alert.dart';
 // import 'dashboard_screen.dart';
 
 const users = {
@@ -15,7 +14,7 @@ const users = {
 class LoginScreen extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Duration get loginTime => Duration(milliseconds: 2250);
+  Duration get loginTime => const Duration(milliseconds: 2250);
   Future<String?> _authUser(LoginData data) async {
     try {
       final User user = (await _auth.signInWithEmailAndPassword(
@@ -68,6 +67,7 @@ class LoginScreen extends StatelessWidget {
       }
       return (res ?? error.toString());
     }
+    return null;
   }
 
   Future<String?> _recoverPassword(String name) {
@@ -101,7 +101,7 @@ class LoginScreen extends StatelessWidget {
         ));
       },
       onRecoverPassword: _recoverPassword,
-      loginProviders: [
+      loginProviders: const [
         // LoginProvider(
         //   icon: FontAwesomeIcons.google,
         //   label: 'Google',

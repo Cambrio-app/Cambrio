@@ -1,6 +1,5 @@
 // import 'dart:html';
 
-import 'dart:math';
 
 import 'package:cambrio/pages/edit_book.dart';
 import 'package:cambrio/pages/edit_chapter.dart';
@@ -11,13 +10,8 @@ import 'package:cambrio/widgets/back_arrow.dart';
 import 'package:cambrio/widgets/shadow_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:html/parser.dart' as htmlparser;
-import 'package:html/dom.dart' as dom;
 import 'package:flutter_html/flutter_html.dart';
 import '../models/user_profile.dart';
 import '../services/make_epub.dart';
@@ -48,7 +42,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
         book_id: 'none',
         time_written: null)
   ];
-  int? selected = null;
+  int? selected;
   bool clicked = false;
   MakeEpub? epubber;
   late final bool isUsersBook;
@@ -162,7 +156,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                       chapters = snapshot.data!;
                     }
                     return ListView(
-                      physics: BouncingScrollPhysics(),
+                      physics: const BouncingScrollPhysics(),
                       controller: scroll_controller,
                       children: [
                         GestureDetector(

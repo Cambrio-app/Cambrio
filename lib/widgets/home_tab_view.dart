@@ -1,10 +1,6 @@
 import 'package:cambrio/pages/library_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:cambrio/widgets/chapter_infinite_scroll.dart';
-import 'package:cambrio/widgets/book_list_view.dart';
 
 
 class MyTabbedPage extends StatefulWidget {

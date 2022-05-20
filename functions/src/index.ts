@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 // import * as Stripe from "stripe";
-const stripe = require('stripe')('sk_test_51KghlqBiO44W4W80gfOIWPSwDKOX9qm8TYm1SKxF7xpierpGG06SvxB9KvVPtPf4hMFPRU6vrfWs9wjsAFw60m7000DNN38WzV');
+const stripe = require('stripe')('sk_test_51KghlqBiO44W4W80gfOIWPSwDKOX9qm8TYm1SKxF7xpierpGG06SvxB9KvVPtPf4hMFPRU6vrfWs9wjsAFw60m7000DNN38WzV'); //TODO: put in not test key
 import * as htmlToText from "html-to-text";
 // The Firebase Admin SDK to access Firestore.
 import * as admin from "firebase-admin";
@@ -118,6 +118,7 @@ export const prepareSubscription = functions.https.onCall(async (data,context) =
       recurring: {interval: data.interval},
       product: product.id,
       lookup_key: data.author_firebase_id,
+      tax_behavior: 'inclusive'
       transfer_lookup_key: true,
     }, {
         stripeAccount: data.author_account_id,
@@ -154,7 +155,7 @@ export const getPrice = functions.https.onCall(async (data,context) => {
         console.log(data.author_account_id);
         const result = (await stripe.prices.list({
                                    limit:2,
-//                                    lookup_keys:[data.price_lookup_key],
+                                   lookup_keys:[data.price_lookup_key],
                                }, {
                                    stripeAccount: data.author_account_id,
                                })).data[0];
@@ -165,3 +166,63 @@ export const getPrice = functions.https.onCall(async (data,context) => {
         return 'something went wrong:' + err;
     }
 });
+
+/**
+ * subscribe the customer to a subscription
+ */
+export const subscribe = functions.https.onCall(async (data,context) => {
+    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+    try {
+        console.log('pre-token?');
+        // clone the customer token *if they exist already*
+//         const token = await stripe.tokens.create({
+// //           customer: data.customer_id,
+//           customer: 'cus_LVyskFM4w3jgyP',
+//         }
+//           ,{stripeAccount: data.author_account_id,}
+//         );
+//         console.log('token: ' + token);
+        // create actual subscription
+          const session = await stripe.checkout.sessions.create({
+            line_items: [
+              {
+                price: data.price,
+                quantity: 1,
+              },
+            ],
+            mode: 'subscription',
+            success_url: `https://stripe.com/docs/payments/checkout/custom-success-page`,
+            cancel_url: `https://stripe.com/docs/payments/checkout/custom-success-page`,
+            automatic_tax: {enabled: true},
+            subscription_data: {
+                application_fee_percent: 10,
+                description: "If the developer hasn't put anything useful in this box, send us the screenshot of this and you can choose to take his job.",
+            },
+
+          }, {
+            stripeAccount: data.author_account_id,
+          });
+
+        // doesn't work because there's nowhere for the user to put in their payment data.
+//         const subscription = await stripe.subscriptions.create({
+//           customer: token,
+//           items: [
+//             {
+//               price: data.price,
+//             },
+//           ],
+//           expand: ["latest_invoice.payment_intent"],
+//           application_fee_percent: 10,
+//         }, {
+//           stripeAccount: data.author_account_id,
+//         });
+
+        console.log(session);
+        return session;
+    } catch (err) {
+        console.log(err);
+        return 'something went wrong buddy boy: ' + err;
+    }
+});
+
+

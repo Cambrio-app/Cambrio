@@ -1,14 +1,11 @@
 import 'package:cambrio/services/ChapterQueryService.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:cambrio/widgets/chapter.dart';
 
-import '../models/book.dart';
 import '../models/chapter.dart';
-import '../services/firebase_service.dart';
 
 class ChapterInfScroll extends StatefulWidget {
   final String collectionToPull;

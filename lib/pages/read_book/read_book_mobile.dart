@@ -1,4 +1,3 @@
-import 'package:beamer/beamer.dart';
 import 'package:universal_io/io.dart';
 
 import 'package:cambrio/pages/read_book/read_book.dart';

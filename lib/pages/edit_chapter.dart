@@ -1,10 +1,8 @@
 import 'package:cambrio/services/firebase_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
-import 'dart:ui' as ui;
 // import 'package:html_unescape/html_unescape.dart';
 
 
@@ -94,7 +92,7 @@ class _EditChapterState extends State<EditChapter> {
             controller: controller, //required
             htmlEditorOptions: HtmlEditorOptions(
               autoAdjustHeight: true,
-              mobileLongPressDuration: Duration(milliseconds: 3),
+              mobileLongPressDuration: const Duration(milliseconds: 3),
 
               adjustHeightForKeyboard: true,
               hint: "Copy/Paste or type here...",

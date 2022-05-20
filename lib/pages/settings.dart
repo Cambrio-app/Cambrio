@@ -1,10 +1,7 @@
 import 'package:cambrio/services/firebase_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
@@ -79,7 +76,7 @@ class Settings extends StatelessWidget {
                   FirebaseService().logOut(context);
                   },
                 leading: const Icon(Icons.account_box_outlined),
-                title: Text("Log Out", style: TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.bold, color: Colors.black)),
+                title: const Text("Log Out", style: TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.bold, color: Colors.black)),
 
               ),
               SettingsTile(
@@ -87,7 +84,7 @@ class Settings extends StatelessWidget {
                   FirebaseService().deleteAccount(context);
                 },
                 leading: const Icon(Icons.cancel_outlined),
-                title: Text("Deactivate Account", style: TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.bold, color: Colors.black)),
+                title: const Text("Deactivate Account", style: TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.bold, color: Colors.black)),
 
               )
             ]
@@ -116,6 +113,7 @@ class WebViewLoad extends StatefulWidget {
 
   WebViewLoad({Key? key, required this.path}) : super(key: key);
 
+  @override
   WebViewLoadUI createState() => WebViewLoadUI();
 
 }

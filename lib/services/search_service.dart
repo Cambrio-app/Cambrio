@@ -2,7 +2,7 @@
 
 class SearchService {
 
-  SearchService(){}
+  SearchService();
 
   
 }

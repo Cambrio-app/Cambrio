@@ -2,10 +2,8 @@ import 'dart:ui';
 
 import 'package:cambrio/models/user_profile.dart';
 import 'package:cambrio/pages/profile/editProfile.dart';
-import 'package:cambrio/models/user_preferences.dart';
 import 'package:cambrio/services/firebase_service.dart';
 import 'package:cambrio/widgets/profile/NumbersWidget.dart';
-import 'package:cambrio/widgets/profile/ProfileEditWidget.dart';
 import 'package:cambrio/widgets/profile/ProfileWidget.dart';
 import 'package:cambrio/widgets/profile/TabBarView.dart';
 import 'package:cambrio/widgets/shadow_button.dart';
@@ -223,7 +221,7 @@ class _PersonalProfilePageState extends State<PersonalProfilePage> {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
             child: Container(
-              constraints: BoxConstraints.expand(),
+              constraints: const BoxConstraints.expand(),
               padding: const EdgeInsets.fromLTRB(150, 400, 20, 130),
               color: Colors.black.withOpacity(0.3),
               child: Center(

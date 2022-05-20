@@ -1,15 +1,10 @@
 // Knighten's page to create a new book and add it to the firebase database
 // -- WORK IN PROGRESS --
 
-import 'package:cambrio/pages/book_details_page.dart';
 import 'package:cambrio/pages/responsive_main_page.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:html_editor_enhanced/html_editor.dart';
-import 'dart:ui' as ui;
-import 'package:cambrio/pages/edit_chapter.dart';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart'; // import firestore to access database
@@ -209,8 +204,8 @@ class _EditBookState extends State<EditBook> {
     Load().showLoading(context);
     // debugPrint('submit');
     // await Future.delayed(const Duration(seconds: 5));
-    String? _user_id = FirebaseAuth.instance.currentUser?.uid;
-    String? _author_name = (await FirebaseService().currentUserProfile)
+    String? UserId = FirebaseAuth.instance.currentUser?.uid;
+    String? AuthorName = (await FirebaseService().currentUserProfile)
         .full_name; // Put current user's name here
 
     await FirebaseService().editBook(context,
@@ -218,8 +213,8 @@ class _EditBookState extends State<EditBook> {
         book: Book(
           // calls function from "firebase_service.dart" file
           image_url: book?.image_url,
-          author_id: _user_id,
-          author_name: _author_name ?? 'anonymous',
+          author_id: UserId,
+          author_name: AuthorName ?? 'anonymous',
           description: _descriptionController.text,
           likes: book?.likes ?? 0,
           title: _titleController.text,

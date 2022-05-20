@@ -1,7 +1,6 @@
 import 'package:cambrio/pages/book_details_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:algolia/algolia.dart';
@@ -19,7 +18,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  TextEditingController _searchText = TextEditingController(text: "");
+  final TextEditingController _searchText = TextEditingController(text: "");
   /*
   The _results array will hold the data returned by Algolia and we will use this to generate a ListView.
   The _searching boolean will just be used to indicate if searching has completed or not.
@@ -27,7 +26,7 @@ class _SearchPageState extends State<SearchPage> {
 
   List<AlgoliaObjectSnapshot> _results = [];
   bool _searching = false;
-  Algolia algolia = Algolia.init(
+  Algolia algolia = const Algolia.init(
     applicationId: '6M9DHL86F0',
     apiKey: '0a7b0ad97e703eac96130ec37b94b267',
   );
