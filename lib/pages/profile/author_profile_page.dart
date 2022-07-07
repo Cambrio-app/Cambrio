@@ -19,21 +19,16 @@ class AuthorProfilePage extends StatefulWidget {
 class _AuthorProfilePageState extends State<AuthorProfilePage> {
   @override
   Widget build(BuildContext context) {
-
     // report to analytics that the user went to this page
-    FirebaseAnalytics.instance
-        .setCurrentScreen(
-        screenName: 'AuthorProfile'
-    );
+    FirebaseAnalytics.instance.setCurrentScreen(screenName: 'AuthorProfile');
 
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(
-          // maxHeight: 300,
-          // minHeight: 200,
+            // maxHeight: 300,
+            // minHeight: 200,
             maxWidth: 1000,
-            minWidth: 200
-        ),
+            minWidth: 200),
         child: Scaffold(
           appBar: AppBar(),
           body: ListView(
@@ -58,7 +53,10 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
               const SizedBox(
                 height: 20,
               ),
-              NumbersWidget(profile_id: widget.profile.user_id, subs: widget.profile.num_subs ?? -1, likes: widget.profile.num_likes ?? 0),
+              NumbersWidget(
+                  profile_id: widget.profile.user_id,
+                  subs: widget.profile.num_subs ?? -1,
+                  likes: widget.profile.num_likes ?? 0),
               const SizedBox(
                 height: 20,
               ),
@@ -124,16 +122,15 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
       builder: (context, snapshot) {
         return Center(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(20,0,20,0),
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: ShadowButton(
-                text:
-                    (snapshot.data ?? false) ? "Manage Subscription" : "Subscribe",
+                text: (snapshot.data ?? false)
+                    ? "Manage Subscription"
+                    : "Subscribe",
                 onclick: () {
                   // report to analytics that the user went to this page
                   FirebaseAnalytics.instance
-                      .setCurrentScreen(
-                      screenName: 'Subscribe'
-                  );
+                      .setCurrentScreen(screenName: 'Subscribe');
                   showModalBottomSheet(
                       context: context,
                       builder: (context) {
@@ -146,11 +143,13 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
                               child: Column(
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 30, 0, 0),
                                     child: SubscribeButton(),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.fromLTRB(20, 40, 20, 0),
+                                    padding: const EdgeInsets.fromLTRB(
+                                        20, 40, 20, 0),
                                     child: fullSubscribeButton(),
                                   ),
                                 ],
@@ -180,11 +179,9 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
                   ? "Unsubscribe from Free Content"
                   : "Subscribe to All Their Free Content",
               onclick: () {
-
                 if (snapshot.data ?? false) {
                   // report to analytics that the user selected this content
-                  FirebaseAnalytics.instance
-                      .logSelectContent(
+                  FirebaseAnalytics.instance.logSelectContent(
                     contentType: 'unsub',
                     itemId: widget.profile.user_id,
                   );
@@ -192,8 +189,7 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
                       .removeSubscription(author_id: widget.profile.user_id);
                 } else {
                   // report to analytics that the user selected this content
-                  FirebaseAnalytics.instance
-                      .logSelectContent(
+                  FirebaseAnalytics.instance.logSelectContent(
                     contentType: 'sub',
                     itemId: widget.profile.user_id,
                   );
@@ -209,39 +205,61 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
       future: Future(() => false), //FirebaseService().isSubscribed(widget.profile.user_id),
       builder: (context, snapshot) {
         return Center(
-          child: ShadowButton(
-              text: (snapshot.data ?? false)
-                  ? "Unsubscribe from Paid Content"
-                  : "Subscribe to All Their Paid Content",
-              onclick: () async {
-
-                if (snapshot.data == false) {
-                  String price = (await PaymentsService.getPrice(author_account_id: widget.profile.connected_account_id ?? '', price_lookup_key: FirebaseService.instance.userId))['id'];
-                  int priceNum = (await PaymentsService.getPrice(author_account_id: widget.profile.connected_account_id ?? '', price_lookup_key: FirebaseService.instance.userId))['unit_amount'];
-                  debugPrint('price: $priceNum cents usd');
-                  String checkoutUrl = await PaymentsService.subscribe(author_account_id: widget.profile.connected_account_id ?? '', price: price, customer_id: FirebaseService.instance.userId);
-                  debugPrint('the checkout url: $checkoutUrl');
-                  if (!await launchUrl(Uri.parse(checkoutUrl))) throw 'Could not launch ${Uri.parse(checkoutUrl)}';
-                  // report to analytics that the user selected this content
-                  // FirebaseAnalytics.instance
-                  //     .logSelectContent(
-                  //   contentType: 'paid_unsub',
-                  //   itemId: widget.profile.user_id,
-                  // );
-                  // FirebaseService()
-                  //     .removeSubscription(author_id: widget.profile.user_id);
-                } else {
-                  // report to analytics that the user selected this content
-                  // FirebaseAnalytics.instance
-                  //     .logSelectContent(
-                  //   contentType: 'paid_sub',
-                  //   itemId: widget.profile.user_id,
-                  // );
-                  // FirebaseService()
-                  //     .editSubscription(author_id: widget.profile.user_id);
-                }
-                // Navigator.of(context).pop();
-              }),
+          child: (snapshot.data ?? false)
+              ? ShadowButton(
+                  text: "Unsubscribe from Paid Content",
+                  onclick: () {},
+                )
+              : FutureBuilder<int>(
+                  //TODO: put in the future.
+                  future: (PaymentsService.getPriceValue(
+                      author_account_id:
+                          widget.profile.connected_account_id ?? '',
+                      price_lookup_key: FirebaseService.instance.userId)),
+                  builder: (context, snapshot) {
+                    return ShadowButton(
+                        text:
+                            "Subscribe to All Their Paid Content for \$${snapshot.data ?? '(getting price)'} a month!",
+                        onclick: () async {
+                          if (snapshot.data == false) {
+                            Subscribe();
+                            // report to analytics that the user selected this content
+                            // FirebaseAnalytics.instance
+                            //     .logSelectContent(
+                            //   contentType: 'paid_unsub',
+                            //   itemId: widget.profile.user_id,
+                            // );
+                            // FirebaseService()
+                            //     .removeSubscription(author_id: widget.profile.user_id);
+                          } else {
+                            // report to analytics that the user selected this content
+                            // FirebaseAnalytics.instance
+                            //     .logSelectContent(
+                            //   contentType: 'paid_sub',
+                            //   itemId: widget.profile.user_id,
+                            // );
+                            // FirebaseService()
+                            //     .editSubscription(author_id: widget.profile.user_id);
+                          }
+                          // Navigator.of(context).pop();
+                        });
+                  }),
         );
       });
+  Future<void> Subscribe() async {
+    String price = (await PaymentsService.getPrice(
+        author_account_id: widget.profile.connected_account_id ?? '',
+        price_lookup_key: FirebaseService.instance.userId))['id'];
+    int priceNum = (await PaymentsService.getPrice(
+        author_account_id: widget.profile.connected_account_id ?? '',
+        price_lookup_key: FirebaseService.instance.userId))['unit_amount'];
+    debugPrint('price: $priceNum cents usd');
+    String checkoutUrl = await PaymentsService.subscribe(
+        author_account_id: widget.profile.connected_account_id ?? '',
+        price: price,
+        customer_id: FirebaseService.instance.userId);
+    debugPrint('the checkout url: $checkoutUrl');
+    if (!await launchUrl(Uri.parse(checkoutUrl)))
+      throw 'Could not launch ${Uri.parse(checkoutUrl)}';
+  }
 }

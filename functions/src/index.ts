@@ -118,7 +118,7 @@ export const prepareSubscription = functions.https.onCall(async (data,context) =
       recurring: {interval: data.interval},
       product: product.id,
       lookup_key: data.author_firebase_id,
-      tax_behavior: 'inclusive'
+      tax_behavior: 'inclusive',
       transfer_lookup_key: true,
     }, {
         stripeAccount: data.author_account_id,
@@ -148,7 +148,7 @@ export const prepareSubscription = functions.https.onCall(async (data,context) =
 });
 
 /**
- * Retreive the price from stripe
+ * Retreive the price from stripe, using the lookup key for the price (which is _), and the stripe account id of the author(which is the same as _)
  */
 export const getPrice = functions.https.onCall(async (data,context) => {
     try {
