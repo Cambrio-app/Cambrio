@@ -148,18 +148,22 @@ export const prepareSubscription = functions.https.onCall(async (data,context) =
 });
 
 /**
- * Retreive the price from stripe, using the lookup key for the price (which is _), and the stripe account id of the author(which is the same as _)
+ * Retreive the price from stripe, using the lookup key for the price (which is the firebase user id
+ * of the author), and the stripe account id of the author
+ * (which is the same as the connected_account_id stored in the author's profile once they've set
+ * up an account to receive payments on.)
  */
 export const getPrice = functions.https.onCall(async (data,context) => {
     try {
-        console.log(data.author_account_id);
-        const result = (await stripe.prices.list({
+        console.log('id: ' + data.author_account_id + ' lookup key: ' + data.price_lookup_key);
+        const prices = (await stripe.prices.list({
                                    limit:2,
                                    lookup_keys:[data.price_lookup_key],
                                }, {
                                    stripeAccount: data.author_account_id,
-                               })).data[0];
-        console.log(result);
+                               }));
+        const result = prices.data[0];
+        console.log('prices as received from stripe: ' + result);
         return result;
     } catch (err) {
         console.log(err);

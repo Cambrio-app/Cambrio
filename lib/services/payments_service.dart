@@ -38,6 +38,7 @@ class PaymentsService {
   //   return results.data.id;
   // }
 
+  // TODO: why is this an integer value???? also doesn't give the dang price when looked at from another account
   static Future<int> getPriceValue({required String author_account_id, required String price_lookup_key}) async {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('getPrice');
     final results = await callable.call(<String, dynamic>{
@@ -50,7 +51,8 @@ class PaymentsService {
     return ((price['unit_amount'] as int)/100).round(); // convert cents to dollars
   }
 
-  static Future<Map<String, dynamic>> getPrice({required String author_account_id, required String price_lookup_key}) async {
+  // identical to the above function, but it returns the whole stripe price object instead of just the integer value.
+  static Future<Map<String, dynamic>> getPriceObject({required String author_account_id, required String price_lookup_key}) async {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('getPrice');
     final results = await callable.call(<String, dynamic>{
       'price_lookup_key': price_lookup_key,

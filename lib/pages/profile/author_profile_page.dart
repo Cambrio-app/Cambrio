@@ -215,7 +215,7 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
                   future: (PaymentsService.getPriceValue(
                       author_account_id:
                           widget.profile.connected_account_id ?? '',
-                      price_lookup_key: FirebaseService.instance.userId)),
+                      price_lookup_key: widget.profile.user_id)),
                   builder: (context, snapshot) {
                     return ShadowButton(
                         text:
@@ -247,10 +247,10 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
         );
       });
   Future<void> Subscribe() async {
-    String price = (await PaymentsService.getPrice(
+    String price = (await PaymentsService.getPriceObject(
         author_account_id: widget.profile.connected_account_id ?? '',
         price_lookup_key: FirebaseService.instance.userId))['id'];
-    int priceNum = (await PaymentsService.getPrice(
+    int priceNum = (await PaymentsService.getPriceObject(
         author_account_id: widget.profile.connected_account_id ?? '',
         price_lookup_key: FirebaseService.instance.userId))['unit_amount'];
     debugPrint('price: $priceNum cents usd');
