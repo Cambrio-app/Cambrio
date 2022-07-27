@@ -206,6 +206,7 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('in main app');
     // debugPrint('on main');
     firebaseService.addListener(() {
       setState(() {
@@ -229,7 +230,7 @@ class _AppState extends State<App> {
       return LoginScreen();
     }
     else {
-      return ResponsivePage(title: "", selectedIndex: widget.initialIndex,);
+      return ResponsiveMainPage(title: "", selectedIndex: widget.initialIndex,);
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:cambrio/pages/order_page.dart';
 import 'package:cambrio/pages/responsive_main_page.dart';
 import 'package:cambrio/services/firebase_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -10,7 +11,7 @@ class Routes {
   static const initial = '/';
   static Map<String, WidgetBuilder> routes = {
     '/': (context) => const App(initialIndex: 0),
-    '/explore': (context) => ResponsivePage(title: '', selectedIndex: 1),
+    '/explore': (context) => ResponsiveMainPage(title: '', selectedIndex: 1),
     '/loading': (context) => const Loading(),
   };
 
@@ -80,6 +81,7 @@ class Routes {
           // }
           // final initialIndex =
           // state.queryParameters['tab'] == 'articles' ? 1 : 0;
+          debugPrint('in / route');
           return const App();
           //   return ResponsivePage(selectedIndex:0,title:'');
         },
@@ -88,14 +90,15 @@ class Routes {
         },
 
         '/home': (context, state, data) {
+          debugPrint('going home???');
           FirebaseAnalytics.instance.setCurrentScreen(screenName: 'Home');
 
-          Beamer.of(context).updateRouteInformation(RouteInformation(location:state.uri.path));
-
+          // Beamer.of(context).updateRouteInformation(RouteInformation(location:state.uri.path));
+          debugPrint('??????');
           return BeamPage(
             type: BeamPageType.noTransition,
-            // key: const ValueKey('home'),
-            child: ResponsivePage(selectedIndex:0,title:''),
+            key: const ValueKey('main'),
+            child: ResponsiveMainPage(selectedIndex:0,title:''),
           );
         },
         '/explore': (context, state, data) {
@@ -103,10 +106,10 @@ class Routes {
           FirebaseAnalytics.instance.setCurrentScreen(screenName: 'Explore/Search');
 
           // state.
-          Beamer.of(context).update(
-              configuration: RouteInformation(location:state.uri.path),
-            rebuild: false,
-          );
+          // Beamer.of(context).update(
+          //     configuration: RouteInformation(location:state.uri.path),
+          //   rebuild: false,
+          // );
           // Beamer.of(context).updateRouteInformation(RouteInformation(location:state.uri.path));
           // state.selectedIndex = 1;
           // context.widget.state
@@ -114,19 +117,19 @@ class Routes {
           // (state.routeInformation.state as State<ResponsivePage>?)?.widget.selectedIndex = 1;
           return BeamPage(
             type: BeamPageType.noTransition,
-            // key: const ValueKey('explore'),
-            child: ResponsivePage(selectedIndex:1,title:''),
+            key: const ValueKey('main'),
+            child: ResponsiveMainPage(selectedIndex:1,title:''),
           );
         },
         '/personal_profile': (context, state, data) {
           FirebaseAnalytics.instance.setCurrentScreen(screenName: 'Personal Profile');
 
-          Beamer.of(context).updateRouteInformation(RouteInformation(location:state.uri.path));
+          // Beamer.of(context).updateRouteInformation(RouteInformation(location:state.uri.path));
           // debugPrint(state.uri.path);
           return BeamPage(
             type: BeamPageType.noTransition,
-            // key: const ValueKey('personal_profile'),
-            child: ResponsivePage(selectedIndex:2,title:''),
+            key: const ValueKey('main'),
+            child: ResponsiveMainPage(selectedIndex:2,title:''),
           );
         },
 
@@ -138,6 +141,14 @@ class Routes {
           );
         },
 
+      '/order/:successOrCancel': (context, state, data) {
+          if ((state.pathParameters['successOrCancel'] ?? 'cancel') == 'success') {
+            debugPrint('were at the success page');
+          }
+      return BeamPage(
+        child: OrderPage(orderId: state.queryParameters['session_id']!,),
+      );
+      },
 
         // '/books/:bookId': (context, state, data) {
         //   final bookId = state.pathParameters['bookId'];

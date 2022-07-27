@@ -181,7 +181,7 @@ class _EditBookState extends State<EditBook> {
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ResponsivePage(
+                                builder: (context) => ResponsiveMainPage(
                                       title: '',
                                       selectedIndex: 2,
                                     )),

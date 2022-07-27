@@ -201,27 +201,29 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
         );
       });
 
-  Widget fullSubscribeButton() => FutureBuilder<bool>(
-      future: Future(() => false), //FirebaseService().isSubscribed(widget.profile.user_id),
-      builder: (context, snapshot) {
+  Widget fullSubscribeButton() => FutureBuilder<bool>(  // TODO: this empty string is lame and bad (below)
+      future: PaymentsService.isSubscribed(customer_stripe_id: FirebaseService.instance.userId, author_account_id: widget.profile.connected_account_id ?? ''), // future to figure out whether the user is already subscribed to this author.
+      builder: (context, isSubscribed) {
         return Center(
-          child: (snapshot.data ?? false)
+          child: (isSubscribed.data ?? false)
               ? ShadowButton(
                   text: "Unsubscribe from Paid Content",
                   onclick: () {},
                 )
-              : FutureBuilder<int>(
+              : FutureBuilder<int>( // future to provide the price
                   //TODO: put in the future.
                   future: (PaymentsService.getPriceValue(
                       author_account_id:
-                          widget.profile.connected_account_id ?? '',
+                          widget.profile.connected_account_id ?? '', // TODO: this empty string is lame and bad
                       price_lookup_key: widget.profile.user_id)),
-                  builder: (context, snapshot) {
+                  builder: (context, priceSnapshot) {
                     return ShadowButton(
                         text:
-                            "Subscribe to All Their Paid Content for \$${snapshot.data ?? '(getting price)'} a month!",
+                            "Subscribe to All Their Paid Content for \$${priceSnapshot.data ?? '(getting price)'} a month!",
                         onclick: () async {
-                          if (snapshot.data == false) {
+                          debugPrint('subscribe to paid button clicked, and is subscribed?: ${isSubscribed.data}');
+                          if (!(isSubscribed.data ?? false)) {
+                            debugPrint('subscribing...');
                             Subscribe();
                             // report to analytics that the user selected this content
                             // FirebaseAnalytics.instance
@@ -249,15 +251,15 @@ class _AuthorProfilePageState extends State<AuthorProfilePage> {
   Future<void> Subscribe() async {
     String price = (await PaymentsService.getPriceObject(
         author_account_id: widget.profile.connected_account_id ?? '',
-        price_lookup_key: FirebaseService.instance.userId))['id'];
+        price_lookup_key: widget.profile.user_id))['id'];
     int priceNum = (await PaymentsService.getPriceObject(
         author_account_id: widget.profile.connected_account_id ?? '',
-        price_lookup_key: FirebaseService.instance.userId))['unit_amount'];
+        price_lookup_key: widget.profile.user_id))['unit_amount'];
     debugPrint('price: $priceNum cents usd');
     String checkoutUrl = await PaymentsService.subscribe(
         author_account_id: widget.profile.connected_account_id ?? '',
         price: price,
-        customer_id: FirebaseService.instance.userId);
+        customer_id: await FirebaseService.instance.getStripeId(FirebaseService.instance.userId)); // user id is translated to stripe id to get this user's account
     debugPrint('the checkout url: $checkoutUrl');
     if (!await launchUrl(Uri.parse(checkoutUrl)))
       throw 'Could not launch ${Uri.parse(checkoutUrl)}';

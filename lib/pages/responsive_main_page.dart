@@ -19,8 +19,8 @@ import 'package:provider/provider.dart';
 
 import '../models/tutorials_state.dart';
 
-class ResponsivePage extends StatefulWidget {
-  ResponsivePage({Key? key, required this.title, this.selectedIndex = 0})
+class ResponsiveMainPage extends StatefulWidget {
+  ResponsiveMainPage({Key? key, required this.title, this.selectedIndex = 0})
       : super(key: key);
   final String title;
   int selectedIndex;
@@ -29,10 +29,10 @@ class ResponsivePage extends StatefulWidget {
   // final _routerDelegate = Routes().submenudelegate;
 
   @override
-  _ResponsivePageState createState() => _ResponsivePageState();
+  _ResponsiveMainPageState createState() => _ResponsiveMainPageState();
 }
 
-class _ResponsivePageState extends State<ResponsivePage>
+class _ResponsiveMainPageState extends State<ResponsiveMainPage>
     with TickerProviderStateMixin {
   // this line only for the animation
   final bool _fabInRail = false;
@@ -168,6 +168,7 @@ class _ResponsivePageState extends State<ResponsivePage>
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('on the homepage??');
     // String path = Beamer.of(context).configuration.location ?? '/home';
     // int updatedIndex = pages.indexOf(path);
     // widget.selectedIndex = (updatedIndex == -1) ? 0: updatedIndex;

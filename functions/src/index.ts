@@ -125,26 +125,6 @@ export const prepareSubscription = functions.https.onCall(async (data,context) =
     });
     console.log(price)
     return price;
-    // clone the customer token
-//     const token = await stripe.tokens.create({
-//       customer: data.customer_id,
-//     }, {
-//       stripeAccount: data.author_account_id,
-//     });
-
-    // create actual subscription
-//     const subscription = await stripe.subscriptions.create({
-//       customer: token,
-//       items: [
-//         {
-//           price: "price_H1y51TElsOZjG",
-//         },
-//       ],
-//       expand: ["latest_invoice.payment_intent"],
-//   application_fee_percent: 10,
-//     }, {
-//       stripeAccount: data.author_account_id,
-//     });
 });
 
 /**
@@ -172,40 +152,121 @@ export const getPrice = functions.https.onCall(async (data,context) => {
 });
 
 /**
+ * Determine whether the user is already subscribed to this author.
+*/
+export const isSubscribed = functions.https.onCall(async (data,context) => {
+    try {
+            console.log('id: ' + data.author_account_id + ' customer id: ' + data.customer_stripe_id);
+            const prices = (await stripe.subscriptions.list({
+                                       limit:2,
+                                       customer:data.customer_stripe_id,
+                                   }, {
+                                       stripeAccount: data.author_account_id,
+                                   }));
+            const result = prices.data[0];
+            console.log('subscription as received from stripe: ' + result);
+            return result;
+        } catch (err) {
+            console.log(err);
+            if ((err.toString()).includes('No such customer')) {
+                console.log('there is no such customer');
+                return null; // for when there is no customer by that id
+            } else {
+                return 'something went wrong:' + err;
+            }
+        }
+});
+
+
+/**
  * subscribe the customer to a subscription
  */
 export const subscribe = functions.https.onCall(async (data,context) => {
     console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
     try {
-        console.log('pre-token?');
-        // clone the customer token *if they exist already*
-//         const token = await stripe.tokens.create({
-// //           customer: data.customer_id,
-//           customer: 'cus_LVyskFM4w3jgyP',
-//         }
-//           ,{stripeAccount: data.author_account_id,}
-//         );
-//         console.log('token: ' + token);
-        // create actual subscription
-          const session = await stripe.checkout.sessions.create({
-            line_items: [
-              {
-                price: data.price,
-                quantity: 1,
-              },
-            ],
-            mode: 'subscription',
-            success_url: `https://stripe.com/docs/payments/checkout/custom-success-page`,
-            cancel_url: `https://stripe.com/docs/payments/checkout/custom-success-page`,
-            automatic_tax: {enabled: true},
-            subscription_data: {
-                application_fee_percent: 10,
-                description: "If the developer hasn't put anything useful in this box, send us the screenshot of this and you can choose to take his job.",
-            },
+        var customerid;
+        var session;
+        try {
+            console.log('pre-token?');
+                    // clone the customer *if they exist already*
+                    const token = await stripe.tokens.create(
+                      {
+                      customer: 'cus_M5HhzxoymplEe8'
+                      //           customer: data.customer_id,
+                      },
+                      {stripeAccount: data.author_account_id
+                      }
+                    );
+                    const customer = await stripe.customers.create({
+            //           customer: data.customer_id,
+                      source: token['id'],
+                    }
+                      ,{stripeAccount: data.author_account_id,}
+                    );
+            //         console.log(customer);
+                    console.log('customer: ' + customer['id']);
+                    customerid = customer['id'];
 
-          }, {
-            stripeAccount: data.author_account_id,
-          });
+                    // create actual subscription
+                              session = await stripe.checkout.sessions.create({
+                                customer: customerid,
+                                customer_update: {
+                                    address:'auto',
+                                },
+                                line_items: [
+                                  {
+                                    price: data.price,
+                                    quantity: 1,
+                                  },
+                                ],
+                                mode: 'subscription',
+                                success_url: `https://stripe.com/docs/payments/checkout/custom-success-page`,
+                                cancel_url: `https://stripe.com/docs/payments/checkout/custom-success-page`,
+                                automatic_tax: {enabled: true},
+                                subscription_data: {
+                                    application_fee_percent: 10,
+                                    description: "If the developer hasn't put anything useful in this box, send us the screenshot of this and you can choose to take his job.",
+                                },
+
+                              }, {
+                                stripeAccount: data.author_account_id,
+                              });
+
+        } catch (tokenerror) { // for when it's the customer's first purchase.
+            if ((tokenerror.toString()).includes('The customer must have an active payment source attached.')) {
+                console.log('customer doesnt have payment method attached');
+
+                // create actual subscription, same as above except you don't bother with trying to give the existing customer.
+                          session = await stripe.checkout.sessions.create({
+                            line_items: [
+                              {
+                                price: data.price,
+                                quantity: 1,
+                              },
+                            ],
+                            mode: 'subscription',
+                            success_url: "http://localhost:41723/order/success?session_id={CHECKOUT_SESSION_ID}",
+                            cancel_url: `https://stripe.com/docs/payments/checkout/custom-success-page`,
+                            automatic_tax: {enabled: true},
+                            subscription_data: {
+                                application_fee_percent: 10,
+                                description: "If the developer hasn't put anything useful in this box, send us the screenshot of this and you can choose to take his job.",
+                            },
+
+                          }, {
+                            stripeAccount: data.author_account_id,
+                          });
+
+
+
+
+            } else {
+                return 'something went wrong:' + tokenerror;
+            }
+        }
+
+
+
 
         // doesn't work because there's nowhere for the user to put in their payment data.
 //         const subscription = await stripe.subscriptions.create({
@@ -222,7 +283,7 @@ export const subscribe = functions.https.onCall(async (data,context) => {
 //         });
 
         console.log(session);
-        return session;
+        return session; // TODO: somehow save the customer's info on the platform
     } catch (err) {
         console.log(err);
         return 'something went wrong buddy boy: ' + err;

@@ -178,7 +178,16 @@ class FirebaseService extends ChangeNotifier {
     return subs;
   }
 
-  // check whether the user is subscribed to the author
+  // grab the stripe id of the customer for the purpose of creating a subscription
+  Future<String> getStripeId(String firebaseId) async {
+    return (await FirebaseFirestore.instance
+        .collection('customers/')
+        .doc(firebaseId)
+        .get())['stripeId'];
+  }
+
+
+  // check whether the user is subscribed to the author  DEPRECATED POSSIBLY
   Future<bool> isSubscribed(String authorId) async {
     return (await FirebaseFirestore.instance
             .collection('user_profiles/$userId/author_subscriptions')

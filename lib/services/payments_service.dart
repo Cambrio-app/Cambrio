@@ -76,4 +76,20 @@ class PaymentsService {
     return results.data['url'];
     // return results.data;
   }
+
+  static Future<bool> isSubscribed({required String author_account_id, required String customer_stripe_id}) async {
+    debugPrint('checking whether user ${customer_stripe_id} is subscribed to ${author_account_id}');
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('isSubscribed');
+    final results = await callable.call(<String, dynamic>{
+      'customer_stripe_id': customer_stripe_id,
+      'author_account_id': author_account_id,
+    });
+    debugPrint('results of isSubscribed: ${results.data}');
+    if (results.data == null) return false;
+    Map<String, dynamic> subscription = results.data;
+    // debugPrint(subscription.toString());
+    // debugPrint(price['unit_amount'].toString());
+    // return subscription.isEmpty;
+    return true; // because if the result is empty, the above return statement runs.
+  }
 }
